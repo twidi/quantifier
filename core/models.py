@@ -100,19 +100,20 @@ class Intervals(str, enum.Enum):
 OrderedIntervals = {interval.value: index for index, interval in enumerate(Intervals)}
 
 
-def get_dates_interval(date: datetime.time, interval: Intervals) -> tuple[datetime.date, datetime.date]:
+def get_dates_interval(date: datetime.date, interval: Intervals) -> tuple[datetime.date, datetime.date]:
     if interval == Intervals.daily:
-        return date, date
-    if interval == Intervals.weekly:
-        first_day_of_week = date - timedelta(days=date.weekday())
-        return first_day_of_week, first_day_of_week + timedelta(days=6)
-    if interval == Intervals.monthly:
-        first_day_of_month = date.replace(day=1)
-        last_day_of_month = (first_day_of_month + timedelta(days=31)).replace(day=1) - timedelta(days=1)
-        return first_day_of_month, last_day_of_month
-    if interval == Intervals.yearly:
-        return date.replace(month=1, day=1), date.replace(month=12, day=31)
-    return datetime.min.date(), datetime.max.date()
+        start_date = end_date = date
+    elif interval == Intervals.weekly:
+        start_date = date - timedelta(days=date.weekday())
+        end_date = start_date + timedelta(days=6)
+    elif interval == Intervals.monthly:
+        start_date = date.replace(day=1)
+        end_date = (start_date + timedelta(days=31)).replace(day=1) - timedelta(days=1)
+    elif interval == Intervals.yearly:
+        start_date, end_date = date.replace(month=1, day=1), date.replace(month=12, day=31)
+    else:
+        return datetime.min, datetime.max
+    return datetime.combine(start_date, datetime.min.time()), datetime.combine(end_date, datetime.max.time())
 
 
 def get_prev_and_next_dates_interval(date: datetime.time, interval: Intervals) -> tuple[datetime.date, datetime.date]:
@@ -255,9 +256,6 @@ class Project(Orderable, models.Model):
 
     def get_quantities_url(self):
         return reverse("quantities_list", kwargs={"project_pk": self.pk})
-
-    def get_current_interval(self) -> tuple[datetime.date, datetime.date]:
-        return get_dates_interval(datetime.now().date(), Intervals(self.interval))
 
     @cached_property
     def has_interval(self):

@@ -241,15 +241,13 @@ class QuantityBaseForm(ModelForm):
     def get_date_args(cls, project, date, interval):
         initial_datetime = datetime.now()
         min_date, max_date = get_dates_interval(date, interval)
-        min_datetime = datetime.combine(min_date, datetime.min.time())
-        max_datetime = datetime.combine(max_date, datetime.max.time())
         if initial_datetime.date() != date and interval in (None, Intervals.none):
             initial_datetime = datetime.combine(date, datetime.min.time())
-        if not (min_datetime <= initial_datetime <= max_datetime):
-            initial_datetime = min_datetime
+        if not (min_date <= initial_datetime <= max_date):
+            initial_datetime = min_date
         if not project.has_interval:
-            min_datetime = max_datetime = None
-        return min_datetime, max_datetime, initial_datetime
+            min_date = max_date = None
+        return min_date, max_date, initial_datetime
 
     def __init__(self, min_date, max_date, *args, **kwargs):
         super().__init__(*args, **kwargs)

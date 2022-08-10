@@ -197,7 +197,7 @@
                                     <input name="date" type="date" value="{{ current_date|date:'Y-m-d' }}" required pattern="\d{4}-\d{2}-\d{2}" class="form-control form-control-sm" aria-label="Select date">
                                     <button class="btn btn-sm btn-outline-primary" type="submit">Go</button>
                                 </div>
-                                <a class="mb mb-3 d-inline-bloc d-inline-block" href="{{ request.path }}?date={{ current_date|date:'Y-m-d' }}{% if interval %}&interval={{ interval }}{% endif %}">Set to today</a>
+                                <a class="mb mb-3 d-inline-bloc d-inline-block" href="{{ request.path }}?date={{ today|date:'Y-m-d' }}{% if interval %}&interval={{ interval }}{% endif %}">Set to today</a>
                                 <p class="mb-1">View for:</p>
                                 {% for interval_choice in intervals %}
                                     <div class="form-check ms-2">

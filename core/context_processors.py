@@ -5,12 +5,13 @@ from .models import Intervals
 
 
 def default_context(request):
-    date = datetime.now().date()
+    today = date = datetime.now().date()
     if date_str := (request.GET.get("date") or "").strip():
         with contextlib.suppress(ValueError):
             date = datetime.strptime(date_str, "%Y-%m-%d").date()
 
     context = {
+        "today": today,
         "current_date": date,
         "intervals": list(Intervals),
     }

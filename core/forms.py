@@ -26,7 +26,6 @@ class ProjectBaseForm(ModelForm):
             "interval",
             "interval_quantity",
             "quantity_name",
-            "reverse_mode",
             "quick_add_quantities",
         ]
 
@@ -43,8 +42,6 @@ class ProjectBaseForm(ModelForm):
         for field in self.Meta.fields:
             if field == 'interval':
                 self.fields[field].widget.attrs.update({"class": "form-select form-select-sm"})
-            elif field == 'reverse_mode':
-                pass
             elif field == 'description':
                 self.fields["description"].widget.attrs.update(
                     {"class": "form-control form-control-sm auto-reduce", "rows": 5}

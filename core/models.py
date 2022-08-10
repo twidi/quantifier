@@ -165,10 +165,13 @@ class Project(Orderable, models.Model):
     interval_quantity = models.IntegerField(
         null=True,
         blank=True,
-        verbose_name="quantity",
-        help_text="The quantity that will be reset at the beginning of each day, week, month or year (must not be set in reverse mode)",
+        verbose_name="Limit quantity",
+        help_text="The quantity that will be reset at the beginning of each day, week, month or year (or never if no interval)",
     )
-    quantity_name = models.CharField(max_length=100)
+    quantity_name = models.CharField(
+        max_length=100,
+        help_text="The name of the thing to count: euros, minutes, kilometers, etc.",
+    )
     reverse_mode = models.BooleanField(default=False, help_text="If set, the quantity will be computed automatically")
     quick_add_quantities = models.TextField(
         blank=True,
@@ -178,16 +181,6 @@ class Project(Orderable, models.Model):
 
     class Meta(Orderable.Meta):
         constraints = [
-            models.CheckConstraint(
-                name="%(app_label)s_%(class)s_interval_quantity_null_in_reverse_mode",
-                check=Q(reverse_mode=True) & Q(interval_quantity__isnull=True) | Q(reverse_mode=False),
-                violation_error_message="Quantity cannot be set in reverse mode",
-            ),
-            models.CheckConstraint(
-                name="%(app_label)s_%(class)s_interval_quantity_not_null_in_no_reverse_mode",
-                check=Q(reverse_mode=False) & Q(interval_quantity__isnull=False) | Q(reverse_mode=True),
-                violation_error_message="Quantity must be set if not in reverse mode",
-            ),
             models.UniqueConstraint(
                 name="%(app_label)s_%(class)s_order_owner_uniq",
                 fields=("owner", "sort_order"),
@@ -196,18 +189,13 @@ class Project(Orderable, models.Model):
             ),
         ]
 
+    @cached_property
+    def reverse_mode(self):
+        return self.interval_quantity is None
+
     def get_unique_fields(self):
         """List field names that are unique_together with `sort_order`."""
         return ["owner"]
-
-    def validate_constraints(self, exclude=None):
-        if exclude:
-            # django only validates constraints againts fields present in the form, but when we edit a project, the
-            # `reverse_mode` field is not in the form, so excluded, so the constrain `interval_quantity_null_in_reverse_mode`
-            # is not checked by django and if the user set a quantity in reverse mode, we have an `IntegrityError` raised
-            # by the database engine
-            exclude.discard("reverse_mode")
-        return super().validate_constraints(exclude)
 
     def __str__(self):
         return self.name
@@ -485,7 +473,6 @@ class Category(Orderable, MPTTModel):
         return self.name
 
     def validate_constraints(self, exclude=None):
-        # see same method in the Project model to see the reasons
         if exclude and self.project_id:
             # to allow checking the constraints related to the project
             exclude.discard("project")

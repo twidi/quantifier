@@ -1,0 +1,12 @@
+{% extends "single_card_page_include.html" %}
+{% load i18n mptt_tags core_utils %}
+
+{% block card_title %}
+    Edition of the «<strong>{{ project.name }}</strong>» project
+{% endblock %}
+
+{% block card_content %}
+    {% include "form_include.html" with submit_text="Update" %}
+    <hr/>
+    {% include "project_delete_form_include.html" with form=delete_form %}
+{% endblock %}

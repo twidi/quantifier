@@ -1,0 +1,13 @@
+{% extends "single_card_page_include.html" %}
+{% load i18n %}
+
+{% block card_classes %}small-width{% endblock %}
+
+{% block card_title %}
+    {% block title %}{% endblock %}
+{% endblock %}
+
+{% block card_content %}
+    {% block form %}{% endblock %}
+    {% block after_form %}{% endblock %}
+{% endblock %}

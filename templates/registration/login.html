@@ -1,0 +1,19 @@
+{% extends "./base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Login" %}{% endblock %}
+
+{% block form %}
+    {% url 'login' as url %}{% trans 'Log in' as submit_text %}
+    {% include "./login_form_include.html" with action=url submit_text=submit_text %}
+{% endblock %}
+
+{% block after_form %}
+
+    <hr />
+
+    <p>
+        {% trans "Forgot password" %}? <a href="{% url 'password_reset' %}">{% trans "Reset it" %}</a>!
+        {% trans "Not member" %}? <a href="{% url 'django_registration_register' %}">{% trans "Register" %}</a>!
+    </p>
+{% endblock %}

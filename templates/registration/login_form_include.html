@@ -1,0 +1,8 @@
+{% extends "form_include.html" %}
+{% load i18n %}
+{% block additional_fields %}
+    {% if next %}
+        <input type="hidden" name="next" value="{{ next }}" />
+        <p>You'll be redirected to the <em>{{ next }}</em> url when logged in.</p>
+    {% endif %}
+{% endblock %}

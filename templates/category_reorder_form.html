@@ -1,0 +1,10 @@
+{% extends "single_card_page_include.html" %}
+{% load i18n mptt_tags %}
+
+{% block card_title %}
+    Change the position of the{% if form.instance.level == 1 %} root{% endif %} category «<strong>{{ form.instance.name }}</strong>»{% if form.instance.level > 1 %} (under «<strong>{{ form.instance.get_ancestors|tree_path:" > " }}</strong>»){% endif %} in the «<strong>{{ project.name }}</strong>» project
+{% endblock %}
+
+{% block card_content %}
+    {% include "category_reorder_form_include.html" with no_description=True %}
+{% endblock %}

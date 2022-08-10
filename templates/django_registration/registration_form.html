@@ -1,0 +1,18 @@
+{% extends "./base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Register" %}{% endblock %}
+
+{% block form %}
+    {% url 'django_registration_register' as url %}
+    {% include "form_include.html" with action=url %}
+{% endblock %}
+
+{% block after_form %}
+
+    <hr />
+
+    <p>
+        {% trans "Already an account" %}? <a href="{% url 'login' %}">{% trans "Login" %}</a>!
+    </p>
+{% endblock %}

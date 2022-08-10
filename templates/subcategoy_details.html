@@ -1,0 +1,41 @@
+{% load i18n core_utils %}
+{% with children=category.get_children %}
+    {% if children %}
+        <ul class="list-group list-group-flush mt-3">
+            {% for sub_category in children %}
+                {% with common_classes="d-flex justify-content-between align-items-center gap-2" %}
+                    {% if sub_category.is_leaf_node %}
+                        <li class="list-group-item sub-category-item {{ common_classes }} px-0">
+                    {% else %}
+                        <li class="list-group-item sub-category-item px-0">
+                            <details class="sub-sub-categories scroll-into-view">
+                                <summary class="{{ common_classes }} w-100 position-relative">
+                                    <span class="details-toggle">
+                                        <span class="details-toggle-open">+</span>
+                                        <span class="details-toggle-close">-</span>
+                                    </span>
+                    {% endif %}
+                    <span class="flex-grow-1 flex-shrink-1 text-truncate">
+                        {{ sub_category.name }}
+                    </span>
+                    <details class="no-marker as-dropdown category-forms-container focus-first-input scroll-into-view flex-shrink-0" data-group="category_forms" data-scroll-into-view=".card">
+                        <summary class="d-flex gap-3 align-items-center" title="Click to add a quantity, a sub-category or edit/delete this category">
+                            <span class="text-end category-amounts">{% include "category_amounts_include.html" with category=sub_category %}</span>
+                            <span class="details-toggle">
+                                {% icon "circle-plus" classes="details-toggle-open" %}
+                                {% icon "circle-xmark" classes="details-toggle-close" %}
+                            </span>
+                        </summary>
+                        {% include "category_forms_include.html" with category=sub_category next_category=current_category self_expected_not_used=summed_quantities|dict_value:sub_category|dict_value:"self_expected_not_used" %}
+                    </details>
+                    {% if not sub_category.is_leaf_node %}
+                                </summary>
+                                {% include "subcategoy_details.html" with category=sub_category %}
+                            </details>
+                    {% endif %}
+                    </li>
+                {% endwith %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}

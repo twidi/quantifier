@@ -1,0 +1,63 @@
+{% extends "base_project.html" %}
+{% load i18n mptt_tags core_utils %}
+
+{% block head_end %}
+    {{ block.super }}
+    <style>
+        .category-title a {
+            color: inherit;
+            text-decoration: none;
+        }
+        .main-amount {
+            font-size: 3rem !important;
+        }
+        .amounts-details {
+            min-width: 15em;
+        }
+        ul.nav.category-forms-tabs {
+            --bs-nav-link-padding-x: 0.5rem;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    {% if error_date %}
+        <div class="callout callout-danger">Given date «<strong>{{ error_date }}</strong>» is invalid. Switched to current {{ project.interval_name }}.</div>
+    {% endif %}
+
+    {% if current_category %}
+        <h2 class="category-title text-center mt-4 mb-4">
+            <a href="{% if view.context_object_name == 'quantities' %}{{ project.get_quantities_url }}{% else %}{{ project.get_absolute_url }}{% endif %}?date={{ date_str }}&interval={{ interval }}" class="text-muted" title="Back to project home">Project</a>
+            {% for parent_category in category.get_ancestors %}
+                {% if parent_category.parent_id %}
+                    <span class="small text-muted">{% icon_xs "chevron-right" "solid" %}</span>
+                    <a href="{% if view.context_object_name == 'quantities' %}{{ parent_category.get_quantities_url }}{% else %}{{ parent_category.get_absolute_url }}{% endif %}?date={{ date_str }}&interval={{ interval }}">{{ parent_category.name }}</a>
+                {% endif %}
+            {% endfor %}
+            <span class="small text-muted">{% icon_xs "chevron-right" "solid" %}</span>
+            <a href="{% if view.context_object_name == 'quantities' %}{{ category.get_quantities_url }}{% else %}{{ category.get_absolute_url }}{% endif %}?date={{ date_str }}&interval={{ interval }}">{{ category.name }}</a>
+            <details class="no-marker as-dropdown focus-first-input scroll-into-view text-start text-muted d-inline-block ms-1">
+                <summary>
+                    <span class="details-toggle small">
+                        {% icon "circle-plus" classes="details-toggle-open" %}
+                        {% icon "circle-xmark" classes="details-toggle-close" %}
+                    </span>
+                </summary>
+                {% include "category_forms_include.html" with category=category next_category=category %}
+            </details>
+        </h2>
+    {% elif description %}
+        <details>
+            <summary class="text-muted">Description</summary>
+                <p class="callout">{{ project.description }}</p>
+        </details>
+    {% endif %}
+
+    <div class="d-flex align-items-center flex-wrap gap-2">
+        <div class="d-flex justify-content-center align-content-center" style="flex-grow: 10">
+            {% include "project_or_category_main_amount_include.html" with summed_quantities=project.summed_quantities|dict_value:main_category %}
+        </div>
+    </div>
+
+{% endblock %}

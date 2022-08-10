@@ -1,0 +1,18 @@
+{% load core_utils %}
+<p class="main-amount fs-2 text-muted m-3 d-flex flex-column justify-content-center {{ css_classes }}">
+{% if current_category or interval == "none" and project.interval != "none" %}
+    {{ summed_quantities.used }} {{ project.quantity_name }}
+{% elif project.reverse_mode %}
+    {{ summed_quantities.used }} {{ project.quantity_name }}
+{% elif project.has_interval and interval and interval|interval < project.interval|interval %}
+    <span class="small">Used</span>
+    <span class="text-center">{{ summed_quantities.used }} {{ project.quantity_name }}</span>
+{% elif not project.has_interval and interval and interval != "none" %}
+    <span class="small">Used</span>
+    <span class="text-center">{{ summed_quantities.used }} {{ project.quantity_name }}</span>
+{% else %}
+    {% if summed_quantities.really_available >= 0 %}<span class="small">Left</span>{% else %}<span class="small text-danger">Excess</span>{% endif %}
+    <span class="text-center">{{ summed_quantities.really_available }} {{ project.quantity_name }}</span>
+    <span class="small text-muted text-end pt-1">/ {{ summed_quantities.total_unexpected }}</span>
+{% endif %}
+</p>

@@ -1,0 +1,10 @@
+{% extends "single_card_page_include.html" %}
+{% load i18n %}
+
+{% block card_title %}
+    Creation of a new project
+{% endblock %}
+
+{% block card_content %}
+    {% include "form_include.html" with submit_text="Add project" %}
+{% endblock %}

@@ -1,0 +1,114 @@
+{% load core_utils crispy_forms_tags %}
+
+<div id="projects" class="d-flex flex-wrap justify-content-center">
+
+    {% for project in projects %}
+        <div class="project-container">
+            <div class="card project">
+                <div class="card-body d-flex flex-column p-0">
+                    <div class="card-body-header">
+                        {% if project.description %}
+                            <details class="scroll-into-view">
+                                <summary class="text-truncate">
+                        {% endif %}
+                        <h5 class="text-truncate{% if project.description %} d-inline{% endif %}">
+                            <a href="{{ project.get_absolute_url }}?date={{ date_str }}{% if interval %}&interval={{ interval }}{% endif %}">{{ project.name }}</a>
+                        </h5>
+                        {% if project.description %}
+                                </summary>
+                                <p class="callout">{{ project.description }}</p>
+                            </details>
+                        {% endif %}
+                        <h6 class="card-subtitle my-2 text-muted text-truncate">
+                            {% if project.has_interval or interval and interval != "none" %}{% interval_str date interval|default:project.interval %}{% else %}&nbsp;{% endif %}
+                        </h6>
+                    </div>
+                    <div class="card-body-content flex-grow-1 d-flex flex-column align-items-center">
+                        {% with form=project.quick_add_form %}
+                            {% if form %}
+                                <form action="{{ project.get_add_quantity_url }}?date={{ date_str }}{% if interval %}&interval={{ interval }}{% endif %}&next=index" method="POST" class="project-quick-add-form w-100 position-relative small-form">
+                                    {% csrf_token %}
+                                    <div class="input-group input-group-sm">
+                                        {{ form.category }}
+                                        {{ form.value }}
+                                        <button class="btn btn-outline-secondary input-group-btn" type="submit" title="Add quantity">{% icon "plus" classes="fa-fw" %}</button>
+                                        {% if project.quick_add_quantities %}
+                                            <datalist id="project-{{ project.pk }}-quick_add_quantities">
+                                                {% for qtt in project.get_quick_add_quantities %}
+                                                    <option value="{{ qtt }}">
+                                                {% endfor %}
+                                            </datalist>
+                                        {% endif %}
+                                        <span class="btn btn-outline-secondary input-group-btn invisible">
+                                            {% icon "chevron-down" classes="fa-fw" %}
+                                        </span>
+                                    </div>
+                                    <details class="no-marker as-dropdown quick-add-details focus-first-input scroll-into-view" data-group="quick-add-form" data-focus-first-input="#id_project-{{ project.id }}-name" data-scroll-into-view=".card">
+                                        <summary class="input-group input-group-sm position-absolute top-0 end-0 w-initial">
+                                            <span class="btn btn-outline-secondary input-group-btn details-toggle" title="Show optional fields">
+                                                {% icon "chevron-down" classes="details-toggle-open fa-fw" %}
+                                                {% icon "xmark" classes="details-toggle-close fa-fw" %}
+                                            </span>
+                                        </summary>
+                                        <div class="card">
+                                            <div class="card-body d-flex flex-column gap-2 small small-form">
+                                                {% include "quantity_form_more_fields_include.html" %}
+                                            </div>
+                                        </div>
+                                    </details>
+                                </form>
+                            {% else %}
+                                <div class="input-group input-group-sm">
+                                    <div class="block text-center w-100 text-muted fw-lighter fst-italic" style="padding-block: 0.25rem">
+                                        ({{ project.no_quick_form_reason }})
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endwith %}
+
+                        {% if project.nb_categories %}
+                            {% include "project_or_category_main_amount_include.html" with summed_quantities=project.summed_quantities|dict_value:project.root_category css_classes="flex-grow-1"%}
+                            {% if project.has_interval and not project.reverse_mode %}
+                                {% if not interval or interval == project.interval %}
+                                    <details class="details small w-100 scroll-into-view">
+                                        <summary class="ps-2">Details</summary>
+                                        {% include "project_or_category_amounts_details_include.html" with summed_quantities=project.summed_quantities|dict_value:project.root_category css_classes="list-group-flush" %}
+                                    </details>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    </div>
+
+                </div>
+
+                <div class="card-footer">
+                    <small class="text-muted">{{ project.short_description }}</small>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+    <div class="project-container">
+        <div class="card project position-static">
+            <div class="card-body d-flex justify-content-center align-items-center">
+                <h5 class="mb-0">
+                    <details class="no-marker as-dropdown focus-first-input scroll-into-view" data-scroll-into-view=".card-body">
+                        <summary class="text-muted d-flex align-item align-items-center gap-2">
+                            Add a Project
+                            <span class="details-toggle">
+                                {% icon "circle-plus" classes="details-toggle-open" %}
+                                {% icon "circle-xmark" classes="details-toggle-close" %}
+                            </span>
+                        </summary>
+                        <div class="card large-details project-form-card fs-6 fw-normal">
+                            <div class="card-body">
+                                {% project_form %}
+                            </div>
+                        </div>
+                    </details>
+                </h5>
+            </div>
+        </div>
+    </div>
+
+</div>

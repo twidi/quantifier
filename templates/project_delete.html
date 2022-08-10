@@ -1,0 +1,10 @@
+{% extends "single_card_page_include.html" %}
+{% load i18n %}
+
+{% block card_title %}
+    Confirm deletion of the «<strong>{{ project.name }}</strong>» project
+{% endblock %}
+
+{% block card_content %}
+    {% include "project_delete_form_include.html" %}
+{% endblock %}

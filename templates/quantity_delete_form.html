@@ -1,0 +1,10 @@
+{% extends "single_card_page_include.html" %}
+{% load i18n mptt_tags %}
+
+{% block card_title %}
+    Confirm deletion of a quantity of <strong>{{ form.instance.value }}</strong> {{ form.instance.category.project.quantity_name }} in the{% if form.instance.category.level == 1 %} root{% endif %} category «<strong>{{ form.instance.category.name }}</strong>»{% if form.instance.category.level > 1 %} (under «<strong>{{ form.instance.category.get_ancestors|tree_path:" > " }}</strong>»){% endif %} in the «<strong>{{ project.name }}</strong>» project
+{% endblock %}
+
+{% block card_content %}
+    {% include "quantity_delete_form_include.html" %}
+{% endblock %}

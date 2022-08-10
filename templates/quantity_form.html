@@ -1,0 +1,18 @@
+{% extends "single_card_page_include.html" %}
+{% load i18n mptt_tags %}
+
+{% block card_title %}
+    {% if form.instance.id %}Edit{% else %}Create{% endif %} a quantity in {% if category %}the category «<strong>{{ category }}</strong>»{% if form.instance.level > 1 %} (under «<strong>{{ category.get_ancestors|tree_path:" > " }}</strong>»){% endif %} of {% endif %}the «<strong>{{ project.name }}</strong>» project
+{% endblock %}
+
+{% block card_content %}
+    {% include "quantity_form_include.html" %}
+
+    {% if project.quick_add_quantities %}
+        <datalist id="project-{{ project.pk }}-quick_add_quantities">
+            {% for qtt in project.get_quick_add_quantities %}
+                <option value="{{ qtt }}">
+            {% endfor %}
+        </datalist>
+    {% endif %}
+{% endblock %}

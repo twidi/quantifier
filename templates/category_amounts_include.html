@@ -1,0 +1,48 @@
+{% load core_utils %}
+
+{% with summed=summed_quantities|dict_value:category %}
+    {% if summed.expected %}
+        {% if summed.used_not_expected or summed.unexpected > 0 or summed.expected_not_used > 0 %}
+            <div class="{% if main %}fs-3{% endif %}">{{ summed.used }}</div>
+            <div class="text-muted smaller">
+                {% if summed.used_not_expected %}
+                    <span title="{{ project.quantity_name|capfirst }} used not planned">{{ summed.used_not_expected }}</span> |
+                {% endif %}
+                <span title="Planned">{% icon "lock-keyhole" %} {{ summed.expected }}</span>
+                {% if summed.unexpected > 0 or summed.expected_not_used > 0 %}
+                    <span>(</span>
+                    {% if summed.unexpected > 0 %}
+                        <span title="{{ project.quantity_name|capfirst }} used in excess over planned" class="text-danger">
+                            {% icon "rectangle-vertical" "solid" %}
+                            {{ summed.unexpected }}
+                        </span>
+                    {% endif %}
+                    {% if summed.expected_not_used > 0 %}
+                        {% if summed.expected_not_used == summed.expected %}
+                            <span title="Planned {{ project.quantity_name }} not used" class="text-success">
+                                <span class="fa-layers fa-fw">
+                                    <i class="fa-regular fa-rectangle-vertical"></i>
+                                    <i class="fa-solid fa-minus" data-fa-transform="shrink-4 down-6"></i>
+                                </span>
+                                {{ summed.expected_not_used }}
+                            </span>
+                        {% else %}
+                            <span title="Planned {{ project.quantity_name }} not used" class="text-success">
+                                <span class="fa-layers fa-fw">
+                                    <i class="fa-regular fa-rectangle-vertical"></i>
+                                    <i class="fa-solid fa-rectangle" data-fa-transform="shrink-5 down-4"></i>
+                                </span>
+                                {{ summed.expected_not_used }}
+                            </span>
+                        {% endif %}
+                    {% endif %}
+                    <span>)</span>
+                {% endif %}
+            </div>
+        {% else %}
+            <div title="Planned" class="d-block">{% icon "lock-keyhole" %} {{ summed.used }}</div>
+        {% endif %}
+    {% else %}
+        <div class="{% if main %}fs-3{% endif %}">{{ summed.used }}</div>
+    {% endif %}
+{% endwith %}

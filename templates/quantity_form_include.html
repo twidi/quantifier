@@ -1,0 +1,21 @@
+{% load core_utils %}
+{% include "bootstrap5/errors.html" %}
+<form class="d-flex flex-column gap-2 small small-form" action="{% if form.instance.id %}{{ form.instance.get_edit_url }}{% elif category %}{{ category.get_add_quantity_url }}{% else %}{{ project.get_add_quantity_url }}{% endif %}?date={{ date_str }}&interval={{ interval }}{% if next %}&next={{ next }}{% endif %}" method="post">
+    {% csrf_token %}
+    {% if not form.instance.id %}
+        {% if category %}
+            <p class="mb-1">
+                <span class="fw-bold">This will add a quantity directly in the «{{ category.name }}» category</span>
+                {% if 'category' in form.fields %}<span class="small">(or pick a sub-category)</span>{% endif %}
+            </p>
+        {% else %}
+            <p class="mb-1 fw-bold">This will add a quantity in a chosen category.</p>
+            {% include "bootstrap5/field.html" with field=form.category form_show_labels=True wrapper_class="mb-0" %}
+        {% endif %}
+    {% endif %}
+    <div class="input-group input-group-sm">
+        {% include "field_include.html" with field=form.value no_errors=True wrapper_class="mb-0" %}
+        {% if not form.instance.id %}<button class="btn btn-primary" type="submit">Add</button>{% endif %}
+    </div>
+    {% include "quantity_form_more_fields_include.html" %}
+</form>

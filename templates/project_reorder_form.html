@@ -1,0 +1,10 @@
+{% extends "single_card_page_include.html" %}
+{% load i18n mptt_tags %}
+
+{% block card_title %}
+    Change the position of the «<strong>{{ form.instance.name }}</strong>» project.
+{% endblock %}
+
+{% block card_content %}
+    {% include "project_reorder_form_include.html" with no_description=True %}
+{% endblock %}

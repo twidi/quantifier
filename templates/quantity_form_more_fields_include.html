@@ -1,0 +1,20 @@
+{% load core_utils %}
+{% for field in form %}
+    {% if field.name == 'datetime' %}
+        <div class="input-group datepicker-container flatpickr" data-alt-input="true" data-enable-time="true" data-wrap="true" data-click-opens="false"{% if "data-min-date" in field.field.widget.attrs %} data-min-date="{{ field.field.widget.attrs|dict_value:"data-min-date" }}"{% endif %}{% if "data-max-date" in field.field.widget.attrs %} data-max-date="{{ field.field.widget.attrs|dict_value:"data-max-date" }}"{% endif %}>
+            {{ field }}
+            <button class="btn btn-sm btn-outline-secondary input-group-btn" type="button" data-toggle title="Open calendar">{% icon "calendar" %}</button>
+            <button class="btn btn-sm btn-outline-secondary input-group-btn" type="button" data-clear title="Clear selected date">{% icon "xmark" %}</button>
+        </div>
+    {% elif field.name == 'category' %}
+        {% if category or form.instance.id %}
+            {% include "bootstrap5/field.html" with field=form.category form_show_labels=True wrapper_class="mb-0" %}
+        {% endif %}
+    {% elif field.name != 'value' %}
+        {% if field.name == 'name' %}
+            <p class="mb-0">Optional fields:</p>
+        {% endif %}
+        {% include "bootstrap5/field.html" with wrapper_class="mb-0" %}
+    {% endif %}
+{% endfor %}
+<button class="btn btn-sm btn-primary" type="submit">{% if form.instance.id %}Update{% else %}Add{% endif %} quantity</button>

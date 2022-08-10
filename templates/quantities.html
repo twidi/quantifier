@@ -1,0 +1,114 @@
+{% extends "project_or_category_base.html" %}
+{% load i18n mptt_tags core_utils query_parameters %}
+{% block head_end %}
+    {{ block.super }}
+    <style>
+        .quantities-list-container {
+            max-width: 50rem !important;
+        }
+
+        .quantities-list-container > table {
+            height: 1px;  /* hack to have elements with height 100% in cells */
+            border-radius: 0.375rem;
+            border-style: hidden;
+            box-shadow: 0 0 0 1px var(--bs-border-color);
+        }
+        .quantities-list-container > table td {
+            height: 100%;
+        }
+        .quantities-list-container > table td:first-child {
+            width: 0;
+        }
+        .quantities-list-container > table .qtt-value {
+            background: var(--bs-gray-200) !important;
+            color: var(--bs-gray-600);
+        }
+
+    </style>
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+
+
+    <div class="d-flex flex-column container-sm quantities-list-container">
+        <div class="text-end mt-2 mb-2">
+            <a href="{{ main_object.get_absolute_url }}?date={{ date_str }}&interval={{ interval }}">Back to {% if current_category %}category{% else %}project{% endif %}</a>
+        </div>
+
+        {% if not page_obj %}
+            <div class="callout callout-info mt-0">
+                No {{ project.quantity_name }} entered for this period.
+            </div>
+        {% else %}
+
+            <table class="table table-hover position-relative">
+                {% for quantity in page_obj %}
+                    <tr>
+                        <td>
+                            <span class="badge bg-secondary h-100 fs-3 qtt-value d-flex justify-content-center align-items-center fw-normal">{{ quantity.value }}</span>
+                        </td>
+                        <td>
+                            <div class="d-flex w-100 justify-content-between gap-2{% if not quantity.name and not quantity.description %} h-100 align-items-center{% endif %}">
+                                <div class="h5 mb-0">
+                                    <a href="{{ quantity.category.get_quantities_url }}?date={{ date_str }}&interval={{ interval }}">{{ quantity.category.name }}</a>
+                                    {% if quantity.category.in_between_ancestors %}
+                                        <span class="fs-6 fw-normal">( in
+                                        {% for ancestor in quantity.category.in_between_ancestors %}
+                                            <a href="{{ ancestor.get_quantities_url }}?date={{ date_str }}&interval={{ interval }}">{{ ancestor.name }}</a>
+                                            {% if not forloop.last %}
+                                                <span class="small text-muted">{% icon_xs "chevron-right" "solid" %}</span>
+                                            {% endif %}
+                                        {% endfor %}
+                                        )</span>
+                                    {% endif %}
+                                </div>
+                                <div class="d-flex gap-2" >
+                                    <small>{{ quantity.datetime }}</small>
+                                    <details class="no-marker as-dropdown focus-first-input scroll-into-view" data-group="quantity-edit" data-scroll-into-view=".card">
+                                        <summary class="text-muted xstretched-link" title="Edit this quantity">
+                                            <span class="details-toggle">
+                                                {% icon "pencil" classes="details-toggle-open" %}
+                                                {% icon "circle-xmark" classes="details-toggle-close" %}
+                                            </span>
+                                        </summary>
+                                        <div class="card details-on-right">
+                                            <div class="card-body">
+                                                {% quantity_edit_form quantity=quantity next_category=current_category %}
+                                                <hr />
+                                                {% quantity_delete_form quantity=quantity next_category=current_category %}
+                                            </div>
+                                        </div>
+                                    </details>
+                                </div>
+                            </div>
+                            <div class="mt-1">
+                                {% if quantity.name %}<p class="mb-0">{{ quantity.name }}</p>{% endif %}
+                                {% if quantity.description %}<small class="text-muted">{{ quantity.description }}</small>{% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+
+            {% if page_obj.paginator.num_pages > 1 %}
+                <div class="pagination justify-content-center mt-3">
+                    {% for page_number in elided_pages %}
+                        <li class="page-item {% if page_number == page_obj.number %}active{% elif page_number == page_obj.paginator.ELLIPSIS %}disabled{% endif %}">
+                        {% if page_number == page_obj.paginator.ELLIPSIS %}
+                            <span class="page-link">{{page_number}}</span>
+                        {% else %}
+                            <a href="?{% set_query_parameters page=page_number %}" class="page-link">
+                                {{page_number}}
+                            </a>
+                        {% endif %}
+                        </li>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+        {% endif %}
+
+    </div>
+
+{% endblock %}

@@ -1,0 +1,9 @@
+{% load core_utils %}
+
+{% if field.errors %}
+    {{ field|add_field_attr:'is-invalid' }}
+{% else %}
+    {{ field }}
+{% endif %}
+{% if not hide_errors %}
+{% endif %}

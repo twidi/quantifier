@@ -1,0 +1,14 @@
+{% extends "single_card_page_include.html" %}
+{% load i18n mptt_tags %}
+
+{% block card_title %}
+    {% if form.instance.id %}
+        Edit the{% if form.instance.level == 1 %} root{% endif %} category «<strong>{{ form.instance.name }}</strong>»{% if form.instance.level > 1 %} (under «<strong>{{ form.instance.get_ancestors|tree_path:" > " }}</strong>»){% endif %} in the «<strong>{{ project.name }}</strong>» project
+    {% else %}
+        Create a{% if not form.instance.parent.level %} root{% endif %} category{% if form.instance.parent.level %} (under «<strong>{{ form.instance.parent.get_ancestors|tree_path:" > " }} > {{ form.instance.parent }}</strong>»){% endif %} in the «<strong>{{ project.name }}</strong>» project
+    {% endif %}
+{% endblock %}
+
+{% block card_content %}
+    {% include "category_form_include.html" with no_description=True %}
+{% endblock %}

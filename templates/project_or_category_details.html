@@ -84,8 +84,8 @@
         #manage-quantities-button {
             width: 3.4rem;
             height: 3.4rem;
-            background: var(--bs-gray-300);
-            color: var(--bs-gray-600);
+            background:  #f5f5f5;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
         }
     </style>
 {% endblock %}
@@ -172,8 +172,8 @@
         </datalist>
     {% endif %}
 
-    <a class="fs-2 bottom-0 end-0 position-fixed rounded-circle m-3 d-flex justify-content-center align-items-center" title="List/edit/delete entered quantities" id="manage-quantities-button" href="{{ main_object.get_quantities_url }}?date={{ date_str }}&interval={{ interval }}">
-        {% icon "square-list" "solid" classes="fa-fw" %}
+    <a class="text-muted fs-2 bottom-0 end-0 position-fixed rounded-circle m-3 d-flex justify-content-center align-items-center" title="List/edit/delete entered quantities" id="manage-quantities-button" href="{{ main_object.get_quantities_url }}?date={{ date_str }}&interval={{ interval }}">
+        {% icon "square-list" classes="fa-fw" %}
     </a>
 
 {% endblock %}

@@ -260,7 +260,7 @@ class QuantityBaseForm(ModelForm):
         }
         if self.project.quick_add_quantities:
             value_widget_attrs["list"] = f"project-{self.project.pk}-quick_add_quantities"
-            if len(quick_add_quantities := self.project.get_quick_add_quantities()) == 1:
+            if len(quick_add_quantities := self.project.quick_add_quantities_as_list) == 1:
                 self.fields["value"].initial = quick_add_quantities[0]
                 value_widget_attrs["title"] += " (or pick one from the list)"
         self.fields["value"].widget.attrs.update(value_widget_attrs)

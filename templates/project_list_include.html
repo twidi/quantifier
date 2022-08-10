@@ -34,7 +34,7 @@
                                         <button class="btn btn-outline-secondary input-group-btn" type="submit" title="Add quantity">{% icon "plus" classes="fa-fw" %}</button>
                                         {% if project.quick_add_quantities %}
                                             <datalist id="project-{{ project.pk }}-quick_add_quantities">
-                                                {% for qtt in project.get_quick_add_quantities %}
+                                                {% for qtt in project.quick_add_quantities_as_list %}
                                                     <option value="{{ qtt }}">
                                                 {% endfor %}
                                             </datalist>

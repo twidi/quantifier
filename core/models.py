@@ -2,22 +2,23 @@ from __future__ import annotations
 
 import calendar
 import enum
+import re
 from datetime import datetime, timedelta
 from functools import cached_property
 from typing import Optional
 
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.models import AbstractUser
-from django.core.validators import validate_comma_separated_integer_list
+from django.core.validators import RegexValidator
 from django.db import models
-from django.db.models import Q, CheckConstraint, F, Sum, Deferrable, Count
+from django.db.models import Q, Sum, Deferrable, Count
 from django.urls import reverse
 from django.utils import timezone
 from mptt.managers import TreeManager
 
 from mptt.models import MPTTModel
 from mptt.querysets import TreeQuerySet
-from mptt.utils import tree_item_iterator, get_cached_trees
+from mptt.utils import get_cached_trees
 from orderable.managers import OrderableManager
 from orderable.models import Orderable
 from orderable.querysets import OrderableQueryset
@@ -177,7 +178,7 @@ class Project(Orderable, models.Model):
     quick_add_quantities = models.TextField(
         blank=True,
         help_text="A list of quantities available as quick add buttons. Each quantity is separated by a comma. Example: 1,2,5,10,20,50,100",
-        validators=[validate_comma_separated_integer_list],
+        validators=[RegexValidator(re.compile(r'^(\s*\d+\s*,)*\s*\d+\s*$'), message="Enter only digits separated by commas.", code="invalid")],
     )
 
     class Meta(Orderable.Meta):
@@ -230,9 +231,10 @@ class Project(Orderable, models.Model):
         queryset._result_cache = [category for category in self.cached_categories if category.level == 1]
         return queryset
 
-    def get_quick_add_quantities(self) -> list[int]:
+    @cached_property
+    def quick_add_quantities_as_list(self) -> list[int]:
         try:
-            return [int(q) for q in (self.quick_add_quantities or "").split(",")]
+            return [int(q) for q in (self.quick_add_quantities or "").replace(" ", "").split(",")]
         except ValueError:
             return []
 

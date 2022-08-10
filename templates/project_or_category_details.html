@@ -166,7 +166,7 @@
 
     {% if project.quick_add_quantities %}
         <datalist id="project-{{ project.pk }}-quick_add_quantities">
-            {% for qtt in project.get_quick_add_quantities %}
+            {% for qtt in project.quick_add_quantities_as_list %}
                 <option value="{{ qtt }}">
             {% endfor %}
         </datalist>

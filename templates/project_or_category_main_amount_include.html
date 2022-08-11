@@ -18,8 +18,13 @@
     <span class="text-center">{{ summed_quantities.used }} {{ project.quantity_name }}</span>
     <div class="small text-muted text-end pt-1">{% if interval == "none" %}(all time){% else %}this {% with interval=interval|interval %}{{ interval.unit_name }}{% endwith %}{% endif %}</div>
 {% else %}
-    {% if summed_quantities.really_available >= 0 %}<span class="small">Left</span>{% else %}<span class="small text-danger">Excess</span>{% endif %}
-    <span class="text-center">{{ summed_quantities.really_available }} {{ project.quantity_name }}</span>
+    {% if summed_quantities.really_available >= 0 %}
+        <span class="small">Left</span>
+        <span class="text-center">{{ summed_quantities.really_available }} {{ project.quantity_name }}</span>
+    {% else %}
+        <span class="small text-danger">Excess</span>
+        <span class="text-center d-flex gap-2"><span class="text-danger fs-4">-</span>{{ summed_quantities.really_available|mul:-1 }} {{ project.quantity_name }}</span>
+    {% endif %}
     <div class="small text-muted text-end d-flex align-items-baseline justify-content-end">
         <span class="text-muted small align-self-center ms-2">/</span>
         <span class="text-muted small">{{ summed_quantities.total_unexpected }}</span>
@@ -36,7 +41,7 @@
                         <strong>{{ summed_quantities.total_unexpected }}</strong> is the {% if interval == "none" %}all time{% else %}{{ interval }}{% endif %} amount (<strong>{{ project.interval_quantity }}</strong>{% if interval != project.interval %} per {% with interval=project.interval|interval %}{{ interval.unit_name }}{% endwith %}{% endif %}) minus the planned one (<strong>{{ summed_quantities.expected }}</strong>)
                     </p>
                     <p class="mb-0 mt-3">
-                    {% if summed_quantities.total_unexpected != summed_quantities.really_available %}
+                    {% if summed_quantities.used %}
                             <strong>{{ summed_quantities.really_available }}</strong> is the previous amount (<strong>{{ summed_quantities.total_unexpected }}</strong>) minus what was not planned (<strong>{{ summed_quantities.used_not_expected }}</strong>) and the excess over what was planned in some categories (<strong>{{ summed_quantities.unexpected }}</strong>)
                     {% else %}
                         No usage {% if interval == "none" %} (all time){% else %}during this {% with interval=interval|interval %}{{ interval.unit_name }}{% endwith %}{% endif %}

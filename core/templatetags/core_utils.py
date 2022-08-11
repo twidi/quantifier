@@ -216,3 +216,8 @@ def icon_xs(name, style="light", classes=None):
 @register.filter
 def sub(value, arg):
     return value - arg
+
+
+@register.filter
+def mul(value, arg):
+    return value * arg

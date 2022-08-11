@@ -89,35 +89,6 @@
     {% with summed_quantities=project.summed_quantities %}
         <div id="main-categories" class="d-flex flex-wrap justify-content-center">
 
-        {% if current_category %}
-            {% with summed=summed_quantities|dict_value:category %}
-                {% if summed.has_children %}
-                    {% if summed.self_used or summed.self_exptected %}
-                        {% if summed.self_used != summed.used or summed.self_expected != summed.expected %}
-                            <div class="main-category-container">
-                                <div class="card main-category fst-italic">
-                                    <div class="card-header h5 text-muted d-flex justify-content-between align-items-center gap-2">
-                                        <span class="text-truncate category-card-title">
-                                            {{ category.name }}<span class="small text-muted"> (direct)</span>
-                                        </span>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="text-end d-flex align-items-baseline fs-4 justify-content-center mb-2">
-                                            {% if summed.self_expected %}
-                                                <span class="{% if summed.self_used > summed.self_expected %}text-danger fw-bold{% endif %}">{{summed.self_used }}</span><span class="text-muted small align-self-center ms-2">/</span><span class="text-muted small">{{ summed.self_expected }}</span>
-                                            {% else %}
-                                                {{summed.self_used }}
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        {% endif %}
-                    {% endif %}
-                {% endif %}
-            {% endwith %}
-        {% endif %}
-
         {% for category in categories %}
             <div class="main-category-container">
                 <div class="card main-category">
@@ -152,6 +123,31 @@
                 </div>
             </div>
         {% endfor %}
+
+        {% if current_category %}
+            {% with summed=summed_quantities|dict_value:category %}
+                {% if summed.has_children %}
+                    {% if summed.self_used or summed.self_exptected %}
+                        {% if summed.self_used != summed.used or summed.self_expected != summed.expected %}
+                            <div class="main-category-container">
+                                <div class="card main-category">
+                                    <div class="card-header h5 text-muted d-flex justify-content-between align-items-center gap-2">
+                                        <span class="text-truncate category-card-title text-muted">
+                                            (Not categorized)
+                                        </span>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="text-end d-flex align-items-baseline fs-4 justify-content-center mb-2">
+                                            {{summed.self_used }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+            {% endwith %}
+        {% endif %}
 
         <div class="main-category-container">
             <div class="card main-category">

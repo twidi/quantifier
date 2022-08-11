@@ -2,30 +2,6 @@
 {% with children=category.get_children common_classes="d-flex justify-content-between align-items-center gap-2" %}
     {% if children %}
         <ul class="list-group list-group-flush mt-1">
-            {% if is_parent_category %}
-                {% with summed=summed_quantities|dict_value:category %}
-                    {% if summed.has_children %}
-                        {% if summed.self_used or summed.self_exptected %}
-                            {% if summed.self_used != summed.used or summed.self_expected != summed.expected %}
-                                <li class="list-group-item sub-category-item {{ common_classes }} px-0 fst-italic">
-                                    <span class="flex-grow-1 flex-shrink-1 text-truncate">
-                                        {{ category.name }}<span class="small text-muted"> (direct)</span>
-                                    </span>
-                                    <span class="text-end d-flex align-items-baseline justify-content-end">
-                                        {% if summed.self_expected %}
-                                            <span class="{% if summed.self_used > summed.self_expected %}text-danger fw-bold{% endif %}">{{summed.self_used }}</span><span class="text-muted small align-self-center ms-1">/</span><span class="text-muted small">{{ summed.self_expected }}</span>
-                                        {% else %}
-                                            {{summed.self_used }}
-                                        {% endif %}
-                                    </span>
-                                    <span class="invisible ms-2">{% icon "circle-plus" %}</span>
-                                </li>
-                            {% endif %}
-                        {% endif %}
-                    {% endif %}
-                {% endwith %}
-            {% endif %}
-
 
             {% for sub_category in children %}
                 {% with summed=summed_quantities|dict_value:sub_category %}
@@ -69,6 +45,27 @@
                     </li>
                 {% endwith %}
             {% endfor %}
+
+            {% if is_parent_category %}
+                {% with summed=summed_quantities|dict_value:category %}
+                    {% if summed.has_children %}
+                        {% if summed.self_used or summed.self_exptected %}
+                            {% if summed.self_used != summed.used or summed.self_expected != summed.expected %}
+                                <li class="list-group-item sub-category-item {{ common_classes }} px-0">
+                                    <span class="flex-grow-1 flex-shrink-1 text-truncate fst-italic text-muted">
+                                        (Not categorized)
+                                    </span>
+                                    <span class="text-end d-flex align-items-baseline justify-content-end">
+                                            {{summed.self_used }}
+                                    </span>
+                                    <span class="invisible ms-2">{% icon "circle-plus" %}</span>
+                                </li>
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+                {% endwith %}
+            {% endif %}
+
         </ul>
     {% endif %}
 {% endwith %}

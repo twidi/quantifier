@@ -347,10 +347,11 @@ class Project(Orderable, models.Model):
         }
 
         def update_count(category, is_root=False):
-            for sub_category in category.get_children():
+            for sub_category in (children := category.get_children()):
                 update_count(sub_category)
 
             res_cat = result[category]
+            res_cat['has_children'] = bool(children)
 
             interval_quantity = self.interval_quantity
             expected_quantity = category.expected_quantity

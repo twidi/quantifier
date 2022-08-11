@@ -2,7 +2,7 @@
 <div class="main-amount fs-2 text-muted m-3 d-flex flex-column justify-content-center {{ css_classes }}">
 {% with interval=interval|default:project.interval %}
 
-{% if project.reverse_mode %}
+{% if not project.has_interval_quantity %}
     <span class="text-center">{{ summed_quantities.used }} {{ project.quantity_name }}</span>
     <div class="small text-muted text-end pt-1">{% if interval == "none" %}(all time){% else %}this {% with interval=interval|interval %}{{ interval.unit_name }}{% endwith %}{% endif %}</div>
 {% elif current_category or interval == "none" and project.interval != "none" %}

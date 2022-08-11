@@ -178,7 +178,6 @@ class Project(Orderable, models.Model):
         max_length=100,
         help_text="The name of the thing to count: euros, minutes, kilometers, etc.",
     )
-    reverse_mode = models.BooleanField(default=False, help_text="If set, the quantity will be computed automatically")
     quick_add_quantities = models.TextField(
         blank=True,
         help_text="A list of quantities available as quick add buttons. Each quantity is separated by a comma. Example: 1,2,5,10,20,50,100",
@@ -195,9 +194,9 @@ class Project(Orderable, models.Model):
             ),
         ]
 
-    @cached_property
-    def reverse_mode(self):
-        return self.interval_quantity is None
+    @property
+    def has_interval_quantity(self):
+        return self.interval_quantity is not None
 
     def get_unique_fields(self):
         """List field names that are unique_together with `sort_order`."""
@@ -208,7 +207,7 @@ class Project(Orderable, models.Model):
 
     @property
     def short_description(self):
-        if self.reverse_mode:
+        if not self.has_interval_quantity:
             if not self.has_interval:
                 return f"Cumulative amount, in {self.quantity_name}"
             return f"{self.get_interval_display().capitalize()} {self.quantity_name}"
@@ -394,7 +393,7 @@ class Project(Orderable, models.Model):
                     result[sub_category][key] for sub_category in category.get_children()
                 )
 
-            if is_root and not alltime and not no_details and not self.reverse_mode:
+            if is_root and not alltime and not no_details and self.has_interval_quantity:
                 res_cat |= {
                     "available": interval_quantity - res_cat["used"],
                     "really_available": (

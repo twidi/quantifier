@@ -143,7 +143,7 @@ def quantity_in_category_form(context, category=None, next_category=None, initia
 
 
 @register.inclusion_tag("quantity_form_include.html", takes_context=True)
-def quantity_edit_form(context, quantity, next_category=None):
+def quantity_edit_form(context, quantity, next_category=None, next_with_children=True):
     category = quantity.category
     return {
         "date": context.get("date"),
@@ -151,18 +151,19 @@ def quantity_edit_form(context, quantity, next_category=None):
         "interval": context.get("interval"),
         "category": category,
         "next": f"category:{next_category.id}" if next_category else None,
+        "next_with_children": next_with_children,
         "form": QuantityEditForm(instance=quantity),
     }
 
 
 @register.inclusion_tag("quantity_delete_form_include.html", takes_context=True)
-def quantity_delete_form(context, quantity, next_category=None):
-    category = quantity.category
+def quantity_delete_form(context, quantity, next_category=None, next_with_children=True):
     return {
         "date": context.get("date"),
         "date_str": context.get("date_str"),
         "interval": context.get("interval"),
         "next": f"category:{next_category.id}" if next_category else None,
+        "next_with_children": next_with_children,
         "form": QuantityDeleteForm(instance=quantity),
     }
 

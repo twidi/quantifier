@@ -507,6 +507,10 @@ class Category(Orderable, MPTTModel):
         queryset._result_cache = self.project.get_siblings_categories(self, include_it=include_self)
         return queryset
 
+    @cached_property
+    def has_children(self):
+        return bool(self.get_children())
+
     def get_absolute_url(self):
         return reverse(
             "category_details",

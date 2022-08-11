@@ -32,13 +32,27 @@
 
 
     <div class="d-flex flex-column container-sm quantities-list-container">
-        <div class="text-end mt-2 mb-2">
-            <a href="{{ main_object.get_absolute_url }}?date={{ date_str }}&interval={{ interval }}">Back to {% if current_category %}category{% else %}project{% endif %}</a>
+
+        <div class="d-flex justify-content-between align-items-center m-2">
+            {% if current_category and current_category.has_children %}
+                <a class="d-flex align-items-center" href="{{ request.path }}?date={{ date_str }}&interval={{ interval }}{% if with_children %}&with-children=0{% endif %}">
+                    <span class="form-check form-switch position-relative mb-0" style="top: 2px;">
+                        <input class="form-check-input" type="checkbox" role="switch" id="include-sub-categories"{% if with_children %} checked{% endif %}>
+                    </span>
+                    Include sub-categories
+                </a>
+            {% else %}
+                <span></span>
+            {% endif %}
+
+            <div class="text-end">
+                <a href="{{ main_object.get_absolute_url }}?date={{ date_str }}&interval={{ interval }}">Back to {% if current_category %}category{% else %}project{% endif %}</a>
+            </div>
         </div>
 
         {% if not page_obj %}
             <div class="callout callout-info mt-0">
-                No {{ project.quantity_name }} entered for this period.
+                Nothing entered for this period.
             </div>
         {% else %}
 
@@ -74,9 +88,9 @@
                                         </summary>
                                         <div class="card details-dropdown details-on-right">
                                             <div class="card-body">
-                                                {% quantity_edit_form quantity=quantity next_category=current_category %}
+                                                {% quantity_edit_form quantity=quantity next_category=current_category next_with_children=with_children %}
                                                 <hr />
-                                                {% quantity_delete_form quantity=quantity next_category=current_category %}
+                                                {% quantity_delete_form quantity=quantity next_category=current_category next_with_children=with_children %}
                                             </div>
                                         </div>
                                     </details>

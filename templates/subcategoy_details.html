@@ -48,7 +48,7 @@
 
             {% if is_parent_category %}
                 {% with summed=summed_quantities|dict_value:category %}
-                    {% if summed.has_children %}
+                    {% if category.has_children %}
                         {% if summed.self_used or summed.self_exptected %}
                             {% if summed.self_used != summed.used or summed.self_expected != summed.expected %}
                                 <li class="list-group-item sub-category-item {{ common_classes }} px-0">

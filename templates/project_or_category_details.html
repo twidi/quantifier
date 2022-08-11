@@ -126,7 +126,7 @@
 
         {% if current_category %}
             {% with summed=summed_quantities|dict_value:category %}
-                {% if summed.has_children %}
+                {% if current_category.has_children %}
                     {% if summed.self_used or summed.self_exptected %}
                         {% if summed.self_used != summed.used or summed.self_expected != summed.expected %}
                             <div class="main-category-container">

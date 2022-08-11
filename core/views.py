@@ -450,6 +450,8 @@ class QuantitiesBaseView(ProjectOrCategoryDetailsMixin, ListView):
 
     @cached_property
     def categories(self):
+        if self.request.GET.get("with-children", "1") == "0":
+            return [self.category]
         return self.category.get_descendants(include_self=True)
 
     @cached_property
@@ -467,7 +469,7 @@ class QuantitiesBaseView(ProjectOrCategoryDetailsMixin, ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs, with_children=self.request.GET.get("with-children", "1") != "0")
         if paginator := context.get("paginator"):
             context["elided_pages"] = paginator.get_elided_page_range(
                 number=context["page_obj"].number,
@@ -520,6 +522,9 @@ class QuantityFormViewMixin(OwnedCategoryMixin):
             url = self.category.project.get_quantities_url()
 
         url += f"?date={self.date}" + (f"&interval={self.interval}" if with_interval else "")
+
+        if self.request.GET.get('with-children') == "0":
+            url += "&with-children=0"
 
         return url
 

@@ -1,6 +1,6 @@
 {% load core_utils crispy_forms_tags %}
 {% include "bootstrap5/errors.html" %}
-<form class="d-flex flex-column gap-2 small small-form" action="{{ form.instance.get_delete_url }}?date={{ date_str }}&interval={{ interval }}{% if next %}&next={{ next }}{% endif %}" method="post">
+<form class="d-flex flex-column gap-2 small small-form" action="{{ form.instance.get_delete_url }}?date={{ date_str }}&interval={{ interval }}{% if next %}&next={{ next }}{% endif %}{% if not next_with_children %}&with-children=0{% endif %}" method="post">
     {% csrf_token %}
     <button type="submit" class="btn btn-sm btn-danger">Delete quantity</button>
     {% for field in form %}

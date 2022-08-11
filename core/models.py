@@ -381,7 +381,13 @@ class Project(Orderable, models.Model):
             if not alltime and not no_details:
                 keys.extend(["used_not_expected", "expected", "unexpected", "expected_not_used"])
 
-                if expected_quantity:
+                if (
+                    expected_quantity
+                    or not (
+                        nb_children_with_expected := len([child for child in children if child.expected_quantity])
+                    )
+                    or nb_children_with_expected != len(children)
+                ):
                     for key in ["used_not_expected", "expected"]:
                         res_cat[key] = res_cat[f"self_{key}"]
 

@@ -20,8 +20,9 @@
 {% else %}
     {% if summed_quantities.really_available >= 0 %}<span class="small">Left</span>{% else %}<span class="small text-danger">Excess</span>{% endif %}
     <span class="text-center">{{ summed_quantities.really_available }} {{ project.quantity_name }}</span>
-    <div class="small text-muted text-end pt-1">
-        / {{ summed_quantities.total_unexpected }}
+    <div class="small text-muted text-end d-flex align-items-baseline justify-content-end">
+        <span class="text-muted small align-self-center ms-2">/</span>
+        <span class="text-muted small">{{ summed_quantities.total_unexpected }}</span>
         <details class="no-marker as-dropdown d-inline-block text-start" data-group="main-amount-info">
             <summary class="text-muted p-2" title="What are these numbers?">
                 <span class="details-toggle">

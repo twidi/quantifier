@@ -150,6 +150,7 @@ class CategoryCreateForm(CategoryBaseForm):
         self.fields["expected_quantity"].widget.attrs[
             "placeholder"
         ] = f"Planned {parent_category.project.quantity_name}"
+        self.fields["expected_quantity"].help_text = "If set, should include planned amounts of sub-categories."
 
 
 class CategoryEditForm(CategoryBaseForm):
@@ -170,6 +171,7 @@ class CategoryEditForm(CategoryBaseForm):
         self.fields["expected_quantity"].widget.attrs[
             "placeholder"
         ] = f"Planned {self.instance.project.quantity_name}"
+        self.fields["expected_quantity"].help_text = "If set, should include planned amounts of sub-categories."
 
     def clean_parent(self):
         return self.cleaned_data["parent"] or self.instance.project.root_category

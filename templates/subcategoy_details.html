@@ -1,9 +1,9 @@
 {% load i18n core_utils %}
 {% with children=category.get_children %}
     {% if children %}
-        <ul class="list-group list-group-flush mt-3">
+        <ul class="list-group list-group-flush mt-1">
             {% for sub_category in children %}
-                {% with common_classes="d-flex justify-content-between align-items-center gap-2" %}
+                {% with summed=summed_quantities|dict_value:sub_category common_classes="d-flex justify-content-between align-items-center gap-2" %}
                     {% if sub_category.is_leaf_node %}
                         <li class="list-group-item sub-category-item {{ common_classes }} px-0">
                     {% else %}
@@ -18,9 +18,17 @@
                     <span class="flex-grow-1 flex-shrink-1 text-truncate">
                         {{ sub_category.name }}
                     </span>
-                    <details class="no-marker as-dropdown category-forms-container focus-first-input scroll-into-view flex-shrink-0" data-group="category_forms" data-scroll-into-view=".card">
+                    <details class="no-marker as-dropdown category-forms-container focus-first-input scroll-into-view flex-shrink-0" data-group="category_forms" data-scroll-into-view=".card" style="--category-visible-level:{% with current_category_level=current_category.level|default:0 %}{{ sub_category.level|sub:current_category_level|sub:2 }}{% endwith %}">
                         <summary class="d-flex gap-3 align-items-center" title="Click to add a quantity, a sub-category or edit/delete this category">
-                            <span class="text-end category-amounts">{% include "category_amounts_include.html" with category=sub_category %}</span>
+                            <span class="text-end d-flex align-items-baseline justify-content-end">
+                                {% with summed=summed_quantities|dict_value:sub_category %}
+                                    {% if summed.expected %}
+                                        <span class="{% if summed.used > summed.expected %}text-danger fw-bold{% endif %}">{{summed.used }}</span><span class="text-muted small align-self-center ms-1">/</span><span class="text-muted small">{{ summed.expected }}</span>
+                                    {% else %}
+                                        {{summed.used }}
+                                    {% endif %}
+                                {% endwith %}
+                            </span>
                             <span class="details-toggle">
                                 {% icon "circle-plus" classes="details-toggle-open" %}
                                 {% icon "circle-xmark" classes="details-toggle-close" %}

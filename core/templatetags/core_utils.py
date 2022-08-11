@@ -211,3 +211,8 @@ def icon_sm(name, style="light", classes=None):
 @register.simple_tag
 def icon_xs(name, style="light", classes=None):
     return icon(name, style, "xs", classes)
+
+
+@register.filter
+def sub(value, arg):
+    return value - arg

@@ -25,10 +25,6 @@
         .main-category-container > .card > .card-body {
             position: relative;
         }
-        .main-category-container > card > .card-body .main-category-amounts > div:first-child {
-            font-size: 1.6rem;
-            margin-bottom: 0.5rem;
-        }
         .main-category-container > card > .card-body > .list-group {
             margin-bottom: calc(-1 * var(--bs-list-group-item-padding-y));
         }
@@ -40,10 +36,9 @@
         }
         .list-group-item.sub-category-item  {
             --bs-list-group-item-padding-y: 0.25rem;
-            position: static;
         }
         .list-group .list-group {
-            padding-left: 1.5em;
+            padding-left: 1.5rem;
             margin-top: var(--bs-list-group-item-padding-y);
         }
         .list-group .list-group .list-group-item {
@@ -61,10 +56,6 @@
             font-weight: normal;
             position: absolute;
             left: -1.3ex;
-        }
-
-        .list-group-item .category-amounts {
-            line-height: 1.2;
         }
 
         #main-categories .card-header .card.category-forms {
@@ -127,7 +118,15 @@
                         </details>
                     </div>
                     <div class="card-body">
-                        <div class="text-center main-category-amounts">{% include "category_amounts_include.html" with category=category main=True %}</div>
+                        <div class="text-end d-flex align-items-baseline fs-4 justify-content-center">
+                            {% with summed=summed_quantities|dict_value:category %}
+                                {% if summed.expected %}
+                                    <span class="{% if summed.used > summed.expected %}text-danger fw-bold{% endif %}">{{summed.used }}</span><span class="text-muted small align-self-center ms-2">/</span><span class="text-muted small">{{ summed.expected }}</span>
+                                {% else %}
+                                    {{summed.used }}
+                                {% endif %}
+                            {% endwith %}
+                        </div>
                         {% include "subcategoy_details.html" with category=category %}
                     </div>
                 </div>

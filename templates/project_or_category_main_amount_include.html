@@ -2,10 +2,29 @@
 <div class="main-amount fs-2 text-muted m-3 d-flex flex-column justify-content-center {{ css_classes }}">
 {% with interval=interval|default:project.interval %}
 
-{% if not project.has_interval_quantity %}
+{% if not current_category and not project.has_interval_quantity %}
     <span class="text-center">{{ summed_quantities.used }} {{ project.quantity_name }}</span>
     <div class="small text-muted text-end pt-1">{% if interval == "none" %}(all time){% else %}this {% with interval=interval|interval %}{{ interval.unit_name }}{% endwith %}{% endif %}</div>
-{% elif current_category or interval == "none" and project.interval != "none" %}
+{% elif current_category %}
+    {% if summed_quantities.expected and summed_quantities.used > summed_quantities.expected %}
+        <span class="small text-danger">Excess</span>
+        <span class="text-center d-flex gap-2">{{ summed_quantities.used }} {{ project.quantity_name }}</span>
+    {% else %}
+        <span class="small">Used</span>
+        <span class="text-center">{{ summed_quantities.used }} {{ project.quantity_name }}</span>
+    {% endif %}
+    {% if summed_quantities.expected %}
+        <div class="small text-muted text-end d-flex align-items-baseline justify-content-end">
+            <span class="text-muted align-self-center ms-2">/</span>
+            <span class="text-muted mt-1">
+                {{ summed_quantities.expected }}
+                planned{% if interval != "none" %} this {% with interval=interval|interval %}{{ interval.unit_name }}{% endwith %}{% endif %}
+            </span>
+        </div>
+    {% else %}
+        <div class="small text-muted text-end pt-1">{% if interval == "none" %}(all time){% else %}this {% with interval=interval|interval %}{{ interval.unit_name }}{% endwith %}{% endif %}</div>
+    {% endif %}
+{% elif interval == "none" and project.interval != "none" %}
     <span class="small">Used</span>
     <span class="text-center">{{ summed_quantities.used }} {{ project.quantity_name }}</span>
     <div class="small text-muted text-end pt-1">{% if interval == "none" %}(all time){% else %}this {% with interval=interval|interval %}{{ interval.unit_name }}{% endwith %}{% endif %}</div>
@@ -26,8 +45,8 @@
         <span class="text-center d-flex gap-2"><span class="text-danger fs-4">-</span>{{ summed_quantities.really_available|mul:-1 }} {{ project.quantity_name }}</span>
     {% endif %}
     <div class="small text-muted text-end d-flex align-items-baseline justify-content-end">
-        <span class="text-muted small align-self-center ms-2">/</span>
-        <span class="text-muted small">{{ summed_quantities.total_unexpected }}</span>
+        <span class="text-muted align-self-center ms-2">/</span>
+        <span class="text-muted">{{ summed_quantities.total_unexpected }}</span>
         <details class="no-marker as-dropdown d-inline-block text-start" data-group="main-amount-info">
             <summary class="text-muted p-2" title="What are these numbers?">
                 <span class="details-toggle">

@@ -31,7 +31,7 @@ class User(AbstractUser):
 
     @cached_property
     def cached_projects(self):
-        queryset = self.projects.all().annotate(nb_categories=Count("categories")).order_by('sort_order')
+        queryset = self.projects.all().annotate(nb_categories=Count("categories")).order_by("sort_order")
         queryset._fetch_all()
         return queryset
 
@@ -181,7 +181,13 @@ class Project(Orderable, models.Model):
     quick_add_quantities = models.TextField(
         blank=True,
         help_text="A list of quantities available as quick add buttons. Each quantity is separated by a comma. Example: 1,2,5,10,20,50,100",
-        validators=[RegexValidator(re.compile(r'^(\s*\d+\s*,)*\s*\d+\s*$'), message="Enter only digits separated by commas.", code="invalid")],
+        validators=[
+            RegexValidator(
+                re.compile(r"^(\s*\d+\s*,)*\s*\d+\s*$"),
+                message="Enter only digits separated by commas.",
+                code="invalid",
+            )
+        ],
     )
 
     class Meta(Orderable.Meta):
@@ -273,13 +279,13 @@ class Project(Orderable, models.Model):
     @cached_property
     def root_category(self):
         self.cached_categories
-        return self.__dict__['root_category']
+        return self.__dict__["root_category"]
 
     @cached_property
     def cached_categories(self):
         categories = self.categories.all()
         categories._fetch_all()
-        self.__dict__['root_category'] = get_cached_trees(categories)[0]
+        self.__dict__["root_category"] = get_cached_trees(categories)[0]
         return categories
 
     def get_category(self, category_pk):
@@ -335,22 +341,21 @@ class Project(Orderable, models.Model):
         if date:
             if not alltime:
                 start_date, end_date = get_dates_interval(date, interval)
-                sum_kwargs["filter"] = Q(quantities__datetime__gte=start_date) & Q(
-                    quantities__datetime__lte=end_date
-                )
+                sum_kwargs["filter"] = Q(quantities__datetime__gte=start_date) & Q(quantities__datetime__lte=end_date)
 
-        summed_values = dict(self.categories.annotate(summed_values=Sum("quantities__value", default=0, **sum_kwargs)).values_list('id', 'summed_values'))
-        result = {
-            category: {"self_used": summed_values[category.id]}
-            for category in self.cached_categories
-        }
+        summed_values = dict(
+            self.categories.annotate(summed_values=Sum("quantities__value", default=0, **sum_kwargs)).values_list(
+                "id", "summed_values"
+            )
+        )
+        result = {category: {"self_used": summed_values[category.id]} for category in self.cached_categories}
 
         def update_count(category, is_root=False):
             for sub_category in (children := category.get_children()):
                 update_count(sub_category)
 
             res_cat = result[category]
-            res_cat['has_children'] = bool(children)
+            res_cat["has_children"] = bool(children)
 
             interval_quantity = self.interval_quantity
             expected_quantity = category.expected_quantity
@@ -409,7 +414,6 @@ class Project(Orderable, models.Model):
 
 
 class CategoryQuerySet(OrderableQueryset, TreeQuerySet):
-
     def all(self):
         queryset = super().all()
         if self._result_cache is not None:

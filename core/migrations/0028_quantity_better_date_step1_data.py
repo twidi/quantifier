@@ -7,12 +7,8 @@ from django.db.models import F
 
 def copy_start_at_to_interval_start_date(apps, schema_editor):
     Quantity = apps.get_model("core", "Quantity")
-    Quantity.objects.filter(start_at__isnull=False).update(
-        interval_start_date=F("start_at")
-    )
-    Quantity.objects.filter(interval_start_date__isnull=True).update(
-        interval_start_date=datetime.now()
-    )
+    Quantity.objects.filter(start_at__isnull=False).update(interval_start_date=F("start_at"))
+    Quantity.objects.filter(interval_start_date__isnull=True).update(interval_start_date=datetime.now())
 
 
 class Migration(migrations.Migration):

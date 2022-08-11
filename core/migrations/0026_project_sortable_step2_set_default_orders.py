@@ -4,7 +4,7 @@ from django.db import migrations
 
 
 def set_default_orders(apps, schema_editor):
-    User = apps.get_model('core', 'User')
+    User = apps.get_model("core", "User")
     for user in User.objects.all():
         for index, project in enumerate(user.projects.all().order_by("id")):
             project.sort_order = index + 1

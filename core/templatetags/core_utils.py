@@ -10,7 +10,12 @@ from core.forms import (
     CategoryCreateForm,
     CategoryEditForm,
     CategoryReorderForm,
-    CategoryDeleteForm, ProjectCreateForm, ProjectEditForm, ProjectDeleteForm, ProjectReorderForm, QuantityEditForm,
+    CategoryDeleteForm,
+    ProjectCreateForm,
+    ProjectEditForm,
+    ProjectDeleteForm,
+    ProjectReorderForm,
+    QuantityEditForm,
     QuantityDeleteForm,
 )
 from core.models import Intervals, get_interval_str
@@ -58,9 +63,7 @@ def project_form(context, project=None, next_category=None):
         "date_str": context.get("date_str"),
         "interval": context.get("interval"),
         "next": f"category:{next_category.id}" if next_category else None,
-        "form": ProjectCreateForm()
-        if project is None
-        else ProjectEditForm(instance=project),
+        "form": ProjectCreateForm() if project is None else ProjectEditForm(instance=project),
     }
 
 
@@ -123,7 +126,9 @@ def category_delete_form(context, category, next_category=None):
 
 @register.inclusion_tag("quantity_form_include.html", takes_context=True)
 def quantity_in_category_form(context, category=None, next_category=None, initial_value=None):
-    min_date, max_date, initial_date = QuantityInCategoryForm.get_date_args(category.project, context.get("date"), context.get("interval") or category.project.interval)
+    min_date, max_date, initial_date = QuantityInCategoryForm.get_date_args(
+        category.project, context.get("date"), context.get("interval") or category.project.interval
+    )
     return {
         "date": context.get("date"),
         "date_str": context.get("date_str"),
@@ -136,7 +141,7 @@ def quantity_in_category_form(context, category=None, next_category=None, initia
             max_date=max_date,
             initial={
                 "value": initial_value if initial_value and initial_value > 0 else None,
-                "datetime": initial_date
+                "datetime": initial_date,
             },
         ),
     }

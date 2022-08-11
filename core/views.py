@@ -26,7 +26,12 @@ from .forms import (
     QuantityInProjectForm,
     QuantityInCategoryForm,
     CategoryDeleteForm,
-    ProjectDeleteForm, ProjectCreateForm, ProjectEditForm, ProjectReorderForm, QuantityEditForm, QuantityDeleteForm,
+    ProjectDeleteForm,
+    ProjectCreateForm,
+    ProjectEditForm,
+    ProjectReorderForm,
+    QuantityEditForm,
+    QuantityDeleteForm,
 )
 from .models import Project, Category, Quantity, Intervals, get_dates_interval, get_prev_and_next_dates_interval
 from . import signals
@@ -124,15 +129,19 @@ class HomeView(DateAndIntervalMixin, TemplateView):
                         project.summed_quantities = project.get_summed_quantities(self.date, self.interval)
                     else:
                         project.summed_quantities = project.get_summed_quantities()
-                    if not project.has_interval or not self.interval or Intervals(self.interval) <= Intervals(project.interval):
-                        min_date, max_date, initial_date = QuantityInProjectForm.get_date_args(project, self.date, project.interval)
+                    if (
+                        not project.has_interval
+                        or not self.interval
+                        or Intervals(self.interval) <= Intervals(project.interval)
+                    ):
+                        min_date, max_date, initial_date = QuantityInProjectForm.get_date_args(
+                            project, self.date, project.interval
+                        )
                         project.quick_add_form = QuantityInProjectForm(
                             project=project, min_date=min_date, max_date=max_date, initial={"datetime": initial_date}
                         )
                     else:
-                        project.no_quick_form_reason = (
-                            f"must be in {Intervals(project.interval).unit_name} view{ ' (or less)' if project.interval != 'daily' else ''} to add quantity"
-                        )
+                        project.no_quick_form_reason = f"must be in {Intervals(project.interval).unit_name} view{ ' (or less)' if project.interval != 'daily' else ''} to add quantity"
                 else:
                     project.summed_quantities = {}
                     project.no_quick_form_reason = "categories not configured yet"
@@ -180,7 +189,6 @@ class OwnedCategoryMixin(OwnedProjectMixin):
 
 
 class ProjectOrCategoryDetailsMixin:
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.project.has_interval or self.interval not in (None, Intervals.none):
@@ -201,7 +209,6 @@ class ProjectDetailsView(OwnedProjectMixin, ProjectOrCategoryDetailsBaseView):
 
     def get_object(self):
         return self.project
-
 
 
 class CategoryDetailsView(OwnedCategoryMixin, ProjectOrCategoryDetailsBaseView):
@@ -281,7 +288,7 @@ class ProjectReorderView(OwnedProjectMixin, ProjectFormViewMixin, UpdateView):
     template_name = "project_reorder_form.html"
 
     def get_form_kwargs(self):
-        return super().get_form_kwargs() | {'user': self.request.user}
+        return super().get_form_kwargs() | {"user": self.request.user}
 
 
 class CategoryFormViewMixin:
@@ -372,8 +379,8 @@ class QuantityCreateBaseView(CreateView):
 
     def get_form_kwargs(self):
         min_date, max_date, initial_date = QuantityInProjectForm.get_date_args(self.project, self.date, self.interval)
-        result = super().get_form_kwargs() | {'min_date': min_date, 'max_date': max_date}
-        result['initial']['datetime'] = initial_date
+        result = super().get_form_kwargs() | {"min_date": min_date, "max_date": max_date}
+        result["initial"]["datetime"] = initial_date
         return result
 
     def get_context_data(self, **kwargs):
@@ -458,7 +465,9 @@ class QuantitiesBaseView(ProjectOrCategoryDetailsMixin, ListView):
     def prepared_categories(self):
         categories = {category.id: category for category in self.project.cached_categories}
         for category in categories.values():
-            category.in_between_ancestors = tuple(category.get_ancestors(include_self=False))[self.category.level+1:]
+            category.in_between_ancestors = tuple(category.get_ancestors(include_self=False))[
+                self.category.level + 1 :
+            ]
         return categories
 
     @property
@@ -482,7 +491,6 @@ class QuantitiesBaseView(ProjectOrCategoryDetailsMixin, ListView):
 
 
 class ProjectQuantitiesView(OwnedProjectMixin, QuantitiesBaseView):
-
     @cached_property
     def category(self):
         return self.project.root_category
@@ -495,7 +503,6 @@ class CategoryQuantitiesView(OwnedCategoryMixin, QuantitiesBaseView):
 class QuantityFormViewMixin(OwnedCategoryMixin):
     model = Quantity
     pk_url_kwarg = "quantity_pk"
-
 
     def get_queryset(self):
         return self.category.quantities.all()
@@ -523,7 +530,7 @@ class QuantityFormViewMixin(OwnedCategoryMixin):
 
         url += f"?date={self.date}" + (f"&interval={self.interval}" if with_interval else "")
 
-        if self.request.GET.get('with-children') == "0":
+        if self.request.GET.get("with-children") == "0":
             url += "&with-children=0"
 
         return url

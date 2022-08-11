@@ -131,5 +131,5 @@ urlpatterns = [
 if settings.DEBUG:
     urlpatterns += [
         re_path(r"^static/(?P<path>.*)$", static_views.serve),
-        path('__debug__/', include('debug_toolbar.urls')),
+        path("__debug__/", include("debug_toolbar.urls")),
     ]

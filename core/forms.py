@@ -40,9 +40,9 @@ class ProjectBaseForm(ModelForm):
         self.helper.form_tag = False
 
         for field in self.Meta.fields:
-            if field == 'interval':
+            if field == "interval":
                 self.fields[field].widget.attrs.update({"class": "form-select form-select-sm"})
-            elif field == 'description':
+            elif field == "description":
                 self.fields["description"].widget.attrs.update(
                     {"class": "form-control form-control-sm auto-reduce", "rows": 5}
                 )
@@ -289,8 +289,16 @@ class QuantityBaseForm(ModelForm):
 
     def clean_datetime(self):
         date = self.cleaned_data["datetime"]
-        if self.project.has_interval and date and self.min_date and self.max_date and not (self.min_date.replace(tzinfo=date.tzinfo) <= date <= self.max_date.replace(tzinfo=date.tzinfo)):
-            raise ValidationError(f"Date must be between {self.min_date.date()} and {self.max_date()} (both inclusive)")
+        if (
+            self.project.has_interval
+            and date
+            and self.min_date
+            and self.max_date
+            and not (self.min_date.replace(tzinfo=date.tzinfo) <= date <= self.max_date.replace(tzinfo=date.tzinfo))
+        ):
+            raise ValidationError(
+                f"Date must be between {self.min_date.date()} and {self.max_date()} (both inclusive)"
+            )
         return date
 
 
@@ -362,12 +370,11 @@ class QuantityInCategoryForm(QuantityBaseForm):
 
 
 class QuantityEditForm(QuantityInCategoryForm):
-
     def get_categories(self):
         return self.project.visible_categories
 
     def __init__(self, *args, **kwargs):
-        super().__init__(category=kwargs['instance'].category, min_date=None, max_date=None, *args, **kwargs)
+        super().__init__(category=kwargs["instance"].category, min_date=None, max_date=None, *args, **kwargs)
 
 
 class QuantityDeleteForm(ModelForm):

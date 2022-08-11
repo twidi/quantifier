@@ -50,7 +50,7 @@
                                                 {% icon "xmark" classes="details-toggle-close fa-fw" %}
                                             </span>
                                         </summary>
-                                        <div class="card">
+                                        <div class="card details-dropdown">
                                             <div class="card-body d-flex flex-column gap-2 small small-form">
                                                 {% include "quantity_form_more_fields_include.html" %}
                                             </div>
@@ -67,15 +67,7 @@
                         {% endwith %}
 
                         {% if project.nb_categories %}
-                            {% include "project_or_category_main_amount_include.html" with summed_quantities=project.summed_quantities|dict_value:project.root_category css_classes="flex-grow-1"%}
-                            {% if project.has_interval and not project.reverse_mode %}
-                                {% if not interval or interval == project.interval %}
-                                    <details class="details small w-100 scroll-into-view">
-                                        <summary class="ps-2">Details</summary>
-                                        {% include "project_or_category_amounts_details_include.html" with summed_quantities=project.summed_quantities|dict_value:project.root_category css_classes="list-group-flush" %}
-                                    </details>
-                                {% endif %}
-                            {% endif %}
+                            {% include "project_or_category_main_amount_include.html" with summed_quantities=project.summed_quantities|dict_value:project.root_category css_classes="flex-grow-1 position-relative"%}
                         {% endif %}
                     </div>
 
@@ -100,7 +92,7 @@
                                 {% icon "circle-xmark" classes="details-toggle-close" %}
                             </span>
                         </summary>
-                        <div class="card large-details project-form-card fs-6 fw-normal">
+                        <div class="card details-dropdown large-details project-form-card fs-6 fw-normal">
                             <div class="card-body">
                                 {% project_form %}
                             </div>

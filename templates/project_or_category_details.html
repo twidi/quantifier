@@ -24,6 +24,7 @@
 
         .main-category-container > .card > .card-body {
             position: relative;
+            padding-bottom: 0.25rem;
         }
         .main-category-container > card > .card-body > .list-group {
             margin-bottom: calc(-1 * var(--bs-list-group-item-padding-y));
@@ -47,6 +48,9 @@
         .list-group .list-group .list-group-item:first-child {
             border-top-width: var(--bs-list-group-border-width);
         }
+        .list-group .list-group .list-group-item:last-child {
+            border-bottom: 0;
+        }
         .list-group-item.sub-category-item > details.sub-sub-categories > summary > span {
             position: relative;
         }
@@ -65,13 +69,6 @@
             margin-top: var(--bs-list-group-item-padding-y);
         }
 
-        #main-categories .main-category-container:first-child > .card > .card-body {
-            background: var(--bs-card-cap-bg);
-        }
-        #main-categories .main-category-container:first-child > .card .list-group  {
-            --bs-list-group-bg: transparent;
-        }
-
         #manage-quantities-button {
             width: 3.4rem;
             height: 3.4rem;
@@ -87,20 +84,6 @@
 
     {% with summed_quantities=project.summed_quantities %}
         <div id="main-categories" class="d-flex flex-wrap justify-content-center">
-
-        {% if project.has_interval and not project.reverse_mode %}
-            {% if not interval or interval == project.interval %}
-                <div class="main-category-container">
-                    <div class="card main-category">
-                        <div class="card-header h5 text-muted">Summary</div>
-                        <div class="card-body p-0" style>
-                            {% include "project_or_category_amounts_details_include.html" with summed_quantities=project.summed_quantities|dict_value:main_category css_classes="list-group-flush" %}
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
-        {% endif %}
-
 
         {% for category in categories %}
             <div class="main-category-container">
@@ -145,7 +128,7 @@
                                     {% icon "circle-xmark" classes="details-toggle-close" %}
                                 </span>
                             </summary>
-                            <div class="card category-forms fs-6 fw-normal">
+                            <div class="card details-dropdown category-forms fs-6 fw-normal">
                                 <div class="card-body">
                                     {% if category %}
                                         {% category_form project=project parent_category=category next_category=category %}

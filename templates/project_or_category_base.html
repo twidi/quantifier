@@ -11,6 +11,10 @@
         .main-amount {
             font-size: 3rem !important;
         }
+        .main-amount + details .callout {
+            max-width: 40em;
+            min-width: 20em;
+        }
         .amounts-details {
             min-width: 15em;
         }
@@ -54,10 +58,8 @@
         </details>
     {% endif %}
 
-    <div class="d-flex align-items-center flex-wrap gap-2">
-        <div class="d-flex justify-content-center align-content-center" style="flex-grow: 10">
-            {% include "project_or_category_main_amount_include.html" with summed_quantities=project.summed_quantities|dict_value:main_category %}
-        </div>
+    <div class="d-flex justify-content-center position-relative">
+        {% include "project_or_category_main_amount_include.html" with summed_quantities=project.summed_quantities|dict_value:main_category %}
     </div>
 
 {% endblock %}

@@ -77,6 +77,8 @@ class Intervals(str, enum.Enum):
             return 0
         if self == interval:
             return 1
+        if self > interval:
+            return 1 / interval.count_in(self, date)
         if self == Intervals.daily:
             if interval == Intervals.weekly:
                 return 7
@@ -87,6 +89,8 @@ class Intervals(str, enum.Enum):
         if self == Intervals.weekly:
             return Intervals.daily.count_in(interval, date) / 7
         if self == Intervals.monthly:
+            if interval == Intervals.yearly:
+                return 12
             return Intervals.daily.count_in(interval, date) / calendar.monthrange(date.year, date.month)[1]
         # if self == Intervals.yearly:
         return Intervals.daily.count_in(interval, date) / (365 + calendar.isleap(date.year))

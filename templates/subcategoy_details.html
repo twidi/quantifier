@@ -24,7 +24,7 @@
                             <span class="text-end d-flex align-items-baseline justify-content-end">
                                 {% with summed=summed_quantities|dict_value:sub_category %}
                                     {% if summed.expected %}
-                                        <span class="{% if summed.used > summed.expected %}{% if project.goal_mode %}text-success{% else %}text-danger{% endif %} fw-bold{% endif %}">{{summed.used }}</span><span class="text-muted small align-self-center ms-1">/</span><span class="text-muted small">{{ summed.expected }}</span>
+                                        <span class="{% if summed.used >= summed.expected %}{% if project.goal_mode %}text-success{% else %}text-danger{% endif %} fw-bold{% endif %}">{{summed.used }}</span><span class="text-muted small align-self-center ms-1">/</span><span class="text-muted small">{{ summed.expected }}</span>
                                     {% else %}
                                         {{summed.used }}
                                     {% endif %}

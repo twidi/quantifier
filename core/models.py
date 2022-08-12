@@ -425,6 +425,7 @@ class Project(Orderable, models.Model):
 
             if is_root and not alltime and not no_details and self.has_interval_quantity:
                 res_cat |= {
+                    "interval_quantity": interval_quantity,
                     "available": interval_quantity - res_cat["used"],
                     "really_available": (
                         really_available := interval_quantity

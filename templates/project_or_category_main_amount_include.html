@@ -43,11 +43,14 @@
 {% else %}
     {% if project.goal_mode and interval and interval|interval > project.interval|interval  %}
     <span class="text-center">{{ summed_quantities.used }} {{ project.quantity_name }}</span>
-    {% elif project.goal_mode and summed_quantities.really_available <= 0 %}
+    {% elif project.goal_mode and summed_quantities.available <= 0 %}
         <span class="small text-success">Goal reached</span>
         <span class="text-center">{{ summed_quantities.used }} {{ project.quantity_name }}</span>
+    {% elif project.goal_mode and summed_quantities.available >= 0 %}
+        <span class="small text-warning">Left</span>
+        <span class="text-center">{{ summed_quantities.available }} {{ project.quantity_name }}</span>
     {% elif summed_quantities.really_available >= 0 %}
-        <span class="small{% if project.goal_mode %} text-warning{% endif %}">Left</span>
+        <span class="small">Left</span>
         <span class="text-center">{{ summed_quantities.really_available }} {{ project.quantity_name }}</span>
     {% else %}
         <span class="small text-danger">Excess</span>
@@ -56,7 +59,7 @@
     <div class="small text-muted text-end d-flex align-items-baseline justify-content-end">
         <span class="text-muted align-self-center ms-2">/</span>
         <span class="text-muted">
-            {{ summed_quantities.total_unexpected }}
+            {% if project.goal_mode %}{{ summed_quantities.interval_quantity }}{% else %}{{ summed_quantities.total_unexpected }}{% endif %}
             {% if interval == "none" %}(all time){% else %}this {% with interval=interval|interval %}{{ interval.unit_name }}{% endwith %}{% endif %}
         </span>
         {% if not project.goal_mode %}

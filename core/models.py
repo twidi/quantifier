@@ -101,6 +101,12 @@ class Intervals(str, enum.Enum):
     def __le__(self, other):
         return OrderedIntervals[self] <= OrderedIntervals[other]
 
+    def __gt__(self, other):
+        return OrderedIntervals[self] > OrderedIntervals[other]
+
+    def __ge__(self, other):
+        return OrderedIntervals[self] >= OrderedIntervals[other]
+
 
 OrderedIntervals = {interval.value: index for index, interval in enumerate(Intervals)}
 
@@ -168,15 +174,21 @@ class Project(Orderable, models.Model):
         choices=Intervals.as_choices(),
         default=Intervals.none.value,
     )
+    quantity_name = models.CharField(
+        max_length=100,
+        help_text="The name of the thing to count: euros, minutes, kilometers, etc.",
+    )
     interval_quantity = models.IntegerField(
         null=True,
         blank=True,
         verbose_name="Limit quantity",
         help_text="The quantity that will be reset at the beginning of each day, week, month or year (or never if no interval)",
     )
-    quantity_name = models.CharField(
-        max_length=100,
-        help_text="The name of the thing to count: euros, minutes, kilometers, etc.",
+    goal_mode = models.BooleanField(
+        default=False,
+        verbose_name="Goal mode",
+        help_text="By default the limit quantity (and planned amounts in categories) are a maximum not to be exceeded. "
+                  "By checking this, the behavior is inverted: these values are a goal to reach, and can be exceeded.",
     )
     quick_add_quantities = models.TextField(
         blank=True,
@@ -215,10 +227,18 @@ class Project(Orderable, models.Model):
     def short_description(self):
         if not self.has_interval_quantity:
             if not self.has_interval:
+                if self.goal_mode:
+                    return f"All time goal, in {self.quantity_name}"
                 return f"Cumulative amount, in {self.quantity_name}"
+            if self.goal_mode:
+                return f"{self.get_interval_display().capitalize()} goal, in {self.quantity_name}"
             return f"{self.get_interval_display().capitalize()} {self.quantity_name}"
         if not self.has_interval:
+            if self.goal_mode:
+                return f"All time goal of {self.interval_quantity} {self.quantity_name}"
             return f"Total amount of {self.interval_quantity} {self.quantity_name}"
+        if self.goal_mode:
+            return f"{self.get_interval_display().capitalize()} goal of {self.interval_quantity} {self.quantity_name}"
         return f"{self.get_interval_display().capitalize()} amount of {self.interval_quantity} {self.quantity_name}"
 
     def save(self, *args, **kwargs):
@@ -328,7 +348,6 @@ class Project(Orderable, models.Model):
     def get_summed_quantities(
         self, date: Optional[datetime.date] = None, interval: Optional[Intervals] = None
     ) -> dict[Category, dict[str, int]]:
-        """Return a dict with as key the category id, and as value, the sum of all quantities in the category."""
         sum_kwargs = {}
         if not self.has_interval and not interval:
             interval = Intervals.none

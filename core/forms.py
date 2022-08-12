@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import NamedTuple
 
 from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Field, Layout
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm, ChoiceField, Select, BooleanField, TextInput
 from django.utils.safestring import mark_safe
@@ -24,8 +25,9 @@ class ProjectBaseForm(ModelForm):
             "name",
             "description",
             "interval",
-            "interval_quantity",
             "quantity_name",
+            "interval_quantity",
+            "goal_mode",
             "quick_add_quantities",
         ]
 
@@ -39,6 +41,13 @@ class ProjectBaseForm(ModelForm):
         self.helper.wrapper_class = "mb-0"
         self.helper.form_tag = False
 
+        layout_fields = []
+        for field in self.fields:
+            if field == 'goal_mode':
+                field = Field(field, wrapper_class="form-switch")
+            layout_fields.append(field)
+        self.helper.layout = Layout(*layout_fields)
+
         for field in self.Meta.fields:
             if field == "interval":
                 self.fields[field].widget.attrs.update({"class": "form-select form-select-sm"})
@@ -46,8 +55,10 @@ class ProjectBaseForm(ModelForm):
                 self.fields["description"].widget.attrs.update(
                     {"class": "form-control form-control-sm auto-reduce", "rows": 5}
                 )
-            else:
+            elif field != "goal_mode":
                 self.fields[field].widget.attrs.update({"class": "form-control form-control-sm"})
+
+
 
 
 class ProjectCreateForm(ProjectBaseForm):

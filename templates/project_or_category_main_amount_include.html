@@ -63,7 +63,7 @@
             {% if interval == "none" %}(all time){% else %}this {% with interval=interval|interval %}{{ interval.unit_name }}{% endwith %}{% endif %}
         </span>
         {% if not project.goal_mode %}
-        <details class="no-marker as-dropdown d-inline-block text-start" data-group="main-amount-info">
+        <details class="no-marker as-dropdown with-backdrop d-inline-block text-start" data-group="main-amount-info">
             <summary class="text-muted p-2" title="What are these numbers?">
                 <span class="details-toggle">
                     {% icon "circle-question" classes="details-toggle-open" %}

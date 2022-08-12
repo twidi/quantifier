@@ -102,7 +102,7 @@
             left: 50% !important;
             right: auto;
             transform: translate(-50%, 0);
-            z-index: 5;
+            z-index: var(--zindex, 5);
             margin-left: calc(var(--category-visible-level, 0) * -0.75rem);
         }
         details.as-dropdown > .card.details-on-right {
@@ -119,6 +119,14 @@
         details.as-dropdown > .card > .card-body {
             --bs-card-spacer-y: 0.5rem;
             --bs-card-spacer-x: 0.5rem;
+        }
+
+        details.as-dropdown.with-backdrop[open] > summary:before {
+            content: "";
+            position: fixed;
+            inset: 0 0 0 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: calc(var(--zindex, 5) - 1);
         }
 
         details[open] > summary > .details-toggle > .details-toggle-open, details:not([open]) > summary > .details-toggle > .details-toggle-close {

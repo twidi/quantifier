@@ -21,15 +21,33 @@
                     </span>
                     <details class="no-marker as-dropdown category-forms-container focus-first-input scroll-into-view flex-shrink-0" data-group="category_forms" data-scroll-into-view=".card" style="--category-visible-level:{% with current_category_level=current_category.level|default:0 %}{{ sub_category.level|sub:current_category_level|sub:2 }}{% endwith %}">
                         <summary class="d-flex gap-3 align-items-center" title="Click to add a quantity, a sub-category or edit/delete this category">
-                            <span class="text-end d-flex align-items-baseline justify-content-end">
-                                {% with summed=summed_quantities|dict_value:sub_category %}
-                                    {% if summed.expected %}
-                                        <span class="{% if summed.used >= summed.expected %}{% if project.goal_mode %}text-success{% else %}text-danger{% endif %} fw-bold{% endif %}">{{summed.used }}</span><span class="text-muted small align-self-center ms-1">/</span><span class="text-muted small">{{ summed.expected }}</span>
-                                    {% else %}
+
+                        {% with summed=summed_quantities|dict_value:sub_category %}
+                            <div class="fs-6 text-end">
+                                {% if not summed.expected %}
+                                    {{summed.used }}
+                                {% else %}
+                                    {% if summed.expected and not project.goal_mode and summed.used_not_expected %}
                                         {{summed.used }}
+                                        <div class="small lh-1">
                                     {% endif %}
-                                {% endwith %}
-                            </span>
+
+                                    <div class="d-flex align-items-baseline justify-content-center">
+                                        {% if not project.goal_mode and summed.used_not_expected %}
+                                            {{ summed.used_not_expected }} +&nbsp;
+                                            <span class="{% if project.goal_mode %}text-success{% else %}text-danger{% endif %} fw-bold">{{ summed.used|sub:summed.used_not_expected }}</span><span class="text-muted small align-self-center ms-2">/</span><span class="text-muted small">{{ summed.expected }}</span>
+                                        {% else %}
+                                            <span class="{% if summed.used >= summed.expected %}{% if project.goal_mode %}text-success{% else %}text-danger{% endif %} fw-bold{% endif %}">{{summed.used }}</span><span class="text-muted small align-self-center ms-2">/</span><span class="text-muted small">{{ summed.expected }}</span>
+                                        {% endif %}
+                                    </div>
+
+                                    {% if summed.expected and not project.goal_mode and summed.used_not_expected %}
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        {% endwith %}
+
                             <span class="details-toggle">
                                 {% icon "circle-plus" classes="details-toggle-open" %}
                                 {% icon "circle-xmark" classes="details-toggle-close" %}

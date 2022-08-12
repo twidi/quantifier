@@ -22,7 +22,10 @@
     {% endif %}
     {% if summed_quantities.expected %}
         <div class="small text-muted text-end d-flex align-items-baseline justify-content-end">
-            <span class="text-muted align-self-center ms-2">/</span>
+            {% if summed_quantities.used_not_expected %}
+                {{ summed_quantities.used_not_expected }} + <span class="text-danger">{{ summed_quantities.used|sub:summed_quantities.used_not_expected }}</span>
+            {% endif %}
+            <span class="text-muted align-self-center ms-1">/</span>
             <span class="text-muted mt-1">
                 {{ summed_quantities.expected }}
                 planned{% if interval != "none" %} this {% with interval=interval|interval %}{{ interval.unit_name }}{% endwith %}{% endif %}

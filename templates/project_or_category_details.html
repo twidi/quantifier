@@ -109,15 +109,31 @@
                         </details>
                     </div>
                     <div class="card-body">
-                        <div class="text-end d-flex align-items-baseline fs-4 justify-content-center mb-2">
-                            {% with summed=summed_quantities|dict_value:category %}
-                                {% if summed.expected %}
-                                    <span class="{% if summed.used >= summed.expected %}{% if project.goal_mode %}text-success{% else %}text-danger{% endif %} fw-bold{% endif %}">{{summed.used }}</span><span class="text-muted small align-self-center ms-2">/</span><span class="text-muted small">{{ summed.expected }}</span>
-                                {% else %}
+                        {% with summed=summed_quantities|dict_value:category %}
+                            <div class="mb-2 fs-4 text-center">
+                                {% if not summed.expected %}
                                     {{summed.used }}
+                                {% else %}
+                                    {% if summed.expected and not project.goal_mode and summed.used_not_expected %}
+                                        {{summed.used }}
+                                        <div class="fs-6">
+                                    {% endif %}
+
+                                    <div class="d-flex align-items-baseline justify-content-center">
+                                        {% if not project.goal_mode and summed.used_not_expected %}
+                                            {{ summed.used_not_expected }} +&nbsp;
+                                            <span class="{% if project.goal_mode %}text-success{% else %}text-danger{% endif %} fw-bold">{{ summed.used|sub:summed.used_not_expected }}</span><span class="text-muted small align-self-center ms-2">/</span><span class="text-muted small">{{ summed.expected }}</span>
+                                        {% else %}
+                                            <span class="{% if summed.used >= summed.expected %}{% if project.goal_mode %}text-success{% else %}text-danger{% endif %} fw-bold{% endif %}">{{summed.used }}</span><span class="text-muted small align-self-center ms-2">/</span><span class="text-muted small">{{ summed.expected }}</span>
+                                        {% endif %}
+                                    </div>
+
+                                    {% if summed.expected and not project.goal_mode and summed.used_not_expected %}
+                                        </div>
+                                    {% endif %}
                                 {% endif %}
-                            {% endwith %}
-                        </div>
+                            </div>
+                        {% endwith %}
                         {% include "subcategoy_details.html" with category=category is_parent_category=True %}
                     </div>
                 </div>

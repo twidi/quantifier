@@ -287,11 +287,11 @@ class QuantityBaseForm(ModelForm):
             "data-input": "true",
             "class": "form-control form-control-sm",
         }
-        if self.project.has_interval and min_date and max_date:
-            date_attrs |= {
-                "data-min-date": min_date.strftime("%Y-%m-%d %H:%M"),
-                "data-max-date": max_date.strftime("%Y-%m-%d %H:%M"),
-            }
+        # if self.project.has_interval and min_date and max_date:
+        #     date_attrs |= {
+        #         "data-min-date": min_date.strftime("%Y-%m-%d %H:%M"),
+        #         "data-max-date": max_date.strftime("%Y-%m-%d %H:%M"),
+        #     }
         self.fields["datetime"].widget.attrs.update(date_attrs)
 
         self.fields["name"].widget.attrs["placeholder"] = "Name"

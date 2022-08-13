@@ -35,10 +35,16 @@
                                     <div class="d-flex align-items-baseline justify-content-center">
                                         {% if not project.goal_mode and summed.used_not_expected %}
                                             {{ summed.used_not_expected }} +&nbsp;
-                                            <span class="{% if summed.used|sub:summed.used_not_expected > summed.expected %}{% if project.goal_mode %}text-success{% else %}text-danger{% endif %} fw-bold{% endif %}">{{ summed.used|sub:summed.used_not_expected }}</span><span class="text-muted small align-self-center ms-2">/</span><span class="text-muted small">{{ summed.expected }}</span>
+                                            <span
+                                                class="{% if summed.used|sub:summed.used_not_expected > summed.expected %}text-danger fw-bold{% endif %}"
+                                            >{{ summed.used|sub:summed.used_not_expected }}</span>
                                         {% else %}
-                                            <span class="{% if summed.used >= summed.expected %}{% if project.goal_mode %}text-success{% else %}text-danger{% endif %} fw-bold{% endif %}">{{summed.used }}</span><span class="text-muted small align-self-center ms-2">/</span><span class="text-muted small">{{ summed.expected }}</span>
+                                            <span
+                                                class="{% if project.goal_mode and summed.used >= summed.expected %}text-success fw-bold{% elif not project.goal_mode and summed.used > summed.expected %}text-danger fw-bold{% endif %}"
+                                            >{{summed.used }}</span>
                                         {% endif %}
+                                        <span class="text-muted small align-self-center ms-2">/</span>
+                                        <span class="text-muted small">{{ summed.expected }}</span>
                                     </div>
 
                                     {% if summed.expected and not project.goal_mode and summed.used_not_expected %}

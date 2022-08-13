@@ -20,9 +20,9 @@
                 {% endif %}
             {% endif %}
         {% else %}
-            {% if current_category and summed_quantities.expected and summed_quantities.used >= summed_quantities.expected %}
+            {% if current_category and summed_quantities.expected and summed_quantities.used > summed_quantities.expected %}
                 <span class="small text-danger">Excess</span>
-            {% elif not current_category and summed_quantities.available <= 0 %}
+            {% elif not current_category and summed_quantities.available < 0 %}
                 <span class="small text-danger">Excess</span>
             {% endif %}
         {% endif %}

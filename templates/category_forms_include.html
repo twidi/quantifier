@@ -2,10 +2,12 @@
 <div class="card details-dropdown category-forms fs-6 fw-normal">
     <div class="card-body">
 
-        <div class="d-flex justify-content-between align-items-center small mb-2">
-            <a href="{{ category.get_absolute_url }}?date={{ date_str }}&interval={{ interval }}">Go to category page</a>
-            <a href="{{ category.get_quantities_url }}?date={{ date_str }}&interval={{ interval }}">Show quantities</a>
-        </div>
+        {% if current_category != category %}
+            <div class="d-flex justify-content-between align-items-center small mb-2">
+                <a href="{{ category.get_absolute_url }}?date={{ date_str }}&interval={{ interval }}">Go to category page</a>
+                <a href="{{ category.get_quantities_url }}?date={{ date_str }}&interval={{ interval }}">Show quantities</a>
+            </div>
+        {% endif %}
 
         <ul class="nav nav-tabs category-forms-tabs" role="tablist">
             <li class="nav-item" role="presentation">

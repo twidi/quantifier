@@ -1,19 +1,6 @@
 {% extends "base.html" %}
 {% load i18n mptt_tags core_utils %}
 
-{% block head_end %}
-    {{ block.super }}
-    <style>
-        .project-form > .mb-3, .project-delete-form > .mb-3 {
-            margin-bottom: 0 !important;
-        }
-        .project-form .form-check-label {
-            font-size: .875em;  /* small style */
-        }
-
-    </style>
-{% endblock %}
-
 {% block pre-content %}
     <nav class="navbar bg-light mt-0">
         <div class="mx-3 text-center d-flex flex-column w-100">

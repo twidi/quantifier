@@ -1,0 +1,69 @@
+#projects {
+    .project-container {
+        padding: .5rem;
+        min-height: var(--card-item-size);
+
+        &:last-of-type {
+            min-height: 8rem;
+        }
+        > .card {
+            --bs-card-cap-padding-x: var(--bs-card-cap-padding-y);
+            height: 100%;
+            width: var(--card-item-size);
+        }
+    }
+
+    h5 a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .card-body-header {
+        padding: var(--bs-card-spacer-y) var(--bs-card-spacer-x) 0;
+    }
+
+    .card-body-content .list-group-item {
+        --bs-list-group-item-padding-x: 0.5rem;
+        --bs-list-group-item-padding-y: 0.25rem;
+        &:first-child {
+            border-top-width: var(--bs-list-group-border-width);
+        }
+    }
+}
+
+.main-amount {
+    font-size: 2.2rem !important;
+}
+
+.project-quick-add-form .input-group {
+    > * {
+        border-radius: 0;
+    }
+    > :not(button) {
+        border-right: 0;
+    }
+    > *:first-child {
+        border-left: 0;
+        border-radius: 0;
+    }
+    > input[type="number"] {
+        flex-grow: 0;
+        flex-basis: 6em;
+    }
+    > .form-select {
+        padding-right: 2rem;
+    }
+}
+
+.project-form {
+    > .mb-3 {
+        margin-bottom: 0 !important;
+    }
+    .form-check-label {
+        font-size:  var(--bs-small-size);
+    }
+}
+
+.project-container .main-amount .small {
+    font-size: .4em !important;
+}

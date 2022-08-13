@@ -1,0 +1,108 @@
+:root {
+    --drowpdown-shadow: drop-shadow(0px 0px 9px rgba(0, 0, 0, 0.7));
+}
+
+.callout {
+    padding: 1.25rem;
+    margin-top: 1.25rem;
+    margin-bottom: 1.25rem;
+    background-color: var(--callout-bg, var(--bs-gray-100));
+    border-left: 0.25rem solid var(--callout-border, var(--bs-gray-300));
+
+    &-info {
+        --callout-bg: rgba(var(--bs-info-rgb), .075);
+        --callout-border: rgba(var(--bs-info-rgb), .5);
+    }
+    &-error, &-danger {
+        --callout-bg: rgba(var(--bs-danger-rgb), .075);
+        --callout-border: rgba(var(--bs-danger-rgb), .5);
+    }
+    &-warning {
+        --callout-bg: rgba(var(--bs-warning-rgb), .075);
+        --callout-border: rgba(var(--bs-warning-rgb), .5);
+    }
+    &-success {
+        --callout-bg: rgba(var(--bs-success-rgb), .075);
+        --callout-border: rgba(var(--bs-success-rgb), .5);
+    }
+    a { color: inherit; }
+}
+
+details {
+    &.no-marker > summary {
+        list-style: none;
+        &::-webkit-details-marker {
+            display: none;
+        }
+    }
+
+    &.as-dropdown {
+        > .details-dropdown {
+            position: absolute;
+            filter: var(--drowpdown-shadow);
+            height: auto;
+            width: calc(var(--card-item-size) - var(--bs-card-spacer-x));
+            left: 50% !important;
+            right: auto;
+            transform: translate(-50%, 0);
+            z-index: var(--zindex, 5);
+        }
+        > .card {
+            &.details-on-right {
+                right: 0;
+                left: auto !important;
+                transform: translate(0, 0);
+            }
+            &.large-details {
+                width: calc(100% - var(--bs-card-spacer-x));
+                min-width: var(--card-item-size);
+                max-width: 50rem;
+                z-index: 15;
+            }
+            > .card-body {
+                --bs-card-spacer-y: 0.5rem;
+                --bs-card-spacer-x: 0.5rem;
+            }
+        }
+
+        &.with-backdrop[open] > summary:before {
+            content: "";
+            position: fixed;
+            inset: 0 0 0 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: calc(var(--zindex, 5) - 1);
+        }
+
+    }
+
+    &[open] > summary > .details-toggle > .details-toggle-open,
+    &:not([open]) > summary > .details-toggle > .details-toggle-close {
+        display: none;
+    }
+
+}
+
+
+textarea.auto-reduce:not(:focus){
+    height: calc(1.5em + .5rem + 2px);
+}
+
+.select2-container--bootstrap-5 .select2-dropdown.in-small-form {
+    .select2-results__options .select2-results__option,
+    .select2-search .select2-search__field {
+        padding: .25rem .5rem;
+        font-size: 0.875rem;
+    }
+}
+
+.input-group > .form-select, .input-group .select2-container--bootstrap-5 .select2-selection--single {
+    /* just to change the color of the arrow to the be same as the border (the stroke color) */
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%236c757d' stroke-linecap='round' stroke-linejoin='round' stroke-width='1' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+}
+
+.flatpickr-calendar {
+    filter: var(--drowpdown-shadow);
+}
+.form-control.flatpickr-input + .form-control[readonly] {
+    background: var(--bs-form-control-bg);
+}

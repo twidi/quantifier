@@ -1,0 +1,22 @@
+:root {
+    --bs-small-size: .875em;
+    --bs-card-border-radius: 0.375em;
+}
+form {
+    --bs-form-control-bg: var(--bs-body-bg);
+    --bs-form-control-color: var(--bs-body-color);
+    --bs-form-control-border-color: var(--bs-gray-400);
+}
+
+.form-input {
+    background-color: var(--bs-form-control-bg);
+    color: var(--bs-form-control-color);
+    border-color: var(--bs-form-control-border-color);
+}
+
+.input-group-btn {
+    border-color: var(--bs-form-control-border-color);
+}
+.small, small {
+  font-size: var(--bs-small-size);
+}

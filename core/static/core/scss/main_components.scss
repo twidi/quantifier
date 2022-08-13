@@ -41,11 +41,14 @@ details {
             position: absolute;
             filter: var(--drowpdown-shadow);
             height: auto;
-            width: calc(var(--card-item-size) - var(--bs-card-spacer-x));
             left: 50% !important;
             right: auto;
             transform: translate(-50%, 0);
             z-index: var(--zindex, 5);
+            min-width: calc(var(--card-item-size) - var(--bs-card-spacer-x));
+            .card & {
+                width: calc(var(--card-item-size) - var(--bs-card-spacer-x));
+            }
         }
         > .card {
             &.details-on-right {
@@ -76,7 +79,9 @@ details {
     }
 
     &[open] > summary > .details-toggle > .details-toggle-open,
-    &:not([open]) > summary > .details-toggle > .details-toggle-close {
+    &[open] > summary > * > .details-toggle > .details-toggle-open,
+    &:not([open]) > summary > .details-toggle > .details-toggle-close,
+    &:not([open]) > summary > * > .details-toggle > .details-toggle-close {
         display: none;
     }
 

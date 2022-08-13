@@ -27,7 +27,7 @@
             {% endif %}
         {% endif %}
 
-        <span class="text-center">{{ summed_quantities.used }} {{ project.quantity_name }}</span>
+        <span class="text-center main-amount-main">{{ summed_quantities.used }} {{ project.quantity_name }}</span>
 
         <div class="small text-muted text-end d-flex align-items-baseline justify-content-end gap-1">
 
@@ -71,9 +71,8 @@
         </div>
 
         {% if summed_quantities.really_available is not None %}
-            <div class="small text-end fw-bold d-flex align-items-baseline justify-content-center gap-1 {% if project.goal_mode and summed_quantities.available >= 0 %}text-warning{% elif project.goal_mode and summed_quantities.available < 0 %}text-success{% elif not project.goal_mode and summed_quantities.really_available < 0 %}text-danger{% else %}text-muted{% endif %}">
-                {% if project.goal_mode %}
-
+            {% if project.goal_mode %}
+                <div class="small text-end fw-bold d-flex align-items-baseline justify-content-center gap-1 {% if summed_quantities.available >= 0 %}text-warning{% elif summed_quantities.available < 0 %}text-success{% else %}text-muted{% endif %}">
                     {% if summed_quantities.available < 0 %}
                         <span>Excess:</span>
                         <span>{{ summed_quantities.available|mul:-1 }}</span>
@@ -81,9 +80,18 @@
                         <span>Left:</span>
                         <span>{{ summed_quantities.available }}</span>
                     {% endif %}
+                </div>
 
-                {% else %}
+            {% else %}
 
+                {% if not project.goal_mode %}
+                    <details
+                            class="no-marker as-dropdown with-backdrop d-inline-block text-start fw-normal text-muted"
+                            data-group="main-amount-info">
+                        <summary class="text-muted" title="What are these numbers?">
+                {% endif %}
+
+                <div class="small text-end fw-bold d-flex align-items-baseline justify-content-center gap-1 {% if summed_quantities.really_available < 0 %}text-danger{% else %}text-muted{% endif %}">
                     {% if summed_quantities.really_available < 0 %}
                         <span>Excess:</span>
                     {% else %}
@@ -91,50 +99,51 @@
                     {% endif %}
                     <span>{{ summed_quantities.really_available }}</span>
                     <span class="align-self-center">/</span>
-                    <span class="">{{ summed_quantities.total_unexpected }} really available</span>
+                    <span class="">{{ summed_quantities.total_unexpected }}</span>
 
                     {% if not project.goal_mode %}
-                        <details
-                                class="no-marker as-dropdown with-backdrop d-inline-block text-start fw-normal text-muted"
-                                data-group="main-amount-info">
-                            <summary class="text-muted p-2" title="What are these numbers?">
-                    <span class="details-toggle">
-                        {% icon "circle-question" classes="details-toggle-open" %}
-                        {% icon "circle-xmark" classes="details-toggle-close" %}
-                    </span>
-                            </summary>
-                            <div class="details-dropdown bg-white top-100 mt--3">
-                                <div class="callout callout-info m-0">
-                                    <p class="mb-0">
-                                        <strong>{{ summed_quantities.total_unexpected }}</strong> is the
-                                        {% if interval == "none" %}all time{% else %}{{ interval }}{% endif %} amount
-                                        (<strong>{{ project.interval_quantity }}</strong>
-                                        {% if interval != project.interval %} per
-                                            {% with interval=project.interval|interval %}{{ interval.unit_name }}
-                                            {% endwith %}{% endif %}) minus the planned one
-                                        (<strong>{{ summed_quantities.expected }}</strong>)
-                                    </p>
-                                    <p class="mb-0 mt-3">
-                                        {% if summed_quantities.used %}
-                                            <strong>{{ summed_quantities.really_available }}</strong> is the previous
-                                            amount (<strong>{{ summed_quantities.total_unexpected }}</strong>) minus
-                                            what was not planned (
-                                            <strong>{{ summed_quantities.used_not_expected }}</strong>) and the excess
-                                            over what was planned in some categories (
-                                            <strong>{{ summed_quantities.unexpected }}</strong>)
-                                        {% else %}
-                                            No usage {% if interval == "none" %} (all time){% else %}during this
-                                            {% with interval=interval|interval %}{{ interval.unit_name }}
-                                            {% endwith %}{% endif %}
-                                        {% endif %}
-                                    </p>
-                                </div>
-                            </div>
-                        </details>
+                        <span class="details-toggle">
+                            {% icon "circle-question" classes="details-toggle-open" %}
+                            {% icon "circle-xmark" classes="details-toggle-close" %}
+                        </span>
                     {% endif %}
 
+                    <span>really available</span>
+                </div>
+
+                {% if not project.goal_mode %}
+                        </summary>
+                        <div class="small details-dropdown bg-white top-100 mt--3">
+                            <div class="callout callout-info m-0">
+                                <p class="mb-0">
+                                    <strong>{{ summed_quantities.total_unexpected }}</strong> is the
+                                    {% if interval == "none" %}all time{% else %}{{ interval }}{% endif %} amount
+                                    (<strong>{{ project.interval_quantity }}</strong>
+                                    {% if interval != project.interval %} per
+                                        {% with interval=project.interval|interval %}{{ interval.unit_name }}
+                                        {% endwith %}{% endif %}) minus the planned one
+                                    (<strong>{{ summed_quantities.expected }}</strong>)
+                                </p>
+                                <p class="mb-0 mt-3">
+                                    {% if summed_quantities.used %}
+                                        <strong>{{ summed_quantities.really_available }}</strong> is the previous
+                                        amount (<strong>{{ summed_quantities.total_unexpected }}</strong>) minus
+                                        what was not planned (
+                                        <strong>{{ summed_quantities.used_not_expected }}</strong>) and the excess
+                                        over what was planned in some categories (
+                                        <strong>{{ summed_quantities.unexpected }}</strong>)
+                                    {% else %}
+                                        No usage {% if interval == "none" %} (all time){% else %}during this
+                                        {% with interval=interval|interval %}{{ interval.unit_name }}
+                                        {% endwith %}{% endif %}
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </details>
                 {% endif %}
-            </div>
+
+            {% endif %}
         {% endif %}
 
     {% endwith %}

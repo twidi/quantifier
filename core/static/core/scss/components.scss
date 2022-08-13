@@ -4,5 +4,7 @@
 .main-amount {
     font-size: var(--main-amount-size) !important;
     .small { font-size: 0.35em; }
-    > :not(.small) { line-height: 0.9em; }
+    .main-amount-main {
+        line-height: 0.9em;
+    }
 }

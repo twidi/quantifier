@@ -18,7 +18,7 @@
                 </ul>
             </div>
             {% if user.is_authenticated %}
-                <p class="mb-0">Hi <strong>{{ user.username }}</strong>, you can oo <a href="{{ home_url }}">to your list of projects</a>.</p>
+                <p class="mb-0">Hi <strong>{{ user.username }}</strong>, you can go <a href="{{ home_url }}">to your list of projects</a>.</p>
             {% else %}
                 <p class="mb-0">Please <a href="{% url "login" %}">log in</a> or <a href="{% url "django_registration_register" %}">register</a>
                 to continue.</p>

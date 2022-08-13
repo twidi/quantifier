@@ -26,9 +26,9 @@
 <body>
     <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand me-0" href="/{% if date_str %}?date={{ date_str }}{% endif %}">The Quantifier</a>
+            <a class="navbar-brand me-0" href="{% if user.is_authenticated %}{{ home_url }}{% if date_str %}?date={{ date_str }}{% endif %}{% else %}/{% endif %}">The Quantifier</a>
 
-            {% if user.is_authenticated and date %}
+            {% if user.is_authenticated and date %}{% if main_object or request.path == home_url %}
                 <ul id="navbar-date-interval" class="navbar-nav flex-row gap-2 align-items-center flex-grow-1 justify-content-center w-100">
                     {% if interval != "none" %}
                         <li class="nav-item flex-grow-0">
@@ -71,7 +71,7 @@
                         </li>
                     {% endif %}
                 </ul>
-            {% endif %}
+            {% endif %}{% endif %}
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-content" aria-controls="navbar-content" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>

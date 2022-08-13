@@ -15,6 +15,7 @@ from pathlib import Path
 from django.contrib.messages import constants as message_constants
 
 import environ
+from django.urls import reverse_lazy
 
 env = environ.Env(
     # set casting, default value
@@ -85,13 +86,14 @@ MIDDLEWARE += [
 ROOT_URLCONF = "quantifier.urls"
 
 AUTH_USER_MODEL = "core.User"
-LOGIN_REDIRECT_URL = "index"
+LOGIN_REDIRECT_URL = "projects"
 LOGOUT_REDIRECT_URL = "index"
 MESSAGE_TAGS = {
     message_constants.DEBUG: "secondary",
     message_constants.ERROR: "danger",
 }
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+USER_HOME_URL = reverse_lazy(LOGIN_REDIRECT_URL)
 
 TEMPLATES = [
     {

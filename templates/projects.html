@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load i18n sass_tags %}
+
+{% block head_end %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% sass_src "core/scss/pages/projects.scss" %}" />
+{% endblock %}
+
+{% block content %}
+    {% include "project_list_include.html" %}
+{% endblock %}

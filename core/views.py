@@ -3,6 +3,7 @@ from datetime import datetime
 from functools import cached_property
 from typing import Optional
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import (
@@ -117,34 +118,39 @@ def get_date_and_interval_from_querystring(
     return date, interval, error_date
 
 
+
+
 class HomeView(DateAndIntervalMixin, TemplateView):
     template_name = "index.html"
 
+
+class ProjectsView(DateAndIntervalMixin, LoginRequiredMixin, TemplateView):
+    template_name = "projects.html"
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if self.request.user.is_authenticated:
-            for project in self.request.user.cached_projects:
-                if project.nb_categories > 1:
-                    if project.has_interval or self.interval not in (None, Intervals.none):
-                        project.summed_quantities = project.get_summed_quantities(self.date, self.interval)
-                    else:
-                        project.summed_quantities = project.get_summed_quantities()
-                    if (
-                        not project.has_interval
-                        or not self.interval
-                        or Intervals(self.interval) <= Intervals(project.interval)
-                    ):
-                        min_date, max_date, initial_date = QuantityInProjectForm.get_date_args(
-                            project, self.date, project.interval
-                        )
-                        project.quick_add_form = QuantityInProjectForm(
-                            project=project, min_date=min_date, max_date=max_date, initial={"datetime": initial_date}
-                        )
-                    else:
-                        project.no_quick_form_reason = f"must be in {Intervals(project.interval).unit_name} view{ ' (or less)' if project.interval != 'daily' else ''} to add quantity"
+        for project in self.request.user.cached_projects:
+            if project.nb_categories > 1:
+                if project.has_interval or self.interval not in (None, Intervals.none):
+                    project.summed_quantities = project.get_summed_quantities(self.date, self.interval)
                 else:
-                    project.summed_quantities = {}
-                    project.no_quick_form_reason = "categories not configured yet"
+                    project.summed_quantities = project.get_summed_quantities()
+                if (
+                    not project.has_interval
+                    or not self.interval
+                    or Intervals(self.interval) <= Intervals(project.interval)
+                ):
+                    min_date, max_date, initial_date = QuantityInProjectForm.get_date_args(
+                        project, self.date, project.interval
+                    )
+                    project.quick_add_form = QuantityInProjectForm(
+                        project=project, min_date=min_date, max_date=max_date, initial={"datetime": initial_date}
+                    )
+                else:
+                    project.no_quick_form_reason = f"must be in {Intervals(project.interval).unit_name} view{ ' (or less)' if project.interval != 'daily' else ''} to add quantity"
+            else:
+                project.summed_quantities = {}
+                project.no_quick_form_reason = "categories not configured yet"
         return context
 
 
@@ -238,7 +244,7 @@ class ProjectFormViewMixin:
             url = self.next_category.get_absolute_url()
         elif isinstance(self, ProjectDeleteView):
             with_interval = False
-            url = "/"
+            url = settings.USER_HOME_URL
         else:
             url = self.object.get_absolute_url()
 

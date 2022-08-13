@@ -44,7 +44,9 @@ urlpatterns = [
     ),
     path("accounts/", include("django.contrib.auth.urls")),
     path("admin/", admin.site.urls),
+
     path("", views.HomeView.as_view(), name="index"),
+    path("projects/", views.ProjectsView.as_view(), name="projects"),
     path("project/create/", views.ProjectCreateView.as_view(), name="project_create"),
     path(
         "project/<int:project_pk>/",

@@ -5,7 +5,7 @@
 <div class="card {% block card_classes %}{% endblock %}">
     <div class="card-header d-flex justify-content-between align-items-center gap-3">
         <h5 class="m-0">{% block card_title %}{% endblock %}</h5>
-        {% block card_back_link %}{% if project %}<a class="text-end" href="{{ project.get_absolute_url }}{% if date %}?date={{ date_str }}{% if interval %}&interval={{ interval }}{% endif %}{% endif %}">Back to project</a>{% else %}<a href="/{% if date %}?date={{ date_str }}{% if interval %}&interval={{ interval }}{% endif %}{% endif %}">Back to homepage</a>{% endif %}{% endblock %}
+        {% block card_back_link %}{% if project %}<a class="text-end" href="{{ project.get_absolute_url }}{% if date %}?date={{ date_str }}{% if interval %}&interval={{ interval }}{% endif %}{% endif %}">Back to project</a>{% else %}<a href="{{ home_url }}{% if date %}?date={{ date_str }}{% if interval %}&interval={{ interval }}{% endif %}{% endif %}">Back to list of projects</a>{% endif %}{% endblock %}
     </div>
     <div class="card-body">
         {% block card_content %}{% endblock %}

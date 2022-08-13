@@ -2,6 +2,11 @@
 <div class="card details-dropdown category-forms fs-6 fw-normal">
     <div class="card-body">
 
+        <div class="d-flex justify-content-between align-items-center small mb-2">
+            <a href="{{ category.get_absolute_url }}?date={{ date_str }}&interval={{ interval }}">Go to category page</a>
+            <a href="{{ category.get_quantities_url }}?date={{ date_str }}&interval={{ interval }}">Show quantities</a>
+        </div>
+
         <ul class="nav nav-tabs category-forms-tabs" role="tablist">
             <li class="nav-item" role="presentation">
                 <a href="{{ category.get_add_quantity_url }}?date={{ date_str }}&interval={{ interval }}{% if next_category %}&next=category:{{ next_category.id }}{% endif %}" class="nav-link focus-first-input active" id="category-tab-quantity-{{ category.id }}" data-bs-toggle="tab" data-bs-target="#category-tab-content-quantity-{{ category.id }}" type="button"

@@ -374,7 +374,6 @@ class Project(Orderable, models.Model):
                 update_count(sub_category)
 
             res_cat = result[category]
-            res_cat["has_children"] = bool(children)
 
             interval_quantity = self.interval_quantity
             expected_quantity = category.expected_quantity

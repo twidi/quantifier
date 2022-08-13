@@ -14,7 +14,7 @@
                         <span class="small text-success">Goal reached</span>
                     {% endif %}
                 {% elif summed_quantities.expected %}
-                    {% if summed_quantities.unexpected %}
+                    {% if summed_quantities.used >= summed_quantities.expected  %}
                         <span class="small text-success">Goal reached</span>
                     {% endif %}
                 {% endif %}
@@ -108,7 +108,9 @@
                         </span>
                     {% endif %}
 
-                    <span>really available</span>
+                    {% if summed_quantities.really_available != summed_quantities.available %}
+                        <span>really available</span>
+                    {% endif %}
                 </div>
 
                 {% if not project.goal_mode %}

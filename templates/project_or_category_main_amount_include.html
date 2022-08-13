@@ -20,10 +20,16 @@
                 {% endif %}
             {% endif %}
         {% else %}
-            {% if current_category and summed_quantities.expected and summed_quantities.used > summed_quantities.expected %}
-                <span class="small text-danger">Excess</span>
-            {% elif not current_category and summed_quantities.available < 0 %}
-                <span class="small text-danger">Excess</span>
+            {% if current_category %}
+                {% if summed_quantities.expected and summed_quantities.used > summed_quantities.expected %}
+                    <span class="small text-danger">Excess</span>
+                {% endif %}
+            {% else %}
+                {% if summed_quantities.available < 0 %}
+                    <span class="small text-danger">Excess</span>
+                {% elif not project.has_interval_quantity and summed_quantities.unexpected %}
+                    <span class="small text-danger">Excess</span>
+                {% endif %}
             {% endif %}
         {% endif %}
 
@@ -71,7 +77,9 @@
         </div>
 
         {% if summed_quantities.really_available is not None %}
+
             {% if project.goal_mode %}
+
                 <div class="small text-end fw-bold d-flex align-items-baseline justify-content-center gap-1 {% if summed_quantities.available >= 0 %}text-warning{% elif summed_quantities.available < 0 %}text-success{% else %}text-muted{% endif %}">
                     {% if summed_quantities.available < 0 %}
                         <span>Excess:</span>
@@ -84,7 +92,7 @@
 
             {% else %}
 
-                {% if not project.goal_mode %}
+                {% if summed_quantities.expected != project.interval_quantity %}
                     <details
                             class="no-marker as-dropdown with-backdrop d-inline-block text-start fw-normal text-muted"
                             data-group="main-amount-info">
@@ -101,19 +109,17 @@
                     <span class="align-self-center">/</span>
                     <span class="">{{ summed_quantities.total_unexpected }}</span>
 
-                    {% if not project.goal_mode %}
+                    {% if summed_quantities.expected != project.interval_quantity %}
                         <span class="details-toggle">
                             {% icon "circle-question" classes="details-toggle-open" %}
                             {% icon "circle-xmark" classes="details-toggle-close" %}
                         </span>
-                    {% endif %}
-
-                    {% if summed_quantities.really_available != summed_quantities.available %}
                         <span>really available</span>
                     {% endif %}
+
                 </div>
 
-                {% if not project.goal_mode %}
+                {% if summed_quantities.expected != project.interval_quantity %}
                         </summary>
                         <div class="small details-dropdown bg-white top-100 mt--3">
                             <div class="callout callout-info m-0">

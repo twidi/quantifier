@@ -395,7 +395,7 @@ class QuantityCreateBaseView(CreateView):
         elif self.next_project:
             next = f"project:{self.next_project.pk}"
         else:
-            next = "index"
+            next = settings.USER_HOME_URL
         return super().get_context_data(**kwargs, next=next)
 
     @cached_property

@@ -26,7 +26,7 @@
                     <div class="card-body-content flex-grow-1 d-flex flex-column align-items-center">
                         {% with form=project.quick_add_form %}
                             {% if form %}
-                                <form action="{{ project.get_add_quantity_url }}?date={{ date_str }}{% if interval %}&interval={{ interval }}{% endif %}&next=index" method="POST" class="project-quick-add-form w-100 position-relative small-form">
+                                <form action="{{ project.get_add_quantity_url }}?date={{ date_str }}{% if interval %}&interval={{ interval }}{% endif %}&next=projects" method="POST" class="project-quick-add-form w-100 position-relative small-form">
                                     {% csrf_token %}
                                     <div class="input-group input-group-sm">
                                         {{ form.category }}

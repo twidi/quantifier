@@ -278,7 +278,7 @@ class ProjectDeleteView(OwnedProjectMixin, ProjectFormViewMixin, DeleteView):
     pk_url_kwarg = "project_pk"
 
     def get_success_url(self):
-        return reverse("index")
+        return settings.USER_HOME_URL
 
     def get_form_kwargs(self):
         # not done by the default delete view because it uses a simple form, but here we use a model form
@@ -420,8 +420,8 @@ class QuantityCreateBaseView(CreateView):
 
     def get_success_url(self):
         with_interval = bool(self.interval)
-        if self.request.GET.get("next") == "index":
-            url = reverse("index")
+        if self.request.GET.get("next") == "projects":
+            url = settings.USER_HOME_URL
             with_interval = False
         elif self.next_category:
             url = self.next_category.get_absolute_url()

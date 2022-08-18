@@ -1,2 +1,2 @@
 # quantifier
-The quantifier project: Categorize quantities, temporally or not
+The Countastic project: Categorize quantities, temporally or not

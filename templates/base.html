@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>{% block title %}The Quantifier{% endblock %}</title>
+    <title>{% block title %}The Countastic{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
     <script src="https://kit.fontawesome.com/0b23f4de3d.js" crossorigin="anonymous"></script>
@@ -26,7 +26,7 @@
 <body>
     <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand me-0" href="{% if user.is_authenticated %}{{ home_url }}{% if date_str %}?date={{ date_str }}{% endif %}{% else %}/{% endif %}">The Quantifier</a>
+            <a class="navbar-brand me-0" href="{% if user.is_authenticated and request.path != home_url %}{{ home_url }}{% if date_str %}?date={{ date_str }}{% endif %}{% else %}/{% endif %}">The Countastic</a>
 
             {% if user.is_authenticated and date %}{% if main_object or request.path == home_url %}
                 <ul id="navbar-date-interval" class="navbar-nav flex-row gap-2 align-items-center flex-grow-1 justify-content-center w-100">

@@ -28,46 +28,6 @@
         > .card-header {
             min-height: 2em;
         }
-
-        > .card-body {
-            position: relative;
-            padding-bottom: 0.25rem;
-
-            > .list-group {
-                --bs-list-group-item-padding-y: 0.25rem;
-                margin-bottom: calc(-1 * var(--bs-list-group-item-padding-y));
-
-                > li:first-child {
-                    border-top-width: var(--bs-list-group-border-width);
-                }
-                .details-dropdown {
-                    margin-left: calc(var(--category-visible-level, 0) * var(--sub-category-indent) / -2);
-                }
-
-                .list-group-item.sub-category-item {
-                    > details.sub-sub-categories > summary > span.details-toggle {
-                        width: 1ex;
-                        display: inline-block;
-                        font-weight: normal;
-                        position: absolute;
-                        left: -1.3ex;
-                    }
-                }
-
-                .list-group {
-                    padding-left: var(--sub-category-indent);
-                    .list-group-item {
-                        padding-left: 0;
-                        &:first-child {
-                            border-top-width: var(--bs-list-group-border-width);
-                        }
-                        &:last-child {
-                            border-bottom: 0;
-                        }
-                    }
-                }
-            }
-        }
     }
 }
 

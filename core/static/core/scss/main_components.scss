@@ -62,10 +62,6 @@ details {
                 max-width: 50rem;
                 z-index: 15;
             }
-            > .card-body {
-                --bs-card-spacer-y: 0.5rem;
-                --bs-card-spacer-x: 0.5rem;
-            }
         }
 
         &.with-backdrop[open] > summary:before {
@@ -90,19 +86,6 @@ details {
 
 textarea.auto-reduce:not(:focus){
     height: calc(1.5em + .5rem + 2px);
-}
-
-.select2-container--bootstrap-5 .select2-dropdown.in-small-form {
-    .select2-results__options .select2-results__option,
-    .select2-search .select2-search__field {
-        padding: .25rem .5rem;
-        font-size: 0.875rem;
-    }
-}
-
-.input-group > .form-select, .input-group .select2-container--bootstrap-5 .select2-selection--single {
-    /* just to change the color of the arrow to the be same as the border (the stroke color) */
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%236c757d' stroke-linecap='round' stroke-linejoin='round' stroke-width='1' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
 }
 
 .flatpickr-calendar {

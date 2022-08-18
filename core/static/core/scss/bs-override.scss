@@ -1,22 +1,167 @@
+@import "variables";
+
 :root {
+    --bs-break-sm: $breakpoint_sm;
+    --bs-brea-md: $breakpoint_md;
+    --bs-break-lg: $breakpoint_lg;
+    --bs-break-xl: $breakpoint_xl;
+    --bs-break-xxl: $breakpoint_xxl;
+
     --bs-small-size: .875em;
     --bs-card-border-radius: 0.375em;
-}
-form {
-    --bs-form-control-bg: var(--bs-body-bg);
-    --bs-form-control-color: var(--bs-body-color);
-    --bs-form-control-border-color: var(--bs-gray-400);
+
+    --bs-spacer-0: 0rem;
+    --bs-spacer-1: .25rem; // 4px
+    --bs-spacer-2: .5rem;  // 8px
+    --bs-spacer-3: 1rem;   // 16px
+    --bs-spacer-4: 1.5rem; // 24px
+    --bs-spacer-5: 2rem;   // 36px
+    --bs-spacer-6: 3rem;   // 48px
+
+    --fs-1: calc(1.375rem + 1.5vw);
+    --fs-2: calc(1.325rem + .9vw);
+    --fs-3: calc(1.3rem + .6vw);
+    --fs-4: calc(1.275rem + .3vw);
+    --fs-5: 1.25rem;
+    --fs-6: 1rem;
+
+    --rounded-0: 0rem;
+    --rounded-1: var(--bs-border-radius-sm);  // .25rem   // 4px
+    --rounded-2: var(--bs-border-radius);     // .375rem  // 6px
+    --rounded-3: var(--bs-border-radius-lg);  // .5rem    // 8px
+    --rounded-4: var(--bs-border-radius-xl);  // 1rem     // 16px
+    --rounded-5: var(--bs-border-radius-2xl); // 2rem     // 32px
 }
 
-.form-input {
+:root, form, .select2-container--bootstrap-5 {
+    --bs-form-control-bg: var(--bs-body-bg);
+    --bs-form-control-color: var(--bs-body-color);
+    --bs-form-control-color-rgb: var(--bs-body-color-rgb);
+
+    --bs-form-control-border-color: var(--bs-gray-400);
+    --bs-form-control-border-width: 1px;
+    --bs-form-control-border-radius: .375rem;
+
+    --bs-form-control-focus-bg: var(--bs-body-bg);
+    --bs-form-control-focus-color: var(--bs-body-color);
+    --bs-form-control-focus-border-color: var(--bs-gray-600);
+
+    --bs-form-control-font-size: 1rem;
+    --bs-form-control-line-height: 1.5;
+
+    --bs-form-control-spacer-x: .75rem;
+    --bs-form-control-spacer-y: .375rem
+}
+
+.form-control, .form-select {
     background-color: var(--bs-form-control-bg);
     color: var(--bs-form-control-color);
+
+    font-size: var(--bs-form-control-font-size);
+    line-height: var(--bs-form-control-line-height);
+
+    border-style: solid;
+    border-width: var(--bs-form-control-border-width);
     border-color: var(--bs-form-control-border-color);
+    border-radius: var(--bs-form-control-border-radius);
+
+    padding: var(--bs-form-control-spacer-y) var(--bs-form-control-spacer-x);
+    min-height: calc(var(--bs-form-control-line-height) * 1em + 2 * var(--bs-form-control-spacer-y) + 2 * var(--bs-form-control-border-width));
+
+    &::placeholder {
+        color: rgba(var(--bs-form-control-color-rgb), .5);
+        font-style: italic;
+    }
+
+    &:focus {
+        background-color: var(--bs-form-control-focus-bg);
+        color: var(--bs-form-control-focus-color);
+        border-color: var(--bs-form-control-border-focus-color);
+    }
+}
+.form-control-sm, .form-select-sm {
+    --bs-form-control-spacer-x: .5rem;
+    --bs-form-control-spacer-y: .25rem;
+    --bs-form-control-font-size: .875rem;
+    --bs-form-control-border-radius: .25rem;
+}
+
+
+.form-check-input {
+    background-color: var(--bs-form-control-bg);
+    border: 1px solid rgba(0, 0, 0, .25);
+    border-top-color: var(--bs-form-control-border-color);
+    border-right-color: var(--bs-form-control-border-color);
+    border-bottom-color: var(--bs-form-control-border-color);
+    border-left-color: var(--bs-form-control-border-color);
+
+    &:checked {
+        background-color: var(--bs-primary);
+        border-color: var(--bs-primary);
+    }
 }
 
 .input-group-btn {
     border-color: var(--bs-form-control-border-color);
 }
+
 .small, small {
-  font-size: var(--bs-small-size);
+    font-size: var(--bs-small-size);
+}
+
+.text-muted {
+    color: var(--bs-muted-color) !important;
+}
+
+form:last-child, p:last-child {
+    margin-bottom: 0;
+}
+
+@for $i from 0 through 6 {
+    .gap-#{$i} { gap: var(--bs-spacer-#{$i}) !important; }
+}
+@for $i from 0 through 6 {
+    .p-#{$i} { padding: var(--bs-spacer-#{$i}) !important; }
+}
+@for $i from 0 through 6 {
+    .px-#{$i} { padding-right: var(--bs-spacer-#{$i}) !important; padding-left: var(--bs-spacer-#{$i}) !important; }
+}
+@for $i from 0 through 6 {
+    .py-#{$i} { padding-top: var(--bs-spacer-#{$i}) !important; padding-bottom: var(--bs-spacer-#{$i}) !important; }
+}
+@for $i from 0 through 6 {
+    .ps-#{$i} { padding-left: var(--bs-spacer-#{$i}) !important; }
+}
+@for $i from 0 through 6 {
+    .pe-#{$i} { padding-right: var(--bs-spacer-#{$i}) !important; }
+}
+@for $i from 0 through 6 {
+    .pt-#{$i} { padding-top: var(--bs-spacer-#{$i}) !important; }
+}
+@for $i from 0 through 6 {
+    .pb-#{$i} { padding-bottom: var(--bs-spacer-#{$i}) !important; }
+}
+@for $i from 0 through 6 {
+    .m-#{$i} { margin: var(--bs-spacer-#{$i}) !important; }
+}
+@for $i from 0 through 6 {
+    .mx-#{$i} { margin-right: var(--bs-spacer-#{$i}) !important; margin-left: var(--bs-spacer-#{$i}) !important; }
+}
+@for $i from 0 through 6 {
+    .my-#{$i} { margin-top: var(--bs-spacer-#{$i}) !important; margin-bottom: var(--bs-spacer-#{$i}) !important; }
+}
+@for $i from 0 through 6 {
+    .ms-#{$i} { margin-left: var(--bs-spacer-#{$i}) !important; }
+}
+@for $i from 0 through 6 {
+    .me-#{$i} { margin-right: var(--bs-spacer-#{$i}) !important; }
+}
+@for $i from 0 through 6 {
+    .mt-#{$i} { margin-top: var(--bs-spacer-#{$i}) !important; }
+}
+@for $i from 0 through 6 {
+    .mb-#{$i} { margin-bottom: var(--bs-spacer-#{$i}) !important; }
+}
+@for $i from 1 through 6 {
+    .fs-#{$i} { font-size: var(--fs-#{$i}) !important; }
 }

@@ -7,7 +7,6 @@
             min-height: 8rem;
         }
         > .card {
-            --bs-card-cap-padding-x: var(--bs-card-cap-padding-y);
             height: 100%;
             width: var(--card-item-size);
         }
@@ -18,17 +17,6 @@
         text-decoration: none;
     }
 
-    .card-body-header {
-        padding: var(--bs-card-spacer-y) var(--bs-card-spacer-x) 0;
-    }
-
-    .card-body-content .list-group-item {
-        --bs-list-group-item-padding-x: 0.5rem;
-        --bs-list-group-item-padding-y: 0.25rem;
-        &:first-child {
-            border-top-width: var(--bs-list-group-border-width);
-        }
-    }
 }
 
 .main-amount {

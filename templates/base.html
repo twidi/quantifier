@@ -17,6 +17,7 @@
     <script src="{% static "core/js/element.scrollintoviewifneeded-polyfill.js" %}"></script>
     <link rel="stylesheet" href="{% sass_src "core/scss/bs-addons.scss" %}" />
     <link rel="stylesheet" href="{% sass_src "core/scss/bs-override.scss" %}" />
+    <link rel="stylesheet" href="{% sass_src "core/scss/bs-extensions-override.scss" %}" />
     <link rel="stylesheet" href="{% sass_src "core/scss/main_components.scss" %}" />
     <link rel="stylesheet" href="{% sass_src "core/scss/components.scss" %}" />
     <link rel="stylesheet" href="{% sass_src "core/scss/main.scss" %}" />
@@ -172,7 +173,7 @@
             ev.stopImmediatePropagation();
             setTimeout(() => {
                 let $target = $(ev.target);
-                $target.select2({theme: 'bootstrap-5', dropdownAutoWidth: true, dropdownCssClass: ev.target.closest('form.small-form') ? 'in-small-form' : ''});
+                $target.select2({theme: 'bootstrap-5', dropdownAutoWidth: true, dropdownCssClass: ev.target.closest('form.small-form') ? 'select2-dropdown-sm' : ''});
                 $target.select2('open');
             }, 500);
         });

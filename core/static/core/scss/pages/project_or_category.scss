@@ -4,24 +4,12 @@
 }
 
 
-#main-categories {
-    .card-header .card.category-forms {
-        margin-top: var(--bs-card-cap-padding-y);
-    }
-
-    .card-body .card.category-forms {
-        margin-top: var(--bs-list-group-item-padding-y);
-    }
-}
-
-
 .main-category-container {
     padding: .5rem;
     min-height: 8em;
     --sub-category-indent: 1.5rem;
 
     > .card {
-        --bs-card-cap-padding-x: var(--bs-card-cap-padding-y);
         height: 100%;
         width: var(--card-item-size);
 

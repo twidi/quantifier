@@ -4,9 +4,7 @@
 
     > table {
         height: 1px; /* hack to have elements with height 100% in cells */
-        border-radius: var(----bs-card-border-radius);
-        border-style: hidden;
-        box-shadow: 0 0 0 1px var(--bs-border-color);
+        border-radius: var(--bs-card-border-radius);
 
         td {
             height: 100%;

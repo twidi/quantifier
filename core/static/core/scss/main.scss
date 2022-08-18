@@ -7,14 +7,11 @@ body > nav:first-of-type {
         column-gap: 1rem;
         row-gap: 0.5rem;
     }
-    .navbar-brand { order: 1; }
-    #navbar-date-interval { order: 2; }
-    .navbar-toggler { order: 1; }
-    #navbar-content { order: 1; }
-    @media (min-width: 576px) {
-        #navbar-content { order: 4; }
+    #user_authenticated_dropdown ~ .dropdown-menu {
+        position: absolute;
     }
 }
+
 
 #content > .card {
     max-width: 50rem;

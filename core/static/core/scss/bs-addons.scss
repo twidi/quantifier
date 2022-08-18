@@ -26,6 +26,21 @@
 .opacity-5 { opacity: 0.05; }
 
 
+.w-05 { width: 0.5rem !important; }
+.h-05 { height: 0.5rem !important; }
+@for $i from 1 through 10 {
+    .w-#{$i} { width: #{$i}rem !important; }
+    .h-#{$i} { height: #{$i}rem !important; }
+    .w-min-#{$i} { min-width: #{$i}em !important; }
+    .w-min-r#{$i} { min-width: #{$i}rem !important; }
+    .w-max-#{$i} { max-width: #{$i}em !important; }
+    .w-max-r#{$i} { max-width: #{$i}rem !important; }
+}
+.w-min-r20 { min-width: 20rem !important; }
+.w-max-r20 { max-width: 20rem !important; }
+.w-min-r50 { min-width: 50rem !important; }
+.w-max-r50 { max-width: 50rem !important; }
+
 .bg-white-5 { background-color: rgba(255, 255, 255, 0.05); }
 .bg-white-10 { background-color: rgba(255, 255, 255, 0.1); }
 .bg-white-25 { background-color: rgba(255, 255, 255, 0.2); }

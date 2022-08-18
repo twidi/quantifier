@@ -1,0 +1,131 @@
+@import "variables";
+
+:root {
+
+    --bs-color-rgb: 217, 217, 217;
+    --bs-color: rgb(var(--bs-body-color-rgb));
+    --bs-link-hover-color: inherit;
+
+    --bs-body-color-rgb: var(--bs-color-rgb);
+    --bs-body-color: rgb(var(--bs-body-color-rgb));
+    --bs-body-bg-rgb: 24, 26, 32;
+    --bs-body-bg: rgb(var(--bs-body-bg-rgb));
+
+    --bs-primary-rgb: 103, 147, 237;
+    --bs-secondary-rgb: 194, 95, 255;
+    --bs-success-rgb: 164, 228, 144;
+    --bs-info-rgb: 23, 162, 184;
+    --bs-warning-rgb: 214, 136, 64;
+    --bs-danger-rgb: 237, 108, 108;
+
+    --bs-primary: rgb(var(--bs-primary-rgb));
+    --bs-secondary: rgb(var(--bs-secondary-rgb));
+    --bs-success: rgb(var(--bs-success-rgb));
+    --bs-info: rgb(var(--bs-info-rgb));
+    --bs-warning: rgb(var(--bs-warning-rgb));
+    --bs-danger: rgb(var(--bs-danger-rgb));
+
+    --bs-link-color: var(--bs-body-color);
+
+    --bs-muted-color-rgb: 127, 126, 140;
+    --bs-muted-color: rgb(var(--bs-muted-color-rgb));
+
+    --bs-content-bg-rgb: 38, 42, 52;
+    --bs-content-bg: rgb(var(--bs-content-bg-rgb));
+
+    //--bs-font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    //--bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    //--bs-body-font-family: var(--bs-font-sans-serif);
+
+    --bs-spacer-1: .25rem;  // 4px
+    --bs-spacer-2: .5rem;   // 8px
+    --bs-spacer-3: .75rem;  // 12px
+    --bs-spacer-4: 1rem;    // 16px
+    --bs-spacer-5: 1.25rem; // 20px
+    --bs-spacer-6: 1.5rem;  // 24px
+    --bs-spacer-7: 2rem;    // 32px
+
+    --fs-1: 1.5rem;   // 24px
+    --fs-2: 1.25rem;  // 20px
+    --fs-3: 1.125rem; // 18px
+    --fs-4: 1rem;     // 16px
+    --fs-5: 0.875rem; // 14px
+    --fs-6: 0.75rem;  // 12px
+
+    &, .card {
+        --bs-card-bg-rgb: var(--bs-content-bg-rgb);
+        --bs-card-bg: var(--bs-content-bg);
+
+        --bs-card-spacer: var(--bs-spacer-3);
+        --bs-card-spacer-x: var(--bs-card-spacer);
+        --bs-card-spacer-y: var(--bs-card-spacer);
+        --bs-card-title-spacer-y: 0rem;
+
+        --bs-card-border-width: 0px;
+        --bs-card-border-radius: var(--bs-card-spacer);
+        --bs-card-inner-border-radius: calc(var(--bs-card-border-radius) - 1px);
+        --bs-card-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
+    }
+
+    .btn {
+        line-height: 1;
+        --btn-size: var(--bs-spacer-4);
+        --bs-btn-padding-x: var(--bs-spacer-3);
+        --bs-btn-padding-y: var(--bs-spacer-2);
+        --bs-btn-color: var(--bs-color);
+        --bs-btn-border-width: 0px;
+        --bs-btn-border-radius: calc(var(--btn-size) / 2);
+        --bs-btn-box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        --bs-btn-focus-box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.125);
+
+        &-primary {
+            --bs-btn-color: var(--bs-color);
+            --bs-btn-bg: var(--bs-primary);
+            --bs-btn-hover-color: var(--bs-btn-color);
+            --bs-btn-hover-bg: var(--bs-btn-bg);
+            --bs-btn-active-color: var(--bs-btn-color);
+            --bs-btn-active-bg: var(--bs-btn-bg);
+            --bs-btn-disabled-color: var(--bs-btn-color);
+            --bs-btn-disabled-bg: var(--bs-btn-bg);
+        }
+
+        &-secondary {
+            --bs-btn-color: var(--bs-color);
+            --bs-btn-bg: var(--bs-secondary);
+            --bs-btn-hover-color: var(--bs-btn-color);
+            --bs-btn-hover-bg: var(--bs-btn-bg);
+            --bs-btn-active-color: var(--bs-btn-color);
+            --bs-btn-active-bg: var(--bs-btn-bg);
+            --bs-btn-disabled-color: var(--bs-btn-color);
+            --bs-btn-disabled-bg: var(--bs-btn-bg);
+        }
+
+    }
+
+    form, .select2-container--bootstrap-5 {
+        --bs-form-control-border-width: 0px;
+    }
+
+    .flatpickr-calendar {
+        --fpc-color: var(--bs-color);
+        --fpc-bg: var(--bs-content-bg);
+    }
+
+    .container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+        --bs-gutter-x: var(--bs-spacer-3);
+    }
+
+}
+
+
+.limited-full-width {
+    max-width: 50rem;
+    margin: 0 auto;
+}
+
+.btn {
+    box-shadow: 0 6px 6px rgba(0, 0, 0, 0.25);
+    .input-group & {
+        box-shadow: 0 3px 3px rgba(0, 0, 0, 0.25);
+    }
+}

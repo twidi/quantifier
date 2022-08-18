@@ -17,6 +17,7 @@
     --bs-spacer-4: 1.5rem; // 24px
     --bs-spacer-5: 2rem;   // 36px
     --bs-spacer-6: 3rem;   // 48px
+    --bs-spacer-7: 4rem;   // 72px
 
     --fs-1: calc(1.375rem + 1.5vw);
     --fs-2: calc(1.325rem + .9vw);
@@ -117,49 +118,49 @@ form:last-child, p:last-child {
     margin-bottom: 0;
 }
 
-@for $i from 0 through 6 {
+@for $i from 0 through 7 {
     .gap-#{$i} { gap: var(--bs-spacer-#{$i}) !important; }
 }
-@for $i from 0 through 6 {
+@for $i from 0 through 7 {
     .p-#{$i} { padding: var(--bs-spacer-#{$i}) !important; }
 }
-@for $i from 0 through 6 {
+@for $i from 0 through 7 {
     .px-#{$i} { padding-right: var(--bs-spacer-#{$i}) !important; padding-left: var(--bs-spacer-#{$i}) !important; }
 }
-@for $i from 0 through 6 {
+@for $i from 0 through 7 {
     .py-#{$i} { padding-top: var(--bs-spacer-#{$i}) !important; padding-bottom: var(--bs-spacer-#{$i}) !important; }
 }
-@for $i from 0 through 6 {
+@for $i from 0 through 7 {
     .ps-#{$i} { padding-left: var(--bs-spacer-#{$i}) !important; }
 }
-@for $i from 0 through 6 {
+@for $i from 0 through 7 {
     .pe-#{$i} { padding-right: var(--bs-spacer-#{$i}) !important; }
 }
-@for $i from 0 through 6 {
+@for $i from 0 through 7 {
     .pt-#{$i} { padding-top: var(--bs-spacer-#{$i}) !important; }
 }
-@for $i from 0 through 6 {
+@for $i from 0 through 7 {
     .pb-#{$i} { padding-bottom: var(--bs-spacer-#{$i}) !important; }
 }
-@for $i from 0 through 6 {
+@for $i from 0 through 7 {
     .m-#{$i} { margin: var(--bs-spacer-#{$i}) !important; }
 }
-@for $i from 0 through 6 {
+@for $i from 0 through 7 {
     .mx-#{$i} { margin-right: var(--bs-spacer-#{$i}) !important; margin-left: var(--bs-spacer-#{$i}) !important; }
 }
-@for $i from 0 through 6 {
+@for $i from 0 through 7 {
     .my-#{$i} { margin-top: var(--bs-spacer-#{$i}) !important; margin-bottom: var(--bs-spacer-#{$i}) !important; }
 }
-@for $i from 0 through 6 {
+@for $i from 0 through 7 {
     .ms-#{$i} { margin-left: var(--bs-spacer-#{$i}) !important; }
 }
-@for $i from 0 through 6 {
+@for $i from 0 through 7 {
     .me-#{$i} { margin-right: var(--bs-spacer-#{$i}) !important; }
 }
-@for $i from 0 through 6 {
+@for $i from 0 through 7 {
     .mt-#{$i} { margin-top: var(--bs-spacer-#{$i}) !important; }
 }
-@for $i from 0 through 6 {
+@for $i from 0 through 7 {
     .mb-#{$i} { margin-bottom: var(--bs-spacer-#{$i}) !important; }
 }
 @for $i from 1 through 6 {

@@ -10,7 +10,7 @@ from typing import Optional
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
-from django.db import models
+from django.db import models, DEFAULT_DB_ALIAS
 from django.db.models import Q, Sum, Deferrable, Count
 from django.urls import reverse
 from django.utils import timezone
@@ -449,6 +449,40 @@ class CategoryManager(OrderableManager.from_queryset(CategoryQuerySet), TreeMana
     pass
 
 
+class DeferrableNoValidateUniqueConstraint(models.UniqueConstraint):
+    """A unique constraint that can be deferred until the end of the transaction, with no validation before that"""
+
+    def __init__(
+        self,
+        *expressions,
+        fields=(),
+        name=None,
+        condition=None,
+        deferrable=None,
+        include=None,
+        opclasses=(),
+        violation_error_message=None,
+    ):
+        deferrable = deferrable or models.Deferrable.DEFERRED
+        super().__init__(
+            *expressions,
+            fields=fields,
+            name=name,
+            condition=condition,
+            deferrable=deferrable,
+            include=include,
+            opclasses=opclasses,
+            violation_error_message=violation_error_message,
+        )
+
+    def validate(self, model, instance, exclude=None, using=DEFAULT_DB_ALIAS):
+        if self.deferrable is models.Deferrable.DEFERRED:
+            # if the constraint is deferred, we don't validate it as this doesn't make sense until the end of the
+            # transaction
+            return
+        super().validate(model, instance, exclude, using)
+
+
 class Category(Orderable, MPTTModel):
     """A category belongs to a project and contains some quantities and some sub-categories"""
 
@@ -478,7 +512,7 @@ class Category(Orderable, MPTTModel):
                 condition=Q(parent__isnull=False),
                 violation_error_message="A sub-category with this name already exists in this category.",
             ),
-            models.UniqueConstraint(
+            DeferrableNoValidateUniqueConstraint(
                 name="%(app_label)s_%(class)s_order_parent_uniq",
                 fields=("parent", "sort_order"),
                 deferrable=Deferrable.DEFERRED,
@@ -503,6 +537,8 @@ class Category(Orderable, MPTTModel):
         if exclude and self.project_id:
             # to allow checking the constraints related to the project
             exclude.discard("project")
+            # and to the parent
+            exclude.discard("parent")
         return super().validate_constraints(exclude)
 
     def validate_unique(self, exclude=None):

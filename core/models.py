@@ -168,7 +168,6 @@ class Project(Orderable, models.Model):
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="projects")
     name = models.CharField(max_length=100)
-    description = models.TextField(blank=True)
     interval = models.CharField(
         max_length=10,
         choices=Intervals.as_choices(),
@@ -516,7 +515,6 @@ class Category(Orderable, MPTTModel):
 
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="categories")
     name = models.CharField(max_length=100)
-    description = models.TextField(blank=True)
     parent = TreeForeignKeyNoRoot("self", on_delete=models.CASCADE, null=True, blank=True, related_name="children")
     expected_quantity = models.PositiveIntegerField(null=True, blank=True)
 
@@ -645,8 +643,7 @@ class Quantity(models.Model):
     """A quantity belongs to a category"""
 
     category = TreeForeignKeyNoRoot(Category, on_delete=models.CASCADE, related_name="quantities")
-    name = models.CharField(max_length=100, blank=True)
-    description = models.TextField(blank=True)
+    notes = models.TextField(blank=True)
     value = models.PositiveIntegerField()
 
     datetime = models.DateTimeField(null=False, blank=False, default=timezone.now)

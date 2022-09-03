@@ -41,7 +41,7 @@
                             <span class="badge bg-secondary h-100 fs-3 qtt-value d-flex justify-content-center align-items-center fw-normal">{{ quantity.value }}</span>
                         </td>
                         <td>
-                            <div class="d-flex w-100 justify-content-between gap-2{% if not quantity.name and not quantity.description %} h-100 align-items-center{% endif %}">
+                            <div class="d-flex w-100 justify-content-between gap-2{% if not quantity.notes %} h-100 align-items-center{% endif %}">
                                 <div class="h5 mb-0">
                                     <a href="{{ quantity.category.get_quantities_url }}?date={{ date_str }}&interval={{ interval }}">{{ quantity.category.name }}</a>
                                     {% if quantity.category.in_between_ancestors %}
@@ -75,8 +75,7 @@
                                 </div>
                             </div>
                             <div class="mt-1">
-                                {% if quantity.name %}<p class="mb-0">{{ quantity.name }}</p>{% endif %}
-                                {% if quantity.description %}<small class="text-muted">{{ quantity.description }}</small>{% endif %}
+                                {% if quantity.notes %}<p class="text-muted">{{ quantity.notes|linebreaks }}</p>{% endif %}
                             </div>
                         </td>
                     </tr>

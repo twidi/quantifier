@@ -23,7 +23,6 @@ class ProjectBaseForm(ModelForm):
         model = Project
         fields = [
             "name",
-            "description",
             "interval",
             "quantity_name",
             "interval_quantity",
@@ -51,10 +50,6 @@ class ProjectBaseForm(ModelForm):
         for field in self.Meta.fields:
             if field == "interval":
                 self.fields[field].widget.attrs.update({"class": "form-select form-select-sm"})
-            elif field == "description":
-                self.fields["description"].widget.attrs.update(
-                    {"class": "form-control form-control-sm auto-reduce", "rows": 5}
-                )
             elif field != "goal_mode":
                 self.fields[field].widget.attrs.update({"class": "form-control form-control-sm"})
 
@@ -128,19 +123,15 @@ class ProjectReorderForm(ModelForm):
 class CategoryBaseForm(MPTTAdminForm):
     class Meta:
         model = Category
-        fields = ["name", "description", "expected_quantity"]
+        fields = ["name", "expected_quantity"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.fields["name"].widget.attrs.update({"class": "form-control form-control-sm"})
-        self.fields["description"].widget.attrs.update(
-            {"class": "form-control form-control-sm auto-reduce", "rows": 5}
-        )
         self.fields["expected_quantity"].widget.attrs.update({"class": "form-control form-control-sm"})
 
         self.fields["name"].widget.attrs["placeholder"] = "Name"
-        self.fields["description"].widget.attrs["placeholder"] = "Description"
         self.fields["expected_quantity"].widget.attrs["placeholder"] = "Planned quantity"
 
 
@@ -165,8 +156,8 @@ class CategoryCreateForm(CategoryBaseForm):
 class CategoryEditForm(CategoryBaseForm):
     class Meta(CategoryBaseForm.Meta):
         fields = CategoryBaseForm.Meta.fields.copy()
-        description_position = fields.index("description")
-        fields.insert(description_position + 1, "parent")
+        name_position = fields.index("name")
+        fields.insert(name_position + 1, "parent")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -246,7 +237,7 @@ class QuantityBaseForm(ModelForm):
 
     class Meta:
         model = Quantity
-        fields = ["value", "datetime", "category", "name", "description"]
+        fields = ["value", "datetime", "category", "notes"]
 
     @classmethod
     def get_date_args(cls, project, date, interval):
@@ -283,8 +274,7 @@ class QuantityBaseForm(ModelForm):
                 value_widget_attrs["title"] += " (or pick one from the list)"
         self.fields["value"].widget.attrs.update(value_widget_attrs)
 
-        self.fields["name"].widget.attrs.update({"class": "form-control form-control-sm"})
-        self.fields["description"].widget.attrs.update(
+        self.fields["notes"].widget.attrs.update(
             {"class": "form-control form-control-sm auto-reduce", "rows": 5}
         )
 
@@ -299,8 +289,7 @@ class QuantityBaseForm(ModelForm):
         #     }
         self.fields["datetime"].widget.attrs.update(date_attrs)
 
-        self.fields["name"].widget.attrs["placeholder"] = "Name"
-        self.fields["description"].widget.attrs["placeholder"] = "Description"
+        self.fields["notes"].widget.attrs["placeholder"] = "Optional notes"
         self.fields["datetime"].widget.attrs["placeholder"] = "Date & time"
 
         self.fields["category"].queryset = self.get_categories()

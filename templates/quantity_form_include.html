@@ -9,7 +9,7 @@
                 <span class="small">(or pick a sub-category)</span>
             </p>
         {% else %}
-            <p class="mb-1 fw-bold">This will add a quantity in the «{{ category.name }}» project in the chosen category.</p>
+            <p class="mb-1 fw-bold">This will add a quantity in the «{{ project.name }}» project in the chosen category.</p>
         {% endif %}
     {% endif %}
     <div class="input-group input-group-sm">
@@ -26,9 +26,6 @@
         {% elif field.name == 'category' %}
             {% include "bootstrap5/field.html" with field=form.category form_show_labels=True wrapper_class="mb-0" %}
         {% elif field.name != 'value' %}
-            {% if field.name == 'name' %}
-                <p class="mb-0">Optional fields:</p>
-            {% endif %}
             {% include "bootstrap5/field.html" with wrapper_class="mb-0" %}
         {% endif %}
     {% endfor %}

@@ -43,7 +43,7 @@ class ProjectBaseForm(ModelForm):
 
         layout_fields = []
         for field in self.fields:
-            if field == 'goal_mode':
+            if field == "goal_mode":
                 field = Field(field, wrapper_class="form-switch")
             layout_fields.append(field)
         self.helper.layout = Layout(*layout_fields)
@@ -57,8 +57,6 @@ class ProjectBaseForm(ModelForm):
                 )
             elif field != "goal_mode":
                 self.fields[field].widget.attrs.update({"class": "form-control form-control-sm"})
-
-
 
 
 class ProjectCreateForm(ProjectBaseForm):

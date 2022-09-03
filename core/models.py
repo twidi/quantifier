@@ -188,7 +188,7 @@ class Project(Orderable, models.Model):
         default=False,
         verbose_name="Goal mode",
         help_text="By default the limit quantity (and planned amounts in categories) are a maximum not to be exceeded. "
-                  "By checking this, the behavior is inverted: these values are a goal to reach, and can be exceeded.",
+        "By checking this, the behavior is inverted: these values are a goal to reach, and can be exceeded.",
     )
     quick_add_quantities = models.TextField(
         blank=True,

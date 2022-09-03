@@ -70,8 +70,8 @@ if DEBUG:
 
 MIDDLEWARE = []
 
-if DEBUG:
-    MIDDLEWARE.append("debug_toolbar.middleware.DebugToolbarMiddleware")
+# if DEBUG:
+#     MIDDLEWARE.append("debug_toolbar.middleware.DebugToolbarMiddleware")
 
 MIDDLEWARE += [
     "django.middleware.security.SecurityMiddleware",

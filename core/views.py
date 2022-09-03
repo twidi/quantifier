@@ -118,8 +118,6 @@ def get_date_and_interval_from_querystring(
     return date, interval, error_date
 
 
-
-
 class HomeView(DateAndIntervalMixin, TemplateView):
     template_name = "index.html"
 

@@ -1,22 +1,11 @@
 #projects {
-    .project-container {
-        padding: .5rem;
-        min-height: var(--card-item-size);
-
-        &:last-of-type {
-            min-height: 8rem;
-        }
-        > .card {
-            height: 100%;
+    > .card {
+        width: 100%;
+        @media (min-width: 43rem) { /* cannot use css custom property here: SHAME ON YOU CSS */
             width: var(--card-item-size);
         }
+        min-height: 8rem;
     }
-
-    h5 a {
-        color: inherit;
-        text-decoration: none;
-    }
-
 }
 
 .main-amount {

@@ -6,16 +6,31 @@
         {% if category %}
             <p class="mb-1">
                 <span class="fw-bold">This will add a quantity directly in the «{{ category.name }}» category</span>
-                {% if 'category' in form.fields %}<span class="small">(or pick a sub-category)</span>{% endif %}
+                <span class="small">(or pick a sub-category)</span>
             </p>
         {% else %}
-            <p class="mb-1 fw-bold">This will add a quantity in a chosen category.</p>
-            {% include "bootstrap5/field.html" with field=form.category form_show_labels=True wrapper_class="mb-0" %}
+            <p class="mb-1 fw-bold">This will add a quantity in the «{{ category.name }}» project in the chosen category.</p>
         {% endif %}
     {% endif %}
     <div class="input-group input-group-sm">
         {% include "field_include.html" with field=form.value no_errors=True wrapper_class="mb-0" %}
         {% if not form.instance.id %}<button class="btn btn-primary" type="submit">Add</button>{% endif %}
     </div>
-    {% include "quantity_form_more_fields_include.html" %}
+    {% for field in form %}
+        {% if field.name == 'datetime' %}
+            <div class="input-group datepicker-container flatpickr" data-alt-input="true" data-enable-time="true" data-wrap="true" data-click-opens="false"{% if "data-min-date" in field.field.widget.attrs %} data-min-date="{{ field.field.widget.attrs|dict_value:"data-min-date" }}"{% endif %}{% if "data-max-date" in field.field.widget.attrs %} data-max-date="{{ field.field.widget.attrs|dict_value:"data-max-date" }}"{% endif %}>
+                {{ field }}
+                <button class="btn btn-sm btn-outline-secondary input-group-btn" type="button" data-toggle title="Open calendar">{% icon "calendar" %}</button>
+                <button class="btn btn-sm btn-outline-secondary input-group-btn" type="button" data-clear title="Clear selected date">{% icon "xmark" %}</button>
+            </div>
+        {% elif field.name == 'category' %}
+            {% include "bootstrap5/field.html" with field=form.category form_show_labels=True wrapper_class="mb-0" %}
+        {% elif field.name != 'value' %}
+            {% if field.name == 'name' %}
+                <p class="mb-0">Optional fields:</p>
+            {% endif %}
+            {% include "bootstrap5/field.html" with wrapper_class="mb-0" %}
+        {% endif %}
+    {% endfor %}
+    <button class="btn btn-sm btn-primary" type="submit">{% if form.instance.id %}Update{% else %}Add{% endif %} quantity</button>
 </form>

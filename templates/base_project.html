@@ -1,66 +1,71 @@
 {% extends "base.html" %}
 {% load i18n mptt_tags core_utils %}
 
-{% block pre-content %}
-    <nav class="navbar bg-light mt-0">
-        <div class="mx-3 text-center d-flex flex-column w-100">
-            <div class="d-flex justify-content-center align-items-center gap-2">
-                <span class="invisible p-2">{% icon "pencil" %}</span>
-                <div class="dropdown">
-                    <a class="nav-link dropdown-toggle mb-2" href="{{ project.get_absolute_url }}?date={{ date_str }}&interval={{ interval }}" id="project-selector" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <span class="h1 text-wrap">{{ project.name }}</span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-center" aria-labelledby="project-selector">
-                        {% for other_project in projects %}
-                            <li><a class="dropdown-item{% if project == other_project %} active{% endif %}" href="{{ other_project.get_absolute_url }}?date={{ date_str }}">{{ other_project.name }}</a></li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                <details class="no-marker as-dropdown project-form-container text-start focus-first-input scroll-into-view">
-                    <summary class="text-muted p-2" title="Edit this project">
-                        <span class="details-toggle">
-                            {% icon "pencil" classes="details-toggle-open" %}
-                            {% icon "circle-xmark" classes="details-toggle-close" %}
-                        </span>
-                    </summary>
-                    <div class="card details-dropdown large-details project-form-card fs-6 fw-normal">
-                        <div class="card-body">
+{% block content %}
+    <div class="d-flex flex-column gap-7 limited-full-width mb-7">
 
-                            {% if nb_projects %}
-                                <ul class="nav nav-tabs" role="tablist">
-                                    <li class="nav-item" role="presentation">
-                                        <a href="{{ project.get_edit_url }}?date={{ date_str }}&interval={{ interval }}{% if next_category %}&next=category:{{ next_category.id }}{% endif %}" class="nav-link focus-first-input active scroll-into-view" id="project-tab-edit" data-bs-toggle="tab" data-bs-target="#project-tab-edit-content" type="button" role="tab" aria-controls="project-tab-edit" aria-selected="true">Edit project
-                                        </a>
-                                    </li>
-                                    <li class="nav-item" role="presentation">
-                                        <a href="{{ project.get_reorder_url }}?date={{ date_str }}&interval={{ interval }}{% if next_category %}&next=category:{{ next_category.id }}{% endif %}" class="nav-link focus-first-input" id="project-tab-order" data-bs-toggle="tab" data-bs-target="#project-tab-order-content" type="button" role="tab" aria-controls="project-tab-order" aria-selected="true">Change position
-                                        </a>
-                                    </li>
-                                </ul>
-                                <div class="tab-content mt-3">
-                                    <div class="tab-pane active" id="project-tab-edit-content" role="tabpanel" aria-labelledby="project-tab-edit">
-                            {% endif %}
+        {% block project_title %}
+            <div>
+                <div class="hstack gap-3 justify-content-center">
+                    <span class="btn btn-round invisible"></span>
+                    <span class="fs-1">{{ project.name }}</span>
+                    <details class="no-marker as-dropdown project-form-container text-start focus-first-input scroll-into-view">
+                        <summary class="text-muted p-2" title="Edit this project">
+                            <span class="details-toggle fs-3">
+                                {% icon "pencil" "solid" classes="fa-fw details-toggle-open" %}
+                                {% icon "xmark" "solid" classes="fa-fw details-toggle-close" %}
+                            </span>
+                        </summary>
+                        <div class="card details-dropdown large-details project-form-card fs-6 fw-normal">
+                            <div class="card-body">
 
-                            {% project_form project next_category=category %}
-                            <hr />
-                            {% project_delete_form project next_category=category %}
+                                {% if nb_projects %}
+                                    <ul class="nav nav-tabs" role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                            <a href="{{ project.get_edit_url }}?date={{ date_str }}&interval={{ interval }}{% if next_category %}&next=category:{{ next_category.id }}{% endif %}" class="nav-link focus-first-input active scroll-into-view" id="project-tab-edit" data-bs-toggle="tab" data-bs-target="#project-tab-edit-content" type="button" role="tab" aria-controls="project-tab-edit" aria-selected="true">Edit project
+                                            </a>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <a href="{{ project.get_reorder_url }}?date={{ date_str }}&interval={{ interval }}{% if next_category %}&next=category:{{ next_category.id }}{% endif %}" class="nav-link focus-first-input" id="project-tab-order" data-bs-toggle="tab" data-bs-target="#project-tab-order-content" type="button" role="tab" aria-controls="project-tab-order" aria-selected="true">Change position
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content mt-3">
+                                        <div class="tab-pane active" id="project-tab-edit-content" role="tabpanel" aria-labelledby="project-tab-edit">
+                                {% endif %}
 
-                            {% if nb_projects %}
+                                {% project_form project next_category=category %}
+                                <hr />
+                                {% project_delete_form project next_category=category %}
+
+                                {% if nb_projects %}
+                                        </div>
+                                        <div class="tab-pane" id="project-tab-order-content" role="tabpanel" aria-labelledby="project-tab-order">
+                                            {% project_reorder_form user=user project=project next_category=category %}
+                                        </div>
                                     </div>
-                                    <div class="tab-pane" id="project-tab-order-content" role="tabpanel" aria-labelledby="project-tab-order">
-                                        {% project_reorder_form user=user project=project next_category=category %}
-                                    </div>
-                                </div>
-                            {% endif %}
+                                {% endif %}
 
+                            </div>
                         </div>
-                    </div>
-                </details>
+                    </details>
+                </div>
+                <div class="text-muted text-center">
+                    {{ project.short_description }}
+                    {% with interval=interval|interval %}({{ interval.unit_name }} view){% endwith %}
+                </div>
             </div>
-            <p class="mb-0">
-                {{ project.short_description }}
-                {% with interval=interval|interval %}({{ interval.unit_name }} view){% endwith %}
-            </p>
-        </div>
-    </nav>
-{% endblock %}
+        {% endblock %}
+
+        {% block project_header %}
+        {% endblock project_header %}
+
+    </div>
+
+    <div class="d-flex flex-column gap-7">
+        {% block project_content %}
+        {% endblock project_content %}
+    </div>
+
+
+{% endblock content %}

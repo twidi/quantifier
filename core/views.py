@@ -133,22 +133,6 @@ class ProjectsView(DateAndIntervalMixin, LoginRequiredMixin, TemplateView):
                     project.summed_quantities = project.get_summed_quantities(self.date, self.interval)
                 else:
                     project.summed_quantities = project.get_summed_quantities()
-                if (
-                    not project.has_interval
-                    or not self.interval
-                    or Intervals(self.interval) <= Intervals(project.interval)
-                ):
-                    min_date, max_date, initial_date = QuantityInProjectForm.get_date_args(
-                        project, self.date, project.interval
-                    )
-                    project.quick_add_form = QuantityInProjectForm(
-                        project=project, min_date=min_date, max_date=max_date, initial={"datetime": initial_date}
-                    )
-                else:
-                    project.no_quick_form_reason = f"must be in {Intervals(project.interval).unit_name} view{ ' (or less)' if project.interval != 'daily' else ''} to add quantity"
-            else:
-                project.summed_quantities = {}
-                project.no_quick_form_reason = "categories not configured yet"
         return context
 
 
@@ -167,7 +151,6 @@ class OwnedProjectMixin(DateAndIntervalMixin, LoginRequiredMixin, UserPassesTest
             "main_category": self.project.root_category,
             "current_category": None,
             "categories": self.project.main_categories,
-            "can_add_quantity": not self.project.has_interval or Intervals(self.interval) <= self.project.interval,
         }
         return super().get_context_data(**context)
 
@@ -374,12 +357,6 @@ class CategoryDeleteView(OwnedCategoryMixin, CategoryFormViewMixin, DeleteView):
 class QuantityCreateBaseView(CreateView):
     template_name = "quantity_form.html"
     model = Quantity
-
-    def dispatch(self, request, *args, **kwargs):
-        result = super().dispatch(request, *args, **kwargs)
-        if self.project.has_interval and self.interval != self.project.interval:
-            raise Http404()
-        return result
 
     def get_form_kwargs(self):
         min_date, max_date, initial_date = QuantityInProjectForm.get_date_args(self.project, self.date, self.interval)

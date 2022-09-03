@@ -246,7 +246,7 @@ class QuantityBaseForm(ModelForm):
 
     class Meta:
         model = Quantity
-        fields = ["value", "datetime", "name", "description"]
+        fields = ["value", "datetime", "category", "name", "description"]
 
     @classmethod
     def get_date_args(cls, project, date, interval):
@@ -260,9 +260,17 @@ class QuantityBaseForm(ModelForm):
             min_date = max_date = None
         return min_date, max_date, initial_datetime
 
-    def __init__(self, min_date, max_date, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def get_categories(self):
+        return self.project.visible_categories
+
+    def __init__(self, project, min_date, max_date, *args, **kwargs):
+        self.project = project
         self.min_date, self.max_date = min_date, max_date
+
+        if project.unique_quick_add_quantity and (initial := (kwargs.get("initial") or {})).get('value') is None:
+            kwargs["initial"] = initial | {"value": project.unique_quick_add_quantity}
+
+        super().__init__(*args, **kwargs)
 
         value_widget_attrs = {
             "class": "form-control",
@@ -271,8 +279,7 @@ class QuantityBaseForm(ModelForm):
         }
         if self.project.quick_add_quantities:
             value_widget_attrs["list"] = f"project-{self.project.pk}-quick_add_quantities"
-            if len(quick_add_quantities := self.project.quick_add_quantities_as_list) == 1:
-                self.fields["value"].initial = quick_add_quantities[0]
+            if not project.unique_quick_add_quantity:
                 value_widget_attrs["title"] += " (or pick one from the list)"
         self.fields["value"].widget.attrs.update(value_widget_attrs)
 
@@ -296,6 +303,11 @@ class QuantityBaseForm(ModelForm):
         self.fields["description"].widget.attrs["placeholder"] = "Description"
         self.fields["datetime"].widget.attrs["placeholder"] = "Date & time"
 
+        self.fields["category"].queryset = self.get_categories()
+        self.fields["category"].empty_label = None
+        self.fields["category"].label = "Category:"
+        self.fields["category"].widget.attrs.update({"class": "form-select form-select-sm autocomplete"})
+
     def clean_datetime(self):
         date = self.cleaned_data["datetime"]
         if (
@@ -312,70 +324,21 @@ class QuantityBaseForm(ModelForm):
 
 
 class QuantityInProjectForm(QuantityBaseForm):
-    class Meta(QuantityBaseForm.Meta):
-        fields = ["category"] + QuantityBaseForm.Meta.fields
 
     def __init__(self, project, min_date, max_date, *args, **kwargs):
-        self.project = project
-        super().__init__(min_date, max_date, *args, **kwargs)
+        super().__init__(project, min_date, max_date, *args, **kwargs)
         self.prefix = f"project-{project.pk}-qtt-" + (f"{self.instance.pk}" if self.instance.pk else "new")
-
-        self.fields["value"].widget.attrs["placeholder"] = ""
-
-        class CategoryChoiceField(TreeNodeChoiceFieldNoRoot):
-            def label_from_instance(self, obj):
-                # project.summed_quantities must be defined by the caller by calling get_summed_quantities()
-                summed = project.summed_quantities[obj]
-                result = super().label_from_instance(obj)
-                result = f'{result} &nbsp;&nbsp;-&nbsp;&nbsp; {summed["used"]}'
-                if summed.get("expected"):
-                    result += f'/ {summed["expected"]}'
-                    if summed["unexpected"]:
-                        result += f' (+ {summed["unexpected"]})'
-                    if summed["expected_not_used"]:
-                        result += f' (- {summed["expected_not_used"]})'
-
-                return mark_safe(result)
-
-        self.fields["category"].queryset = project.visible_categories
-        categories = list(project.visible_categories)
-        if len(categories) > 1:
-            self.fields["category"].__class__ = CategoryChoiceField
-        else:
-            self.fields["category"].initial = categories[0] if categories else None
-        self.fields["category"].empty_label = mark_safe("&nbsp;")
-        self.fields["category"].widget.attrs.update(
-            {
-                "class": "form-select form-select-sm autocomplete",
-                "title": "Select a category",
-            }
-        )
 
 
 class QuantityInCategoryForm(QuantityBaseForm):
-    class Meta(QuantityBaseForm.Meta):
-        fields = QuantityBaseForm.Meta.fields.copy()
-        value_position = fields.index("datetime")
-        fields.insert(value_position + 1, "category")
-
     def get_categories(self):
-        return self.instance.category.get_descendants(include_self=True)
+        return self.category.get_descendants(include_self=True)
 
     def __init__(self, category, min_date, max_date, *args, **kwargs):
-        self.project = category.project
-        super().__init__(min_date, max_date, *args, **kwargs)
+        self.category = category
+        super().__init__(category.project, min_date, max_date, *args, **kwargs)
         self.prefix = f"category-{category.pk}-qtt-" + (f"{self.instance.pk}" if self.instance.pk else "new")
         self.instance.category = category
-
-        self.fields["category"].queryset = self.get_categories()
-        categories = list(self.fields["category"].queryset)
-        if len(categories) > 1:
-            self.fields["category"].initial = categories[0]
-            self.fields["category"].empty_label = None
-            self.fields["category"].label = "Category:"
-            self.fields["category"].widget.attrs.update({"class": "form-select form-select-sm autocomplete"})
-        else:
-            del self.fields["category"]
 
 
 class QuantityEditForm(QuantityInCategoryForm):

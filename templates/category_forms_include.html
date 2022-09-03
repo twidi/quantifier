@@ -1,76 +1,34 @@
 {% load core_utils crispy_forms_tags %}
 <div class="card details-dropdown category-forms fs-6 fw-normal">
     <div class="card-body">
-
-        {% if current_category != category %}
-            <div class="d-flex justify-content-between align-items-center small mb-2">
-                <a href="{{ category.get_absolute_url }}?date={{ date_str }}&interval={{ interval }}">Go to category page</a>
-                <a href="{{ category.get_quantities_url }}?date={{ date_str }}&interval={{ interval }}">Show quantities</a>
-            </div>
+        {% with siblings=category.get_siblings %}
+        {% if siblings %}
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a href="{{ category.get_edit_url }}?date={{ date_str }}&interval={{ interval }}{% if next_category %}&next=category:{{ next_category.id }}{% endif %}" class="nav-link focus-first-input active scroll-into-view" id="category-tab-edit-{{ category.id }}-self" data-bs-toggle="tab" data-bs-target="#category-tab-content-edit-{{ category.id }}-self" type="button"
+                            role="tab" aria-controls="category-tab-content-edit-{{ category.id }}-self" aria-selected="true">Edit category
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a href="{{ category.get_reorder_url }}?date={{ date_str }}&interval={{ interval }}{% if next_category %}&next=category:{{ next_category.id }}{% endif %}" class="nav-link focus-first-input" id="category-tab-edit-{{ category.id }}-order" data-bs-toggle="tab" data-bs-target="#category-tab-content-edit-{{ category.id }}-order" type="button"
+                            role="tab" aria-controls="category-tab-content-edit-{{ category.id }}-order" aria-selected="true">Change position
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content mt-3">
+                <div class="tab-pane active" id="category-tab-content-edit-{{ category.id }}-self" role="tabpanel" aria-labelledby="category-tab-edit-{{ category.id }}-self">
         {% endif %}
 
-        <ul class="nav nav-tabs category-forms-tabs" role="tablist">
-            <li class="nav-item" role="presentation">
-                <a href="{{ category.get_add_quantity_url }}?date={{ date_str }}&interval={{ interval }}{% if next_category %}&next=category:{{ next_category.id }}{% endif %}" class="nav-link focus-first-input active" id="category-tab-quantity-{{ category.id }}" data-bs-toggle="tab" data-bs-target="#category-tab-content-quantity-{{ category.id }}" type="button"
-                        role="tab" aria-controls="category-tab-content-quantity-{{ category.id }}" aria-selected="true">Add quantity
-                </a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a href="{{ category.get_add_category_url }}?date={{ date_str }}&interval={{ interval }}{% if next_category %}&next=category:{{ next_category.id }}{% endif %}" class="nav-link focus-first-input" id="category-tab-category-{{ category.id }}" data-bs-toggle="tab" data-bs-target="#category-tab-content-category-{{ category.id }}" type="button"
-                        role="tab" aria-controls="category-tab-content-category-{{ category.id }}" aria-selected="true">Add category
-                </a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a href="{{ category.get_edit_url }}?date={{ date_str }}&interval={{ interval }}{% if next_category %}&next=category:{{ next_category.id }}{% endif %}" class="nav-link focus-first-input scroll-into-view" id="category-tab-edit-{{ category.id }}" data-bs-toggle="tab" data-bs-target="#category-tab-content-edit-{{ category.id }}" type="button"
-                        role="tab" aria-controls="category-tab-content-edit-{{ category.id }}" aria-selected="true">Edit
-                </a>
-            </li>
-        </ul>
-        <div class="tab-content mt-3">
-            <div class="tab-pane active" id="category-tab-content-quantity-{{ category.id }}" role="tabpanel" aria-labelledby="category-tab-quantity-{{ category.id }}">
-                {% if can_add_quantity %}
-                    {% quantity_in_category_form category=category next_category=next_category initial_value=self_expected_not_used %}
-                {% else %}
-                    {% with interval=project.interval|interval %}
-                        <p class="callout callout-danger">The top date selector must be in <strong>{{ interval.unit_name }}</strong>{% if interval != 'daily' %} (or less){% endif %} view to add a quantity in this project.</p>
-                    {% endwith %}
-                {% endif %}
-            </div>
-            <div class="tab-pane" id="category-tab-content-category-{{ category.id }}" role="tabpanel" aria-labelledby="category-tab-category-{{ category.id }}">
-                {% category_form project=project parent_category=category next_category=next_category %}
-            </div>
-            <div class="tab-pane" id="category-tab-content-edit-{{ category.id }}" role="tabpanel" aria-labelledby="category-tab-edit-{{ category.id }}">
-                {% with siblings=category.get_siblings %}
-                    {% if siblings %}
-                        <ul class="nav nav-tabs" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <a href="{{ category.get_edit_url }}?date={{ date_str }}&interval={{ interval }}{% if next_category %}&next=category:{{ next_category.id }}{% endif %}" class="nav-link focus-first-input active scroll-into-view" id="category-tab-edit-{{ category.id }}-self" data-bs-toggle="tab" data-bs-target="#category-tab-content-edit-{{ category.id }}-self" type="button"
-                                        role="tab" aria-controls="category-tab-content-edit-{{ category.id }}-self" aria-selected="true">Edit category
-                                </a>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <a href="{{ category.get_reorder_url }}?date={{ date_str }}&interval={{ interval }}{% if next_category %}&next=category:{{ next_category.id }}{% endif %}" class="nav-link focus-first-input" id="category-tab-edit-{{ category.id }}-order" data-bs-toggle="tab" data-bs-target="#category-tab-content-edit-{{ category.id }}-order" type="button"
-                                        role="tab" aria-controls="category-tab-content-edit-{{ category.id }}-order" aria-selected="true">Change position
-                                </a>
-                            </li>
-                        </ul>
-                        <div class="tab-content mt-3">
-                            <div class="tab-pane active" id="category-tab-content-edit-{{ category.id }}-self" role="tabpanel" aria-labelledby="category-tab-edit-{{ category.id }}-self">
-                    {% endif %}
+        {% category_form project=project category=category next_category=next_category %}
+        <hr />
+        {% category_delete_form category=category next_category=next_category %}
 
-                    {% category_form project=project category=category next_category=next_category %}
-                    <hr />
-                    {% category_delete_form category=category next_category=next_category %}
-
-                    {% if siblings %}
-                            </div>
-                            <div class="tab-pane" id="category-tab-content-edit-{{ category.id }}-order" role="tabpanel" aria-labelledby="category-tab-edit-{{ category.id }}-order">
-                                {% category_reorder_form category=category next_category=next_category %}
-                            </div>
-                        </div>
-                    {% endif %}
-                {% endwith %}
+        {% if siblings %}
+                </div>
+                <div class="tab-pane" id="category-tab-content-edit-{{ category.id }}-order" role="tabpanel" aria-labelledby="category-tab-edit-{{ category.id }}-order">
+                    {% category_reorder_form category=category next_category=next_category %}
+                </div>
             </div>
-        </div>
-    </div>
+        {% endif %}
+    {% endwith %}
 </div>

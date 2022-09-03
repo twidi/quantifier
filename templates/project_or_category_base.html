@@ -6,14 +6,16 @@
     <link rel="stylesheet" href="{% sass_src "core/scss/pages/project_base.scss" %}" />
 {% endblock %}
 
-{% block content %}
+{% block project_header %}
+
+    {{ block.super }}
 
     {% if error_date %}
-        <div class="callout callout-danger">Given date «<strong>{{ error_date }}</strong>» is invalid. Switched to current {{ project.interval_name }}.</div>
+        <div class="callout callout-danger my-0">Given date «<strong>{{ error_date }}</strong>» is invalid. Switched to current {{ project.interval_name }}.</div>
     {% endif %}
 
     {% if current_category %}
-        <h2 class="category-title text-center mt-4 mb-4">
+        <span class="text-center fs-2 ms-7">
             <a href="{% if view.context_object_name == 'quantities' %}{{ project.get_quantities_url }}{% else %}{{ project.get_absolute_url }}{% endif %}?date={{ date_str }}&interval={{ interval }}" class="text-muted" title="Back to project home">Project</a>
             {% for parent_category in category.get_ancestors %}
                 {% if parent_category.parent_id %}
@@ -22,26 +24,50 @@
                 {% endif %}
             {% endfor %}
             <span class="small text-muted">{% icon_xs "chevron-right" "solid" %}</span>
-            <a href="{% if view.context_object_name == 'quantities' %}{{ category.get_quantities_url }}{% else %}{{ category.get_absolute_url }}{% endif %}?date={{ date_str }}&interval={{ interval }}">{{ category.name }}</a>
-            <details class="no-marker as-dropdown focus-first-input scroll-into-view text-start text-muted d-inline-block ms-1">
-                <summary>
-                    <span class="details-toggle small">
-                        {% icon "circle-plus" classes="details-toggle-open" %}
-                        {% icon "circle-xmark" classes="details-toggle-close" %}
-                    </span>
-                </summary>
-                {% include "category_forms_include.html" with category=category next_category=category %}
-            </details>
-        </h2>
-    {% elif description %}
-        <details>
-            <summary class="text-muted">Description</summary>
-                <p class="callout">{{ project.description }}</p>
-        </details>
+            <div class="d-inline-flex gap-3">
+                <a href="{% if view.context_object_name == 'quantities' %}{{ category.get_quantities_url }}{% else %}{{ category.get_absolute_url }}{% endif %}?date={{ date_str }}&interval={{ interval }}">{{ category.name }}</a>
+                <details class="no-marker as-dropdown focus-first-input scroll-into-view text-start text-muted d-inline-block ms-1">
+                    <summary>
+                        <span class="details-toggle fs-3">
+                            {% icon "pencil" "solid" classes="fa-fw details-toggle-open" %}
+                            {% icon "xmark" "solid" classes="fa-fw details-toggle-close" %}
+                        </span>
+                    </summary>
+                    {% include "category_forms_include.html" with category=category next_category=category %}
+                </details>
+            </div>
+        </span>
     {% endif %}
 
-    <div class="d-flex justify-content-center position-relative">
-        {% include "project_or_category_main_amount_include.html" with summed_quantities=project.summed_quantities|dict_value:main_category %}
+{% with summed_quantities=project.summed_quantities|dict_value:main_category %}
+    <div class="d-flex justify-content-center align-items-center gap-3">
+        {% if current_category %}
+            <span class="btn btn-round invisible"></span>
+        {% endif %}
+        <span class="w-min-3 text-center fs-1 px-4 py-2 rounded-3 bg-white-5 {% if summed_quantities.goal_reached %}text-success{% elif summed_quantities.limit_exceeded %}text-danger{% endif %}">
+            {{ summed_quantities.used }} {{ project.quantity_name }}
+        </span>
+        {% if current_category %}
+            <details class="no-marker as-dropdown focus-first-input scroll-into-view text-start text-muted d-inline-block ms-1">
+                <summary>
+                    <span class="details-toggle">
+                        <span class="btn btn-round btn-primary details-toggle-open">
+                            {% icon "plus" "solid" size="xl" %}
+                        </span>
+                        <span class="btn btn-round btn-primary details-toggle-close">
+                            {% icon "xmark" "solid" %}
+                        </span>
+                    </span>
+                </summary>
+                <div class="card details-dropdown category-forms">
+                    <div class="card-body">
+                        {% quantity_in_category_form category=current_category next_category=current_category initial_value=summed_quantities.self_expected_not_used %}
+                    </div>
+                </div>
+            </details>
+        {% endif %}
     </div>
+    {% gauge main_object summed_quantities %}
+{% endwith %}
 
-{% endblock %}
+{% endblock project_header %}

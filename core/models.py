@@ -147,11 +147,11 @@ def get_interval_str(date: datetime.date, interval: Intervals):
     if interval == Intervals.weekly:
         result = f'Week {date.strftime("%W")} of {date.strftime("%Y")}'
         if start_date.month == end_date.month:
-            result += f' ({start_date.day} to {end_date.day} {end_date.strftime("%B")})'
+            result += f' - {start_date.day} to {end_date.day} {end_date.strftime("%B")}'
         elif start_date.year == end_date.year:
-            result += f' ({start_date.strftime("%-d %B")} to {end_date.strftime("%-d %B")})'
+            result += f' - {start_date.strftime("%-d %B")} to {end_date.strftime("%-d %B")}'
         else:
-            result += f' ({start_date.strftime("%-d %B")} to {end_date.strftime("%-d %B %Y")})'
+            result += f' - {start_date.strftime("%-d %B")} to {end_date.strftime("%-d %B %Y")}'
         return result
 
     if interval == Intervals.monthly:
@@ -266,6 +266,11 @@ class Project(Orderable, models.Model):
             return [int(q) for q in (self.quick_add_quantities or "").replace(" ", "").split(",")]
         except ValueError:
             return []
+
+    @cached_property
+    def unique_quick_add_quantity(self) -> Optional[int]:
+        quantities = self.quick_add_quantities_as_list
+        return quantities[0] if len(quantities) == 1 else None
 
     def get_absolute_url(self):
         return reverse("project_details", kwargs={"project_pk": self.pk})
@@ -426,6 +431,29 @@ class Project(Orderable, models.Model):
                     ),
                     "total_unexpected": really_available + res_cat["used_not_expected"] + res_cat["unexpected"],
                 }
+
+            if self.goal_mode:
+                res_cat["goal_reached"] = False
+                if final_planned := (interval_quantity if is_root else 0) or res_cat.get("expected"):
+                    res_cat.update(
+                        {
+                            "goal_planned": final_planned,
+                            "goal_max_value": max(final_planned, res_cat["used"]),
+                            "gaol_diff": abs(res_cat["used"] - final_planned),
+                            "goal_reached": res_cat["used"] >= final_planned,
+                        }
+                    )
+
+            else:
+                res_cat["limit_exceeded"] = False
+
+                used_planned_overflow = res_cat.get("unexpected", 0)
+                if is_root and (max_unplanned := res_cat.get("total_unexpected")):
+                    used_in_unplanned = res_cat.get("used_not_expected", 0)
+                    used_unplanned = used_in_unplanned + used_planned_overflow
+                    res_cat["limit_exceeded"] = used_unplanned > max_unplanned
+                elif used_planned_overflow:
+                    res_cat["limit_exceeded"] = True
 
         update_count(self.root_category, is_root=True)
 

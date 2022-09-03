@@ -1,0 +1,34 @@
+{% if over_limit %}
+    <div class="gauge-error">
+        (planned exceed max amount by {{ over_limit }})
+        <div class="gauge-container gauge-fake">
+            <div class="gauge-text gauge-text-top">P</div>
+            <div class="gauge-text gauge-text-bottom">L</div>
+            <div class="gauge-bars"></div>
+        </div>
+    </div>
+{% elif gauge %}
+{#<small class="fs-6">[[{{  gauge  }}]]</small>#}
+<div class="gauge-container{% if gauge.goal_mode %} gauge-goal-mode{% endif %}">
+    {% for line in gauge.text_lines %}
+        <div class="gauge-text gauge-text-{{ line.placement }}">
+            {% for side in line.sides %}
+                <span>
+                {% for part in side %}
+                    <span{% if part.kind %} class="gauge-text-{{ part.kind }}"{% endif %}>{% if part.kind == "side-name" %}{{ part.text.0 }}<span>{{ part.text|slice:"1:" }}</span>{% else %}{{ part.text }}{% endif %}</span>
+                {% endfor %}
+                </span>
+            {% endfor %}
+        </div>
+    {% endfor %}
+    <div class="gauge-bars">
+        {% for side in gauge.bars_sides %}
+            <div class="gauge-{{ side.placement }}" style="--gauge-side-width: {{ side.percent }}%">
+                {% for part in side.parts %}
+                    <span{% if part.kind %} class="gauge-bar-{{ part.kind }}"{% endif %} style="--gauge-part-width: {{ part.percent }}%"></span>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}

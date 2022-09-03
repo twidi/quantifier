@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, NamedTuple, Literal, Union
 
 from django.template.defaulttags import register
 from django.utils.safestring import mark_safe
@@ -18,7 +18,7 @@ from core.forms import (
     QuantityEditForm,
     QuantityDeleteForm,
 )
-from core.models import Intervals, get_interval_str
+from core.models import Intervals, get_interval_str, Project
 
 
 @register.filter
@@ -227,3 +227,303 @@ def sub(value, arg):
 @register.filter
 def mul(value, arg):
     return value * arg
+
+
+class TextPart(NamedTuple):
+    text: str
+    kind: Optional[Literal["used", "overflow", "left", "side-name"]] = None
+
+    @classmethod
+    def new(cls, value: Union[float, str], kind: Optional[Literal["used", "overflow", "left"]] = None):
+        return cls(f"{value}", kind)
+
+
+class BarPart(NamedTuple):
+    percent: float
+    kind: Optional[Literal["used", "overflow", "left"]] = None
+
+    @classmethod
+    def new(cls, ratio: float, kind: Optional[Literal["used", "overflow", "left"]] = None):
+        return cls(ratio * 100, kind)
+
+
+def extend_texts_or_bars(list_, func, args):
+    list_.extend(
+        func(*((subargs,) if isinstance(subargs, (str, float, int)) else subargs))
+        for subargs in args
+        if subargs not in (None, "")
+    )
+
+
+@register.inclusion_tag("gauge.html", takes_context=True)
+def gauge(context, obj, summed_quantities):
+    project = context["project"]
+    if project.goal_mode and not summed_quantities.get("goal_planned"):
+        return {}
+    if not project.goal_mode and not summed_quantities.get("expected"):
+        return {}
+
+    is_for_project = isinstance(obj, Project)
+    interval_quantity = summed_quantities.get("interval_quantity") or project.interval_quantity
+    used_total = summed_quantities.get("used")
+    planned = summed_quantities.get("expected", 0)
+    used_planned_overflow = summed_quantities.get("unexpected", 0)
+    left_in_planned = summed_quantities.get("expected_not_used", 0)
+    used_in_planned = planned - left_in_planned
+    used_in_unplanned = summed_quantities.get("used_not_expected", 0)
+    used_unplanned = used_in_unplanned + used_planned_overflow
+
+    if is_for_project and (max_unplanned := summed_quantities.get("total_unexpected")):
+        left_in_unplanned = max_unplanned - used_unplanned
+    else:
+        max_unplanned = left_in_unplanned = None
+        # if _used_in_planned < planned:
+        #     used_unplanned = _used_in_unplanned
+        #
+    raw_data = {
+        "used_total": used_total,
+        "planned": planned,
+        "used_planned_overflow": used_planned_overflow,
+        "left_in_planned": left_in_planned,
+        "used_in_planned": used_in_planned,
+        "used_in_unplanned": used_in_unplanned,
+        "used_unplanned": used_unplanned,
+        "max_unplanned": max_unplanned,
+        "left_in_unplanned": left_in_unplanned,
+    }
+    left_top_texts = []
+    left_bottom_texts = []
+    left_bars = []
+    right_top_texts = []
+    right_bottom_texts = []
+    right_bars = []
+
+    RTtexts = lambda *args: extend_texts_or_bars(right_top_texts, TextPart.new, args)
+    RBtexts = lambda *args: extend_texts_or_bars(right_bottom_texts, TextPart.new, args)
+    Rbars = lambda *args: extend_texts_or_bars(right_bars, BarPart.new, args)
+    LTtexts = lambda *args: extend_texts_or_bars(left_top_texts, TextPart.new, args)
+    LBtexts = lambda *args: extend_texts_or_bars(left_bottom_texts, TextPart.new, args)
+    Lbars = lambda *args: extend_texts_or_bars(left_bars, BarPart.new, args)
+
+    left_percent = 0
+
+    # fmt: off
+    if interval_quantity and planned and (planned_over_limit := max(0, planned - interval_quantity)):
+
+        if project.goal_mode:
+            LBtexts(
+                ("Planned goal exceeds the", "warning"),
+                (interval_quantity, "used"),
+                ("total one by", "warning"),
+                (planned_over_limit, "overflow"),
+            )
+        else:
+            LBtexts(
+                ("Planned exceeds the", "warning"),
+                (interval_quantity, "used"),
+                 ("limit by", "warning"),
+                (planned_over_limit, "overflow"),
+            )
+        Lbars(
+            (interval_quantity / planned, "used"),
+            (planned_over_limit / planned, "overflow"),
+        )
+        LTtexts(
+            ("Gauge cannot be displayed", "warning"),
+        )
+
+    elif project.goal_mode:
+        final_planned = summed_quantities['goal_planned']
+        max_value = summed_quantities['goal_max_value']
+        diff = summed_quantities['gaol_diff']
+        goal_reached = summed_quantities['goal_reached']
+
+        LTtexts(
+            (used_total, None if goal_reached or not used_total else "used"),
+            f"/",
+            (final_planned, "used" if goal_reached else None),
+            "expected",
+        )
+
+        Lbars(
+            (min(used_total, final_planned) / max_value, "used"),
+            (diff / max_value, "overflow" if goal_reached else "warning"),
+        )
+
+        if diff:
+            RBtexts(
+                "Excess:" if goal_reached else "Left:",
+                (diff, "overflow" if goal_reached else "warning"),
+            )
+
+    else:
+
+        LTtexts(
+            (used_in_planned, "used" if used_in_planned > 0 else None),
+            f"/ {planned}",
+            ("Planned", "side-name")
+        )
+        LBtexts(
+            f"Left: {left_in_planned}"
+        )
+        Lbars(
+            (used_in_planned / planned, "used"),
+        )
+
+        min_size = 10
+        size_reference = used_total
+        if is_for_project and max_unplanned:
+            size_reference = max(used_total, interval_quantity)
+        if size_reference == 0:
+            size_reference = 100
+        left_percent = min(100-min_size, max(min_size, planned / size_reference * 100))
+
+        right_max_value = max(max_unplanned, used_unplanned) if max_unplanned and used_in_unplanned else (max_unplanned or used_unplanned or 0)
+
+        if is_for_project and max_unplanned:
+            is_excess = used_unplanned > max_unplanned
+            if used_in_unplanned and used_planned_overflow:
+                RTtexts(
+                    used_unplanned,
+                    f"/ {max_unplanned}" if max_unplanned else None,
+                    ("Unplanned", "side-name"),
+                )
+                RBtexts(
+                    (used_planned_overflow, "overflow"),
+                    "+",
+                )
+                if is_excess:
+                    if used_in_unplanned > max_unplanned:
+                        if max_unplanned:
+                            RBtexts(
+                                (max_unplanned, "used"),
+                                "+",
+                            )
+                        RBtexts(
+                            (used_in_unplanned - max_unplanned, "overflow"),
+                        )
+                    else:
+                        RBtexts(
+                            (used_in_unplanned, "used"),
+                        )
+                    RBtexts(
+                        "| Excess:",
+                        (-left_in_unplanned, "overflow"),
+                    )
+                else:
+                    RBtexts(
+                        (used_in_unplanned, "used"),
+                        "| Left:",
+                        (left_in_unplanned, "left"),
+                    )
+                if is_excess and right_max_value:
+                    Rbars(
+                        (used_planned_overflow / right_max_value, "overflow"),
+                        (max_unplanned / right_max_value, "used"),
+                        ((used_in_unplanned - max_unplanned) / right_max_value, "overflow") if used_in_unplanned > max_unplanned else None,
+                    )
+                elif right_max_value:
+                    Rbars(
+                        (used_planned_overflow / right_max_value, "overflow"),
+                        (used_in_unplanned / right_max_value, "used"),
+                        (left_in_unplanned / right_max_value, "left"),
+                    )
+
+            elif used_planned_overflow:
+                RTtexts(
+                    (used_planned_overflow, "overflow"),
+                    ("Unplanned", "side-name"),
+                )
+                if is_excess:
+                    RBtexts(
+                        "Excess:",
+                        (-left_in_unplanned, "overflow"),
+                    )
+                else:
+                    RBtexts(
+                        "Left:",
+                        (left_in_unplanned, "left"),
+                    )
+                if right_max_value:
+                    Rbars(
+                        (used_planned_overflow / right_max_value, "overflow"),
+                        (left_in_unplanned / right_max_value, "left"),
+                    )
+            else:
+                RTtexts(
+                    (used_unplanned, None if used_unplanned > max_unplanned or used_unplanned <= 0 else "used"),
+                    f"/ {max_unplanned}" if max_unplanned else None,
+                    ("Unplanned", "side-name"),
+                )
+                if is_excess:
+                    RBtexts(
+                        "Excess:",
+                        (-left_in_unplanned, "overflow"),
+                    )
+                else:
+                    RBtexts(
+                        "Left:",
+                        (left_in_unplanned, "left"),
+                    )
+                if right_max_value:
+                    Rbars(
+                        (used_unplanned / right_max_value, "used"),
+                        (left_in_unplanned / right_max_value, "left"),
+                    )
+        else:
+            if used_in_unplanned and used_planned_overflow:
+                RTtexts(
+                    used_unplanned,
+                    ("Unplanned", "side-name"),
+                )
+                RBtexts(
+                    (used_planned_overflow, "overflow"),
+                    "+",
+                    (used_in_unplanned, "used"),
+                )
+                if right_max_value:
+                    Rbars(
+                        (used_planned_overflow / right_max_value, "overflow"),
+                        (used_in_unplanned / right_max_value, "used"),
+                    )
+            elif used_planned_overflow:
+                RTtexts(
+                    (used_planned_overflow, "overflow"),
+                    ("Unplanned", "side-name"),
+                )
+                Rbars(
+                    (1, "overflow"),
+                )
+            else:
+                RTtexts(
+                    used_unplanned,
+                )
+                RTtexts(
+                    ("Unplanned", "side-name"),
+                )
+                if used_in_unplanned:
+                    Rbars(
+                        (1, "used"),
+                    )
+
+    # fmt: on
+
+    bars_sides = []
+    if left_bars:
+        bars_sides.append({"placement": "left", "parts": left_bars, "percent": left_percent if right_bars else 100})
+    if right_bars:
+        bars_sides.append(
+            {"placement": "right", "parts": right_bars, "percent": (100 - left_percent) if left_bars else 100}
+        )
+
+    return {
+        "gauge": {
+            # 'raw_data': raw_data,
+            "goal_mode": project.goal_mode,
+            "text_lines": [
+                {"placement": "top", "sides": [left_top_texts, right_top_texts]},
+                {"placement": "bottom", "sides": [left_bottom_texts, right_bottom_texts]},
+            ],
+            "bars_sides": bars_sides,
+        }
+    }

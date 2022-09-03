@@ -8,3 +8,118 @@
         line-height: 0.9em;
     }
 }
+
+.gauge-error {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--bs-warning);
+}
+
+.gauge-container {
+    --default-color: var(--bs-muted-color);
+    --separator-color: var(--bs-color);
+    --kind-used-color: var(--bs-info);
+    --kind-overflow-color: var(--bs-danger);
+    --kind-goal-overflow-color: var(--bs-success);
+    --kind-left-color: var(--bs-color);
+    --kind-warning-color: var(--bs-warning);
+
+    &.gauge-fake {
+        width: 1px;
+        overflow: hidden;
+        visibility: hidden;
+    }
+
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    > div {
+        width: 100%;
+    }
+    .gauge-text {
+        display: flex;
+        justify-content: space-between;
+        color: var(--bs-muted-color);
+        gap: 1rem;
+        .gauge-text-used { color: var(--kind-used-color); }
+        .gauge-text-overflow { color: var(--kind-overflow-color); }
+        .gauge-text-left { color: var(--kind-left-color); }
+        .gauge-text-warning { color: var(--kind-warning-color); }
+        > span:last-child:not(:first-child) {
+            text-align: right;
+        }
+        .card & {
+            font-size: var(--fs-5);
+            .gauge-text-side-name > span {
+                display: none;
+            }
+        }
+    }
+    .gauge-text-top { order: 1; }
+    .gauge-bars { order: 2; }
+    .gauge-text-bottom { order: 3; }
+
+    .gauge-bars {
+        --gauge-height: 0.5rem;
+        --gauge-radius: calc(0.5rem / 2);
+        height: var(--gauge-height);
+        display: flex;
+        align-items: stretch;
+        background: var(--default-color);
+        border-radius: var(--gauge-radius);
+        > div {
+            width: var(--gauge-side-width);
+            display: flex;
+            align-items: stretch;
+            > span {
+                width: var(--gauge-part-width);
+                &.gauge-bar-used { background: var(--kind-used-color); }
+                &.gauge-bar-overflow { background: var(--kind-overflow-color); }
+                &.gauge-bar-left { background: var(--kind-left-color); }
+                &.gauge-bar-warning { background: var(--kind-warning-color); }
+            }
+            &:first-child {
+                border-top-left-radius: var(--gauge-radius);
+                border-bottom-left-radius: var(--gauge-radius);
+                overflow: hidden;
+                > span:first-child {
+                    border-top-left-radius: var(--gauge-radius);
+                    border-bottom-left-radius: var(--gauge-radius);
+                }
+                &:not(:last-child) {
+                    justify-content: flex-end;
+                }
+            }
+            &:last-child {
+                border-top-right-radius: var(--gauge-radius);
+                border-bottom-right-radius: var(--gauge-radius);
+                > span:last-child {
+                    border-top-right-radius: var(--gauge-radius);
+                    border-bottom-right-radius: var(--gauge-radius);
+                }
+                &:not(:first-child):before {
+                    content: "";
+                    display: block;
+                    height: calc(2 * var(--gauge-height));
+                    width: 1px;
+                    position: relative;
+                    top: calc(var(--gauge-height) / -2);
+                    border-right: 2px solid var(--separator-color);;
+                    border-radius: 1px;
+                }
+            }
+        }
+    }
+
+    &.gauge-goal-mode {
+        .gauge-text-overflow {
+            color: var(--kind-goal-overflow-color) !important;
+        }
+        .gauge-bar-overflow {
+            background: var(--kind-goal-overflow-color) !important;
+        }
+    }
+
+}

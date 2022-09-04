@@ -1,24 +1,3 @@
-.category-card-title a {
-    color: inherit;
-    text-decoration: none;
-}
-
-
-.main-category-container {
-    padding: .5rem;
-    min-height: 8em;
-    --sub-category-indent: 1.5rem;
-
-    > .card {
-        height: 100%;
-        width: var(--card-item-size);
-
-        > .card-header {
-            min-height: 2em;
-        }
-    }
-}
-
 #manage-quantities-button {
     width: 3.4rem;
     height: 3.4rem;

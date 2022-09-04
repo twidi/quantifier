@@ -9,43 +9,30 @@
                 <div class="hstack gap-3 justify-content-center">
                     <span class="btn btn-round invisible"></span>
                     <span class="fs-1">{{ project.name }}</span>
-                    <details class="no-marker as-dropdown project-form-container text-start focus-first-input scroll-into-view">
+                    <details class="no-marker as-dropdown focus-first-input with-backdrop" data-focus-first-input-in=".large-details > .card-body">
                         <summary class="text-muted p-2" title="Edit this project">
                             <span class="details-toggle fs-3">
                                 {% icon "pencil" "solid" classes="fa-fw details-toggle-open" %}
                                 {% icon "xmark" "solid" classes="fa-fw details-toggle-close" %}
                             </span>
                         </summary>
-                        <div class="card details-dropdown large-details project-form-card fs-6 fw-normal">
+                        <div class="card details-dropdown large-details">
+                            <div class="card-header hstack-full">
+                                <span class="card-title">Edit project</span>
+                                <div class="d-flex gap-4 align-items-baseline">
+                                    <details class="no-marker as-dropdown with-backdrop">
+                                        <summary class="text-warning text-decoration-underline">Delete…</summary>
+                                        <div class="card details-dropdown details-on-right">
+                                            <div class="card-body">
+                                                {% project_delete_form project next_category=category %}
+                                            </div>
+                                        </div>
+                                    </details>
+                                    <button type="submit" form="edit-project-form" class="btn btn-primary">Save</button>
+                                </div>
+                            </div>
                             <div class="card-body">
-
-                                {% if nb_projects %}
-                                    <ul class="nav nav-tabs" role="tablist">
-                                        <li class="nav-item" role="presentation">
-                                            <a href="{{ project.get_edit_url }}?date={{ date_str }}&interval={{ interval }}{% if next_category %}&next=category:{{ next_category.id }}{% endif %}" class="nav-link focus-first-input active scroll-into-view" id="project-tab-edit" data-bs-toggle="tab" data-bs-target="#project-tab-edit-content" type="button" role="tab" aria-controls="project-tab-edit" aria-selected="true">Edit project
-                                            </a>
-                                        </li>
-                                        <li class="nav-item" role="presentation">
-                                            <a href="{{ project.get_reorder_url }}?date={{ date_str }}&interval={{ interval }}{% if next_category %}&next=category:{{ next_category.id }}{% endif %}" class="nav-link focus-first-input" id="project-tab-order" data-bs-toggle="tab" data-bs-target="#project-tab-order-content" type="button" role="tab" aria-controls="project-tab-order" aria-selected="true">Change position
-                                            </a>
-                                        </li>
-                                    </ul>
-                                    <div class="tab-content mt-3">
-                                        <div class="tab-pane active" id="project-tab-edit-content" role="tabpanel" aria-labelledby="project-tab-edit">
-                                {% endif %}
-
-                                {% project_form project next_category=category %}
-                                <hr />
-                                {% project_delete_form project next_category=category %}
-
-                                {% if nb_projects %}
-                                        </div>
-                                        <div class="tab-pane" id="project-tab-order-content" role="tabpanel" aria-labelledby="project-tab-order">
-                                            {% project_reorder_form user=user project=project next_category=category %}
-                                        </div>
-                                    </div>
-                                {% endif %}
-
+                                {% project_form project next_category=category css_id="edit-project-form" no_button=True %}
                             </div>
                         </div>
                     </details>

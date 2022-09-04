@@ -44,19 +44,12 @@ class User(AbstractUser):
             return None
 
 
-class Intervals(str, enum.Enum):
+class Intervals(models.TextChoices):
     daily = "daily"
     weekly = "weekly"
     monthly = "monthly"
     yearly = "yearly"
-    none = "none"
-
-    def __str__(self):
-        return self.value
-
-    @classmethod
-    def as_choices(cls):
-        return tuple((interval.value, interval.value) for interval in cls)
+    none = "none", "No timeframe"
 
     @property
     def unit_name(self):
@@ -167,31 +160,37 @@ class Project(Orderable, models.Model):
     """A project is where some quantities are saved in categories."""
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="projects")
-    name = models.CharField(max_length=100)
+    name = models.CharField(
+        max_length=100,
+        verbose_name="What is the name of this project?",
+    )
     interval = models.CharField(
         max_length=10,
-        choices=Intervals.as_choices(),
-        default=Intervals.none.value,
+        choices=Intervals.choices,
+        default=Intervals.none,
+        verbose_name="What is the timeframe?",
+        help_text="Example of usage: monthly expenses, daily minutes of sport,...",
     )
     quantity_name = models.CharField(
         max_length=100,
-        help_text="The name of the thing to count: euros, minutes, kilometers, etc.",
+        verbose_name="What do you want to count?",
+        help_text="Dollars, €, minutes, 👟, kilometers, 📞 to mom,...",
     )
     interval_quantity = models.IntegerField(
         null=True,
         blank=True,
-        verbose_name="Limit quantity",
-        help_text="The quantity that will be reset at the beginning of each day, week, month or year (or never if no interval)",
+        verbose_name="What is the optional limit per timeframe?",
+        help_text="Example of usage: 1500€ per month, 30 minutes per day, 10km per week,...",
     )
     goal_mode = models.BooleanField(
         default=False,
-        verbose_name="Goal mode",
-        help_text="By default the limit quantity (and planned amounts in categories) are a maximum not to be exceeded. "
-        "By checking this, the behavior is inverted: these values are a goal to reach, and can be exceeded.",
+        verbose_name="Is this limit a goal?",
+        help_text="If a limit is set, you should not exceed it, but it can also be a goal you should reach.",
     )
     quick_add_quantities = models.TextField(
         blank=True,
-        help_text="A list of quantities available as quick add buttons. Each quantity is separated by a comma. Example: 1,2,5,10,20,50,100",
+        verbose_name="What are the most common amounts you expect to enter?",
+        help_text="Optional. Each amount is separated by a comma. Example: 1,2,5,10,20,50,100",
         validators=[
             RegexValidator(
                 re.compile(r"^(\s*\d+\s*,)*\s*\d+\s*$"),

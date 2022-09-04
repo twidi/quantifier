@@ -45,6 +45,7 @@
     --bs-spacer-6: 1.5rem;  // 24px
     --bs-spacer-7: 2rem;    // 32px
 
+    --fs-default: 1rem;
     --fs-1: 1.5rem;   // 24px
     --fs-2: 1.25rem;  // 20px
     --fs-3: 1.125rem; // 18px
@@ -117,6 +118,27 @@
 
 }
 
+
+/* stop overriding btn focus style */
+.btn-check:focus + .btn, .btn:focus,
+button:focus:not(:focus-visible) {
+  outline: revert !important;
+}
+
+.form-text {
+    font-size: 1rem;
+    color: var(--bs-muted-color);
+}
+
+form.flex-column {
+    gap: var(--bs-spacer-4);
+    & > .mb-3 {
+        margin-bottom: 0 !important;
+        .form-check.mb-3 {
+            margin-bottom: 0 !important;
+        }
+    }
+}
 
 .limited-full-width {
     max-width: 50rem;

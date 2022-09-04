@@ -1,12 +1,12 @@
 {% load core_utils crispy_forms_tags %}
 {% include "bootstrap5/errors.html" %}
-<form class="d-flex flex-column gap-2 small project-delete-form" action="{{ form.instance.get_delete_url }}?date={{ date_str }}&interval={{ interval }}{% if next %}&next={{ next }}{% endif %}" method="post">
+<form class="d-flex flex-column gap-2" action="{{ form.instance.get_delete_url }}?date={{ date_str }}&interval={{ interval }}{% if next %}&next={{ next }}{% endif %}" method="post">
     {% csrf_token %}
-    <button type="submit" class="btn btn-sm btn-danger">Delete project</button>
-    <p class="callout callout-warning mt-1 mb-0">
+    <p class="callout callout-warning m-0">
         <strong>WARNING:</strong> Deleting a project will delete all the entered quantities, and all of its categories, recursively, with their quantities.
     </p>
     {% for field in form %}
         {% include "bootstrap5/field.html" with wrapper_class="d-flex align-items-center gap-2 mb-0" form_show_labels=True %}
     {% endfor %}
+    <button type="submit" class="btn btn-danger align-self-end">Delete project</button>
 </form>

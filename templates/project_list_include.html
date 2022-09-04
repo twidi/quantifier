@@ -55,7 +55,7 @@
     {% endfor %}
 
     <div class="card project vstack gap-5 p-5 justify-content-center align-items-center">
-        <details class="no-marker as-dropdown focus-first-input scroll-into-view" data-scroll-into-view=".card-body">
+        <details class="no-marker as-dropdown focus-first-input with-backdrop" data-focus-first-input-in=".large-details > .card-body">
             <summary class="hstack gap-3">
                 <span class="fs-1 text-decoration-none text-muted">Add a project</span>
                 <span class="details-toggle">
@@ -67,9 +67,13 @@
                     </span>
                 </span>
             </summary>
-            <div class="card details-dropdown large-details project-form-card">
+            <div class="card details-dropdown large-details">
+                <div class="card-header hstack-full">
+                    <span class="card-title">New project</span>
+                    <button type="submit" form="create-project-form" class="btn btn-primary">Create</button>
+                </div>
                 <div class="card-body">
-                    {% project_form %}
+                    {% project_form css_id="create-project-form" no_button=True %}
                 </div>
             </div>
         </details>

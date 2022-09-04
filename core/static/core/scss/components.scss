@@ -1,14 +1,3 @@
-:root {
-    --main-amount-size: 2.2rem;
-}
-.main-amount {
-    font-size: var(--main-amount-size) !important;
-    .small { font-size: 0.35em; }
-    .main-amount-main {
-        line-height: 0.9em;
-    }
-}
-
 .gauge-error {
     display: flex;
     justify-content: center;

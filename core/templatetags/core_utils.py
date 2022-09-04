@@ -57,12 +57,14 @@ def cache_tree(categories):
 
 
 @register.inclusion_tag("project_form_include.html", takes_context=True)
-def project_form(context, project=None, next_category=None):
+def project_form(context, project=None, next_category=None, css_id=None, no_button=False):
     return {
         "date": context.get("date"),
         "date_str": context.get("date_str"),
         "interval": context.get("interval"),
         "next": f"category:{next_category.id}" if next_category else None,
+        "css_id": css_id,
+        "no_button": no_button,
         "form": ProjectCreateForm() if project is None else ProjectEditForm(instance=project),
     }
 

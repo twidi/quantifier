@@ -22,11 +22,11 @@ class ProjectBaseForm(ModelForm):
     class Meta:
         model = Project
         fields = [
-            "name",
-            "interval",
             "quantity_name",
+            "interval",
             "interval_quantity",
             "goal_mode",
+            "name",
             "quick_add_quantities",
         ]
 
@@ -36,8 +36,6 @@ class ProjectBaseForm(ModelForm):
 
         self.with_helper = True
         self.helper = FormHelper()
-        self.helper.label_class = "small"
-        self.helper.wrapper_class = "mb-0"
         self.helper.form_tag = False
 
         layout_fields = []
@@ -46,12 +44,6 @@ class ProjectBaseForm(ModelForm):
                 field = Field(field, wrapper_class="form-switch")
             layout_fields.append(field)
         self.helper.layout = Layout(*layout_fields)
-
-        for field in self.Meta.fields:
-            if field == "interval":
-                self.fields[field].widget.attrs.update({"class": "form-select form-select-sm"})
-            elif field != "goal_mode":
-                self.fields[field].widget.attrs.update({"class": "form-control form-control-sm"})
 
 
 class ProjectCreateForm(ProjectBaseForm):

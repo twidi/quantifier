@@ -21,21 +21,12 @@ body > nav:first-of-type {
     }
 }
 
-.small-form .asteriskField {
-    display: none;
+.asteriskField {
+    display: none !important;
 }
 
 #date-interval-selector {
     + .dropdown-menu {
         width: max-content;
-    }
-}
-
-.project-form {
-    > .mb-3, .project-delete-form > .mb-3 {
-        margin-bottom: 0 !important;
-    }
-    .form-check-label {
-        font-size: .875em;  /* small style */
     }
 }

@@ -145,16 +145,18 @@
         // focus on the first input field when a details element with "focus-first-input" class is opened
         document.addEventListener('toggle', ev => {
             if (ev.target.nodeName === 'DETAILS' && ev.target.open && ev.target.classList.contains('focus-first-input')) {
+                const container_selector = ev.target.getAttribute('data-focus-first-input-in');
                 const input_selector = ev.target.getAttribute('data-focus-first-input') || 'input:not([type="hidden"]),select,textarea';
-                ev.target.querySelectorAll(input_selector)[0]?.focus();
+                (container_selector ? ev.target.querySelector(container_selector) : ev.target)?.querySelectorAll(input_selector)[0]?.focus();
             }
         }, true);
         // focus on the first input field when a tab with the "focus-first-input" class is shown, and make the tab visible
         document.addEventListener('shown.bs.tab', ev => {
             if (ev.target.classList.contains('focus-first-input')) {
                 const tab_content = document.querySelector(ev.target.getAttribute('data-bs-target'));
+                const container_selector = ev.target.getAttribute('data-focus-first-input-in');
                 const input_selector = ev.target.getAttribute('data-focus-first-input') || 'input:not([type="hidden"]),select,textarea';
-                tab_content.querySelectorAll(input_selector)[0]?.focus();
+                (container_selector ? tab_content.querySelector(container_selector) : tab_content)?.querySelectorAll(input_selector)[0]?.focus();
             }
             if (ev.target.classList.contains('scroll-into-view')) {
                 const tab_content = document.querySelector(ev.target.getAttribute('data-bs-target'));

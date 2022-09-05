@@ -8,7 +8,6 @@
         </div>
     </div>
 {% elif gauge %}
-{#<small class="fs-6">[[{{  gauge  }}]]</small>#}
 <div class="gauge-container{% if gauge.goal_mode %} gauge-goal-mode{% endif %}">
     {% for line in gauge.text_lines %}
         <div class="gauge-text gauge-text-{{ line.placement }}">

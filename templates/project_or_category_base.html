@@ -24,16 +24,37 @@
                 {% endif %}
             {% endfor %}
             <span class="small text-muted">{% icon_xs "chevron-right" "solid" %}</span>
-            <div class="d-inline-flex gap-3">
+            <div class="d-inline-flex gap-3 text-start">
                 <a href="{% if view.context_object_name == 'quantities' %}{{ category.get_quantities_url }}{% else %}{{ category.get_absolute_url }}{% endif %}?date={{ date_str }}&interval={{ interval }}">{{ category.name }}</a>
-                <details class="no-marker as-dropdown focus-first-input scroll-into-view text-start text-muted d-inline-block ms-1">
-                    <summary>
+                <details class="no-marker as-dropdown focus-first-input with-backdrop" data-focus-first-input-in=".large-details > .card-body">
+                    <summary class="text-muted" title="Edit this category">
                         <span class="details-toggle fs-3">
                             {% icon "pencil" "solid" classes="fa-fw details-toggle-open" %}
                             {% icon "xmark" "solid" classes="fa-fw details-toggle-close" %}
                         </span>
                     </summary>
-                    {% include "category_forms_include.html" with category=category next_category=category %}
+                    <div class="card details-dropdown large-details">
+                        <div class="card-header hstack-full gap-3">
+                            <span class="card-title">Edit category</span>
+                            <div class="d-flex gap-4 align-items-baseline">
+                                <details class="no-marker as-dropdown with-backdrop">
+                                    <summary class="text-warning text-decoration-underline">Delete…</summary>
+                                    <div class="card details-dropdown details-on-right">
+                                        <div class="card-body">
+                                            {% category_delete_form category=category next_category=next_category %}
+                                        </div>
+                                    </div>
+                                </details>
+                                <button type="submit" form="edit-category-form" class="btn btn-primary hide-if-from-top">Save</button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            {% category_form project=project category=category next_category=next_category %}
+                        </div>
+                        <div class="card-footer hstack justify-content-end">
+                            <button type="submit" form="edit-category-form" class="btn btn-primary">Save</button>
+                        </div>
+                    </div>
                 </details>
             </div>
         </span>
@@ -47,25 +68,34 @@
         <span class="w-min-3 text-center fs-1 px-4 py-2 rounded-3 bg-white-5 {% if summed_quantities.goal_reached %}text-success{% elif summed_quantities.limit_exceeded %}text-danger{% endif %}">
             {{ summed_quantities.used }} {{ project.quantity_name }}
         </span>
-        {% if current_category %}
-            <details class="no-marker as-dropdown focus-first-input scroll-into-view text-start text-muted d-inline-block ms-1">
-                <summary>
-                    <span class="details-toggle">
-                        <span class="btn btn-round btn-primary details-toggle-open">
-                            {% icon "plus" "solid" size="xl" %}
-                        </span>
-                        <span class="btn btn-round btn-primary details-toggle-close">
-                            {% icon "xmark" "solid" %}
-                        </span>
+        <details class="no-marker as-dropdown focus-first-input with-backdrop ms-1">
+            <summary title="Add a quantity">
+                <span class="details-toggle">
+                    <span class="btn btn-round btn-primary details-toggle-open">
+                        {% icon "plus" "solid" size="xl" %}
                     </span>
-                </summary>
-                <div class="card details-dropdown category-forms">
-                    <div class="card-body">
-                        {% quantity_in_category_form category=current_category next_category=current_category initial_value=summed_quantities.self_expected_not_used %}
-                    </div>
+                    <span class="btn btn-round btn-primary details-toggle-close">
+                        {% icon "xmark" "solid" %}
+                    </span>
+                </span>
+            </summary>
+            <div class="card details-dropdown large-details">
+                <div class="card-header hstack-full gap-3">
+                    <span class="card-title">New quantity</span>
+                    <button type="submit" form="create-quantity-form-in-{% if current_category %}category-{{ current_category.id }}{% else %}project-{{ project.id }}{% endif %}" class="btn btn-primary hide-if-from-top">Add</button>
                 </div>
-            </details>
-        {% endif %}
+                <div class="card-body">
+                    {% if current_category %}
+                        {% quantity_in_category_form category=current_category next_category=current_category initial_value=summed_quantities.self_expected_not_used %}
+                    {% else %}
+                        {% quantity_in_project_form project=project %}
+                    {% endif %}
+                </div>
+                <div class="card-footer hstack justify-content-end">
+                    <button type="submit" form="create-quantity-form-in-{% if current_category %}category-{{ current_category.id }}{% else %}project-{{ project.id }}{% endif %}" class="btn btn-primary">Add</button>
+                </div>
+            </div>
+       </details>
     </div>
     {% gauge main_object summed_quantities %}
 {% endwith %}

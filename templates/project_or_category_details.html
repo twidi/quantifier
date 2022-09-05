@@ -35,8 +35,8 @@
                                 <div class="text-muted">/ {{ summed_quantities.expected }}</div>
                             {% endif %}
                         </div>
-                        <details class="mt-2 no-marker as-dropdown category-forms-container focus-first-input scroll-into-view" data-group="category_forms" data-scroll-into-view=".card">
-                            <summary class="d-flex gap-3 align-items-center" title="Click to add a quantity, a sub-category or edit/delete this category">
+                        <details class="mt-2 no-marker as-dropdown focus-first-input with-backdrop" data-group="category_forms">
+                            <summary class="d-flex gap-3 align-items-center" title="Add a quantity">
                                 <span class="details-toggle">
                                     <span class="btn btn-round btn-secondary details-toggle-open">
                                         {% icon "plus" "solid" size="xl" %}
@@ -46,9 +46,16 @@
                                     </span>
                                 </span>
                             </summary>
-                            <div class="card details-dropdown category-forms">
+                            <div class="card details-dropdown large-details">
+                                <div class="card-header hstack-full gap-3">
+                                    <span class="card-title">New quantity</span>
+                                    <button type="submit" form="create-quantity-form-in-category-{{ category.id }}" class="btn btn-primary hide-if-from-top">Add</button>
+                                </div>
                                 <div class="card-body">
                                     {% quantity_in_category_form category=category next_category=category initial_value=summed_quantities.self_expected_not_used %}
+                                </div>
+                                <div class="card-footer hstack justify-content-end">
+                                    <button type="submit" form="create-quantity-form-in-category-{{ category.id }}" class="btn btn-primary">Add</button>
                                 </div>
                             </div>
                         </details>
@@ -81,40 +88,40 @@
         {% endif %}
 
         <div class="card hstack p-5 justify-content-center align-items-center w-max-r20">
-            <details class="no-marker as-dropdown category-forms-container focus-first-input scroll-into-view" data-group="category_forms" data-scroll-into-view=".card-body">
-                <summary class="hstack gap-3">
-                    <span class="fs-1 text-decoration-none text-muted">Add a category</span>
-                    <span class="details-toggle">
-                        <span class="btn btn-round btn-secondary details-toggle-open">
-                            {% icon "plus" "solid" size="xl" %}
-                        </span>
-                        <span class="btn btn-round btn-secondary details-toggle-close">
-                            {% icon "xmark" "solid" %}
-                        </span>
+        <details class="no-marker as-dropdown focus-first-input with-backdrop" data-focus-first-input-in=".large-details > .card-body">
+            <summary class="hstack gap-3">
+                <span class="fs-1 text-decoration-none text-muted">Add a category</span>
+                <span class="details-toggle">
+                    <span class="btn btn-round btn-secondary details-toggle-open">
+                        {% icon "plus" "solid" size="xl" %}
                     </span>
-                </summary>
-                <div class="card details-dropdown category-forms">
-                    <div class="card-body">
-                        {% if category %}
-                            {% category_form project=project parent_category=category next_category=category %}
-                        {% else %}
-                            {% category_form project=project %}
-                        {% endif %}
-                    </div>
+                    <span class="btn btn-round btn-secondary details-toggle-close">
+                        {% icon "xmark" "solid" %}
+                    </span>
+                </span>
+            </summary>
+            <div class="card details-dropdown large-details">
+                <div class="card-header hstack-full gap-3">
+                    <span class="card-title">New category</span>
+                    <button type="submit" form="create-category-form" class="btn btn-primary hide-if-from-top">Create</button>
                 </div>
-            </details>
+                <div class="card-body">
+                    {% if category %}
+                        {% category_form project=project parent_category=category next_category=category %}
+                    {% else %}
+                        {% category_form project=project %}
+                    {% endif %}
+                </div>
+                <div class="card-footer hstack justify-content-end">
+                    <button type="submit" form="create-category-form" class="btn btn-primary">Create</button>
+                </div>
+            </div>
+        </details>
+
         </div>
 
         </div>
     {% endwith %}
-
-    {% if project.quick_add_quantities %}
-        <datalist id="project-{{ project.pk }}-quick_add_quantities">
-            {% for qtt in project.quick_add_quantities_as_list %}
-                <option value="{{ qtt }}">
-            {% endfor %}
-        </datalist>
-    {% endif %}
 
     <a class="text-muted fs-2 bottom-0 end-0 position-fixed rounded-circle m-3 d-flex justify-content-center align-items-center" title="List/edit/delete entered quantities" id="manage-quantities-button" href="{{ main_object.get_quantities_url }}?date={{ date_str }}&interval={{ interval }}">
         {% icon "square-list" classes="fa-fw" %}

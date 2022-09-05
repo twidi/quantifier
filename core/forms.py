@@ -1,10 +1,10 @@
 from datetime import datetime
-from typing import NamedTuple
+from typing import Tuple
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Field, Layout
 from django.core.exceptions import ValidationError
-from django.forms import ModelForm, ChoiceField, Select, BooleanField, TextInput
+from django.forms import ModelForm, Select, BooleanField, TextInput
 from django.utils.safestring import mark_safe
 from django_registration.forms import RegistrationFormUniqueEmail
 from mptt.forms import MPTTAdminForm
@@ -120,11 +120,9 @@ class CategoryBaseForm(MPTTAdminForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.fields["name"].widget.attrs.update({"class": "form-control form-control-sm"})
-        self.fields["expected_quantity"].widget.attrs.update({"class": "form-control form-control-sm"})
-
-        self.fields["name"].widget.attrs["placeholder"] = "Name"
-        self.fields["expected_quantity"].widget.attrs["placeholder"] = "Planned quantity"
+        self.with_helper = True
+        self.helper = FormHelper()
+        self.helper.form_tag = False
 
 
 class CategoryCreateForm(CategoryBaseForm):
@@ -139,10 +137,6 @@ class CategoryCreateForm(CategoryBaseForm):
 
         self.instance.project_id = project.pk
         self.instance.parent = parent_category
-        self.fields["expected_quantity"].widget.attrs[
-            "placeholder"
-        ] = f"Planned {parent_category.project.quantity_name}"
-        self.fields["expected_quantity"].help_text = "If set, should include planned amounts of sub-categories."
 
 
 class CategoryEditForm(CategoryBaseForm):
@@ -156,14 +150,8 @@ class CategoryEditForm(CategoryBaseForm):
         self.prefix = f"category-edit-{self.instance.pk}"
 
         self.fields["parent"].queryset = self.instance.project.visible_categories
-        self.fields["parent"].label = "Parent category:"
-        self.fields["parent"].widget.attrs.update({"class": "form-select form-select-sm autocomplete"})
+        self.fields["parent"].widget.attrs.update({"class": "autocomplete"})
         self.fields["parent"].empty_label = mark_safe("&nbsp;")
-
-        self.fields["expected_quantity"].widget.attrs[
-            "placeholder"
-        ] = f"Planned {self.instance.project.quantity_name}"
-        self.fields["expected_quantity"].help_text = "If set, should include planned amounts of sub-categories."
 
     def clean_parent(self):
         return self.cleaned_data["parent"] or self.instance.project.root_category
@@ -229,19 +217,19 @@ class QuantityBaseForm(ModelForm):
 
     class Meta:
         model = Quantity
-        fields = ["value", "datetime", "category", "notes"]
+        fields = ["value", "date", "time", "category", "notes"]
 
     @classmethod
-    def get_date_args(cls, project, date, interval):
-        initial_datetime = datetime.now()
+    def get_date_args(cls, project, date, interval) -> Tuple[datetime.date, datetime.date, datetime.date]:
+        initial_date = datetime.now().date()
         min_date, max_date = get_dates_interval(date, interval)
-        if initial_datetime.date() != date and interval in (None, Intervals.none):
-            initial_datetime = datetime.combine(date, datetime.min.time())
-        if not (min_date <= initial_datetime <= max_date):
-            initial_datetime = min_date
+        if initial_date != date and interval in (None, Intervals.none):
+            initial_date = date
+        if not (min_date <= initial_date <= max_date):
+            initial_date = min_date
         if not project.has_interval:
             min_date = max_date = None
-        return min_date, max_date, initial_datetime
+        return min_date, max_date, initial_date
 
     def get_categories(self):
         return self.project.visible_categories
@@ -250,62 +238,33 @@ class QuantityBaseForm(ModelForm):
         self.project = project
         self.min_date, self.max_date = min_date, max_date
 
-        if project.unique_quick_add_quantity and (initial := (kwargs.get("initial") or {})).get('value') is None:
+        if project.unique_quick_add_quantity and (initial := (kwargs.get("initial") or {})).get("value") is None:
             kwargs["initial"] = initial | {"value": project.unique_quick_add_quantity}
 
         super().__init__(*args, **kwargs)
 
-        value_widget_attrs = {
-            "class": "form-control",
-            "title": f"Enter a quantity in {self.project.quantity_name}",
-            "placeholder": f"Quantity in {self.project.quantity_name}",
-        }
+        self.with_helper = True
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+
+        value_widget_attrs = {}
         if self.project.quick_add_quantities:
             value_widget_attrs["list"] = f"project-{self.project.pk}-quick_add_quantities"
-            if not project.unique_quick_add_quantity:
-                value_widget_attrs["title"] += " (or pick one from the list)"
+
         self.fields["value"].widget.attrs.update(value_widget_attrs)
+        self.fields["value"].help_text %= {"quantity_name": self.project.quantity_name}
 
-        self.fields["notes"].widget.attrs.update(
-            {"class": "form-control form-control-sm auto-reduce", "rows": 5}
-        )
+        self.fields["notes"].widget.attrs.update({"class": "auto-reduce", "rows": 5})
 
-        date_attrs = {
-            "data-input": "true",
-            "class": "form-control form-control-sm",
-        }
-        # if self.project.has_interval and min_date and max_date:
-        #     date_attrs |= {
-        #         "data-min-date": min_date.strftime("%Y-%m-%d %H:%M"),
-        #         "data-max-date": max_date.strftime("%Y-%m-%d %H:%M"),
-        #     }
-        self.fields["datetime"].widget.attrs.update(date_attrs)
-
-        self.fields["notes"].widget.attrs["placeholder"] = "Optional notes"
-        self.fields["datetime"].widget.attrs["placeholder"] = "Date & time"
+        self.fields["date"].widget.input_type = "date"
+        self.fields["time"].widget.input_type = "time"
 
         self.fields["category"].queryset = self.get_categories()
         self.fields["category"].empty_label = None
-        self.fields["category"].label = "Category:"
-        self.fields["category"].widget.attrs.update({"class": "form-select form-select-sm autocomplete"})
-
-    def clean_datetime(self):
-        date = self.cleaned_data["datetime"]
-        if (
-            self.project.has_interval
-            and date
-            and self.min_date
-            and self.max_date
-            and not (self.min_date.replace(tzinfo=date.tzinfo) <= date <= self.max_date.replace(tzinfo=date.tzinfo))
-        ):
-            raise ValidationError(
-                f"Date must be between {self.min_date.date()} and {self.max_date()} (both inclusive)"
-            )
-        return date
+        self.fields["category"].widget.attrs.update({"class": "autocomplete"})
 
 
 class QuantityInProjectForm(QuantityBaseForm):
-
     def __init__(self, project, min_date, max_date, *args, **kwargs):
         super().__init__(project, min_date, max_date, *args, **kwargs)
         self.prefix = f"project-{project.pk}-qtt-" + (f"{self.instance.pk}" if self.instance.pk else "new")

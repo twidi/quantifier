@@ -17,7 +17,7 @@
                             </span>
                         </summary>
                         <div class="card details-dropdown large-details">
-                            <div class="card-header hstack-full">
+                            <div class="card-header hstack-full gap-3">
                                 <span class="card-title">Edit project</span>
                                 <div class="d-flex gap-4 align-items-baseline">
                                     <details class="no-marker as-dropdown with-backdrop">
@@ -28,11 +28,14 @@
                                             </div>
                                         </div>
                                     </details>
-                                    <button type="submit" form="edit-project-form" class="btn btn-primary">Save</button>
+                                    <button type="submit" form="edit-project-form" class="btn btn-primary hide-if-from-top">Save</button>
                                 </div>
                             </div>
                             <div class="card-body">
-                                {% project_form project next_category=category css_id="edit-project-form" no_button=True %}
+                                {% project_form project next_category=category %}
+                            </div>
+                            <div class="card-footer hstack justify-content-end">
+                                <button type="submit" form="edit-project-form" class="btn btn-primary">Save</button>
                             </div>
                         </div>
                     </details>
@@ -54,5 +57,12 @@
         {% endblock project_content %}
     </div>
 
+    {% if project.quick_add_quantities %}
+        <datalist id="project-{{ project.pk }}-quick_add_quantities">
+            {% for qtt in project.quick_add_quantities_as_list %}
+                <option value="{{ qtt }}">
+            {% endfor %}
+        </datalist>
+    {% endif %}
 
 {% endblock content %}

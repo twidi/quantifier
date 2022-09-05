@@ -1,9 +1,5 @@
 {% load core_utils crispy_forms_tags %}
-{% include "bootstrap5/errors.html" %}
 
-<form class="d-flex flex-column"{% if css_id %} id="{{ css_id }}"{% endif %} action="{% if form.instance.id %}{{ form.instance.get_edit_url }}{% else %}{% url 'project_create' %}{% endif %}?date={{ date_str }}{% if interval %}&interval={{ interval }}{% endif %}{% if next %}&next={{ next }}{% endif %}" method="post">
+<form class="d-flex flex-column" id="{% if form.instance.id %}edit-project-form{% else %}create-project-form{% endif %}" action="{% if form.instance.id %}{{ form.instance.get_edit_url }}{% else %}{% url 'project_create' %}{% endif %}?date={{ date_str }}{% if interval %}&interval={{ interval }}{% endif %}{% if next %}&next={{ next }}{% endif %}" method="post">
     {% crispy form form.helper %}
-    {% if not no_button %}
-        <button class="btn btn-sm btn-primary" type="submit">{% if form.instance.id %}Update project{% else %}Add project{% endif %}</button>
-    {% endif %}
 </form>

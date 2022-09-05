@@ -8,6 +8,10 @@
 {% block card_content %}
     {% include "quantity_form_include.html" %}
 
+    <div class="hstack justify-content-end">
+        <button class="btn btn-primary" form="{% if form.instance.id %}edit-quantity-form-{{ form.instance.id }}{% else %}create-category-form-{% if category %}-in-category-{{ category.id }}{% else %}-in-project-{{ project.id }}{% endif %}{% endif %}" type="submit">Add quantity</button>
+    </div>
+
     {% if project.quick_add_quantities %}
         <datalist id="project-{{ project.pk }}-quick_add_quantities">
             {% for qtt in project.quick_add_quantities_as_list %}

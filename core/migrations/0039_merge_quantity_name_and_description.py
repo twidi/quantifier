@@ -8,7 +8,9 @@ def merge_fields(apps, schema_editor):
     Quantity = apps.get_model("core", "Quantity")
     for quantity in Quantity.objects.all():
         if quantity.name:
-            quantity.description = f"{quantity.name}\n\n{quantity.description}" if quantity.description else quantity.name
+            quantity.description = (
+                f"{quantity.name}\n\n{quantity.description}" if quantity.description else quantity.name
+            )
             quantity.save()
 
 

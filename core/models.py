@@ -116,8 +116,8 @@ def get_dates_interval(date: datetime.date, interval: Intervals) -> tuple[dateti
     elif interval == Intervals.yearly:
         start_date, end_date = date.replace(month=1, day=1), date.replace(month=12, day=31)
     else:
-        return datetime.min, datetime.max
-    return datetime.combine(start_date, datetime.min.time()), datetime.combine(end_date, datetime.max.time())
+        return datetime.min.date(), datetime.max.date()
+    return start_date, end_date
 
 
 def get_prev_and_next_dates_interval(date: datetime.time, interval: Intervals) -> tuple[datetime.date, datetime.date]:
@@ -363,7 +363,7 @@ class Project(Orderable, models.Model):
         if date:
             if not alltime:
                 start_date, end_date = get_dates_interval(date, interval)
-                sum_kwargs["filter"] = Q(quantities__datetime__gte=start_date) & Q(quantities__datetime__lte=end_date)
+                sum_kwargs["filter"] = Q(quantities__date__gte=start_date) & Q(quantities__date__lte=end_date)
 
         summed_values = dict(
             self.categories.annotate(summed_values=Sum("quantities__value", default=0, **sum_kwargs)).values_list(
@@ -513,9 +513,24 @@ class Category(Orderable, MPTTModel):
     """A category belongs to a project and contains some quantities and some sub-categories"""
 
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="categories")
-    name = models.CharField(max_length=100)
-    parent = TreeForeignKeyNoRoot("self", on_delete=models.CASCADE, null=True, blank=True, related_name="children")
-    expected_quantity = models.PositiveIntegerField(null=True, blank=True)
+    name = models.CharField(
+        max_length=100,
+        verbose_name="What is the name of this category?",
+    )
+    parent = TreeForeignKeyNoRoot(
+        "self",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="children",
+        verbose_name="What is the (optional) parent category?",
+    )
+    expected_quantity = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        verbose_name="What is the (optional) planned amount?",
+        help_text="If set, should include the planned amounts of sub-categories.",
+    )
 
     objects = CategoryManager()
 
@@ -641,17 +656,41 @@ class Category(Orderable, MPTTModel):
 class Quantity(models.Model):
     """A quantity belongs to a category"""
 
-    category = TreeForeignKeyNoRoot(Category, on_delete=models.CASCADE, related_name="quantities")
-    notes = models.TextField(blank=True)
-    value = models.PositiveIntegerField()
-
-    datetime = models.DateTimeField(null=False, blank=False, default=timezone.now)
+    category = TreeForeignKeyNoRoot(
+        Category,
+        on_delete=models.CASCADE,
+        related_name="quantities",
+        verbose_name="In which category to save this quantity?",
+        help_text="If you want to save a quantity in a sub-category, you need to create it first.",
+    )
+    notes = models.TextField(
+        blank=True,
+        verbose_name="Optional notes",
+        help_text="You can add some notes about this quantity. They will be displayed in the list of quantities.",
+    )
+    value = models.PositiveIntegerField(
+        verbose_name="What is the amount to save?",
+        help_text="In %(quantity_name)s",
+    )
+    date = models.DateField(
+        null=False,
+        blank=False,
+        default=timezone.now,
+        verbose_name="For which date do you want to save this quantity?",
+        help_text="You can save a quantity for a past, present, or future date.",
+    )
+    time = models.DateField(
+        null=True,
+        blank=True,
+        verbose_name="Do you need to set a specific time?",
+        help_text="This is totally optional.",
+    )
 
     class Meta:
         verbose_name_plural = "quantities"
-        ordering = ["-datetime"]
+        ordering = ["-date", "-time"]
         indexes = [
-            models.Index(fields=["category", "datetime"]),
+            models.Index(fields=["category", "date", "time"]),
         ]
 
     def get_edit_url(self):

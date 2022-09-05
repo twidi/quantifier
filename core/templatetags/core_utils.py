@@ -16,7 +16,8 @@ from core.forms import (
     ProjectDeleteForm,
     ProjectReorderForm,
     QuantityEditForm,
-    QuantityDeleteForm, QuantityInProjectForm,
+    QuantityDeleteForm,
+    QuantityInProjectForm,
 )
 from core.models import Intervals, get_interval_str, Project
 
@@ -29,6 +30,11 @@ def dict_value(dictionary, key):
 @register.filter
 def concat(value1, value2):
     return f"{value1}{value2}"
+
+
+@register.filter
+def to_string(value):
+    return str(value)
 
 
 @register.simple_tag
@@ -57,14 +63,12 @@ def cache_tree(categories):
 
 
 @register.inclusion_tag("project_form_include.html", takes_context=True)
-def project_form(context, project=None, next_category=None, css_id=None, no_button=False):
+def project_form(context, project=None, next_category=None):
     return {
         "date": context.get("date"),
         "date_str": context.get("date_str"),
         "interval": context.get("interval"),
         "next": f"category:{next_category.id}" if next_category else None,
-        "css_id": css_id,
-        "no_button": no_button,
         "form": ProjectCreateForm() if project is None else ProjectEditForm(instance=project),
     }
 
@@ -144,7 +148,7 @@ def quantity_in_category_form(context, category, next_category=None, initial_val
             max_date=max_date,
             initial={
                 "value": initial_value if initial_value and initial_value > 0 else None,
-                "datetime": initial_date,
+                "date": initial_date,
             },
         ),
     }
@@ -167,7 +171,7 @@ def quantity_in_project_form(context, project, initial_value=None):
             max_date=max_date,
             initial={
                 "value": initial_value if initial_value and initial_value > 0 else None,
-                "datetime": initial_date,
+                "date": initial_date,
             },
         ),
     }

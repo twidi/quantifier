@@ -1,0 +1,17 @@
+{% extends "single_card_page_include.html" %}
+{% load i18n %}
+
+{% block card_title %}
+    {% if form.instance.id %}Edition of the «<strong>{{ project.name }}</strong>» project{% else %}Creation of a new project{% endif %}
+{% endblock %}
+
+{% block card_content %}
+    {% include "project_form_include.html" %}
+    <div class="hstack justify-content-end">
+        <button class="btn btn-primary" type="submit">{% if form.instance.id %}Update project{% else %}Create project{% endif %}</button>
+    </div>
+    {% if form.instance.id %}
+        <hr/>
+        {% include "project_delete_form_include.html" with form=delete_form %}
+    {% endif %}
+{% endblock %}

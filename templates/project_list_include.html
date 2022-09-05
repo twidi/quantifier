@@ -22,7 +22,7 @@
                 </div>
                 {% if project.nb_categories > 1 %}
                     <div class="hstack-full gap-5">
-                        <details class="no-marker as-dropdown focus-first-input scroll-into-view" data-group="category_forms" data-scroll-into-view=".card-body">
+                        <details class="no-marker as-dropdown focus-first-input with-backdrop" data-group="category_forms">
                             <summary class="hstack gap-3">
                                 <span class="details-toggle">
                                     <span class="btn btn-round btn-secondary details-toggle-open">
@@ -33,7 +33,11 @@
                                     </span>
                                 </span>
                             </summary>
-                            <div class="card details-dropdown category-forms">
+                            <div class="card details-dropdown large-details">
+                                <div class="card-header hstack-full gap-3">
+                                    <span class="card-title">New quantity in project «{{ project.name }}»</span>
+                                    <button type="submit" form="create-quantity-form-in-project-{{ project.id }}" class="btn btn-primary hide-if-from-top">Add</button>
+                                </div>
                                 <div class="card-body">
                                     {% quantity_in_project_form project=project %}
                                     {% if project.quick_add_quantities %}
@@ -43,6 +47,9 @@
                                             {% endfor %}
                                         </datalist>
                                     {% endif %}
+                                </div>
+                                <div class="card-footer hstack justify-content-end">
+                                    <button type="submit" form="create-quantity-form-in-project-{{ project.id }}" class="btn btn-primary">Add</button>
                                 </div>
                             </div>
                         </details>
@@ -68,12 +75,15 @@
                 </span>
             </summary>
             <div class="card details-dropdown large-details">
-                <div class="card-header hstack-full">
+                <div class="card-header hstack-full gap-3">
                     <span class="card-title">New project</span>
-                    <button type="submit" form="create-project-form" class="btn btn-primary">Create</button>
+                    <button type="submit" form="create-project-form" class="btn btn-primary hide-if-from-top">Create</button>
                 </div>
                 <div class="card-body">
-                    {% project_form css_id="create-project-form" no_button=True %}
+                    {% project_form %}
+                </div>
+                <div class="card-footer hstack justify-content-end">
+                    <button type="submit" form="create-project-form" class="btn btn-primary">Create</button>
                 </div>
             </div>
         </details>

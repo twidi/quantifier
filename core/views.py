@@ -235,7 +235,7 @@ class ProjectFormViewMixin:
 
 
 class ProjectCreateView(LoginRequiredMixin, DateAndIntervalMixin, ProjectFormViewMixin, CreateView):
-    template_name = "project_create.html"
+    template_name = "project_form.html"
     form_class = ProjectCreateForm
 
     def form_valid(self, form):
@@ -244,7 +244,7 @@ class ProjectCreateView(LoginRequiredMixin, DateAndIntervalMixin, ProjectFormVie
 
 
 class ProjectEditView(OwnedProjectMixin, ProjectFormViewMixin, UpdateView):
-    template_name = "project_edit.html"
+    template_name = "project_form.html"
     form_class = ProjectEditForm
     pk_url_kwarg = "project_pk"
 
@@ -361,7 +361,7 @@ class QuantityCreateBaseView(CreateView):
     def get_form_kwargs(self):
         min_date, max_date, initial_date = QuantityInProjectForm.get_date_args(self.project, self.date, self.interval)
         result = super().get_form_kwargs() | {"min_date": min_date, "max_date": max_date}
-        result["initial"]["datetime"] = initial_date
+        result["initial"]["date"] = initial_date
         return result
 
     def get_context_data(self, **kwargs):
@@ -455,7 +455,7 @@ class QuantitiesBaseView(ProjectOrCategoryDetailsMixin, ListView):
     def queryset(self):
         queryset = Quantity.objects.filter(category__in=self.categories)
         start_date, end_date = self.start_and_end_dates
-        queryset = queryset.filter(datetime__gte=start_date, datetime__lte=end_date)
+        queryset = queryset.filter(date__gte=start_date, date__lte=end_date)
         return queryset
 
     def get_context_data(self, **kwargs):

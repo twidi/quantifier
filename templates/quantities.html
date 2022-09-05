@@ -56,19 +56,34 @@
                                     {% endif %}
                                 </div>
                                 <div class="d-flex gap-2" >
-                                    <small>{{ quantity.datetime.date }}</small>
-                                    <details class="no-marker as-dropdown focus-first-input scroll-into-view" data-group="quantity-edit" data-scroll-into-view=".card">
-                                        <summary class="text-muted xstretched-link" title="Edit this quantity">
+                                    <small>{{ quantity.date }}</small>
+                                    <details class="no-marker as-dropdown focus-first-input with-backdrop" data-group="quantity-edit">
+                                        <summary class="text-muted" title="Edit this quantity">
                                             <span class="details-toggle">
                                                 {% icon "pencil" classes="details-toggle-open" %}
                                                 {% icon "circle-xmark" classes="details-toggle-close" %}
                                             </span>
                                         </summary>
-                                        <div class="card details-dropdown details-on-right">
+                                        <div class="card details-dropdown large-details">
+                                            <div class="card-header hstack-full gap-3">
+                                                <span class="card-title">Edit quantity</span>
+                                                <div class="d-flex gap-4 align-items-baseline">
+                                                    <details class="no-marker as-dropdown with-backdrop">
+                                                        <summary class="text-warning text-decoration-underline">Delete…</summary>
+                                                        <div class="card details-dropdown details-on-right">
+                                                            <div class="card-body">
+                                                                {% quantity_delete_form quantity=quantity next_category=current_category next_with_children=with_children %}
+                                                            </div>
+                                                        </div>
+                                                    </details>
+                                                    <button type="submit" form="edit-quantity-form-{{ quantity.id }}" class="btn btn-primary hide-if-from-top">Save</button>
+                                                </div>
+                                            </div>
                                             <div class="card-body">
                                                 {% quantity_edit_form quantity=quantity next_category=current_category next_with_children=with_children %}
-                                                <hr />
-                                                {% quantity_delete_form quantity=quantity next_category=current_category next_with_children=with_children %}
+                                            </div>
+                                            <div class="card-footer hstack justify-content-end">
+                                                <button type="submit" form="edit-quantity-form-{{ quantity.id }}" class="btn btn-primary">Save</button>
                                             </div>
                                         </div>
                                     </details>

@@ -1,17 +1,5 @@
-{% load core_utils %}
-{% include "bootstrap5/errors.html" %}
-<form class="d-flex flex-column gap-2 small small-form" action="{% if form.instance.id %}{{ form.instance.get_edit_url }}{% else %}{% if form.instance.parent.level %}{{ form.instance.parent.get_add_category_url }}{% else %}{{ form.instance.parent.project.get_add_category_url }}{% endif %}{% endif %}?date={{ date_str }}&interval={{ interval }}{% if next %}&next={{ next }}{% endif %}" method="post">
-    {% csrf_token %}
-    {% if not no_description %}<p class="mb-1 fw-bold">{% if form.instance.id %}Edition of the «{{ form.instance.name }}» category.{% else %}{% if form.instance.parent.level %}This will add a sub-category directly under the «{{ form.instance.parent.name }}» category.{% else %}This will add a root category in the «{{ form.instance.parent.project.name }}» project.{% endif %}{% endif %}</p>{% endif %}
-    {% include "bootstrap5/field.html" with field=form.name no_errors=True wrapper_class="mb-0" %}
-    {% if form.instance.id %}
-        {% include "bootstrap5/field.html" with field=form.parent form_show_labels=True wrapper_class="mb-0" %}
-    {% endif %}
-    <p class="mb-0">Optional fields:</p>
-    {% for field in form %}
-        {% if field.name != 'name' and field.name != 'parent' %}
-            {% include "bootstrap5/field.html" with wrapper_class="mb-0" %}
-        {% endif %}
-    {% endfor %}
-    <button class="btn btn-sm btn-primary" type="submit">{% if form.instance.id %}Update category{% else %}Add category{% endif %}</button>
+{% load core_utils crispy_forms_tags %}
+
+<form class="d-flex flex-column" id="{% if form.instance.id %}edit-category-form{% else %}create-category-form{% endif %}" action="{% if form.instance.id %}{{ form.instance.get_edit_url }}{% else %}{% if form.instance.parent.level %}{{ form.instance.parent.get_add_category_url }}{% else %}{{ form.instance.parent.project.get_add_category_url }}{% endif %}{% endif %}?date={{ date_str }}&interval={{ interval }}{% if next %}&next={{ next }}{% endif %}" method="post">
+    {% crispy form form.helper %}
 </form>

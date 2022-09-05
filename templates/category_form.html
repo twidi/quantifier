@@ -11,4 +11,7 @@
 
 {% block card_content %}
     {% include "category_form_include.html" with no_description=True %}
+    <div class="hstack justify-content-end">
+        <button class="btn btn-primary" form="{% if form.instance.id %}edit-category-form{% else %}create-category-form{% endif %}" type="submit">{% if form.instance.id %}Update category{% else %}Create category{% endif %}</button>
+    </div>
 {% endblock %}

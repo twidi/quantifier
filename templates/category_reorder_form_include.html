@@ -1,10 +1,10 @@
 {% load core_utils crispy_forms_tags %}
 {% include "bootstrap5/errors.html" %}
-<form class="d-flex flex-column gap-2 small small-form" action="{{ form.instance.get_reorder_url }}?date={{ date_str }}&interval={{ interval }}{% if next %}&next={{ next }}{% endif %}" method="post">
+<form class="d-flex flex-column gap-2" action="{{ form.instance.get_reorder_url }}?date={{ date_str }}&interval={{ interval }}{% if next %}&next={{ next }}{% endif %}" method="post">
     {% csrf_token %}
     {% if not no_description %}<p class="mb-1 fw-bold">Change the position of the «{{ form.instance.name }}»{% if form.instance.level == 1 %} root category{% else %} inside the «{{ form.instance.parent.name }}» one{% endif %}.</p>{% endif %}
     {% for field in form %}
         {% include "bootstrap5/field.html" with wrapper_class="mb-0" %}
     {% endfor %}
-    <button type="submit" class="btn btn-sm btn-primary">Update position</button>
+    <button type="submit" class="btn btn-primary">Update position</button>
 </form>

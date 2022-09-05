@@ -161,16 +161,19 @@
                 setTimeout(() => tab_content.scrollIntoViewIfNeeded(), 50)
             }
         }, true);
-        // create select2 elements when selects with "autocomplete" class are focused
+        // create select2 elements when details element is opened or tab is shown
+        const create_select2 = select => {
+            setTimeout(() => $(select).select2({theme: 'bootstrap-5', dropdownAutoWidth: true}), 500);
+        };
+        const create_all_select2 = elt => elt.querySelectorAll('select.autocomplete').forEach(elt => { create_select2(elt); })
+        document.addEventListener('toggle', ev => { if (ev.target.nodeName === 'DETAILS') { create_all_select2(ev.target); } }, true);
+        document.addEventListener('shown.bs.tab', ev => { create_all_select2(document.querySelector(ev.target.getAttribute('data-bs-target'))) });
+        // create select2 elements on focus
         document.addEventListener("focusin", ev => {
             if (ev.target.nodeName !== 'SELECT' || !ev.target.classList.contains('autocomplete')) { return; }
             ev.preventDefault();
             ev.stopImmediatePropagation();
-            setTimeout(() => {
-                let $target = $(ev.target);
-                $target.select2({theme: 'bootstrap-5', dropdownAutoWidth: true, dropdownCssClass: ev.target.closest('form.small-form') ? 'select2-dropdown-sm' : ''});
-                $target.select2('open');
-            }, 500);
+            create_select2(ev.target);
         });
 
     </script>

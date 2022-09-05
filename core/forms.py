@@ -219,24 +219,21 @@ class QuantityBaseForm(ModelForm):
         model = Quantity
         fields = ["value", "date", "time", "category", "notes"]
 
-    @classmethod
-    def get_date_args(cls, project, date, interval) -> Tuple[datetime.date, datetime.date, datetime.date]:
+    @staticmethod
+    def get_initial_date(date, interval) -> datetime.date:
         initial_date = datetime.now().date()
-        min_date, max_date = get_dates_interval(date, interval)
         if initial_date != date and interval in (None, Intervals.none):
             initial_date = date
+        min_date, max_date = get_dates_interval(date, interval)
         if not (min_date <= initial_date <= max_date):
             initial_date = min_date
-        if not project.has_interval:
-            min_date = max_date = None
-        return min_date, max_date, initial_date
+        return initial_date
 
     def get_categories(self):
         return self.project.visible_categories
 
-    def __init__(self, project, min_date, max_date, *args, **kwargs):
+    def __init__(self, project, *args, **kwargs):
         self.project = project
-        self.min_date, self.max_date = min_date, max_date
 
         if project.unique_quick_add_quantity and (initial := (kwargs.get("initial") or {})).get("value") is None:
             kwargs["initial"] = initial | {"value": project.unique_quick_add_quantity}
@@ -265,8 +262,8 @@ class QuantityBaseForm(ModelForm):
 
 
 class QuantityInProjectForm(QuantityBaseForm):
-    def __init__(self, project, min_date, max_date, *args, **kwargs):
-        super().__init__(project, min_date, max_date, *args, **kwargs)
+    def __init__(self, project, *args, **kwargs):
+        super().__init__(project, *args, **kwargs)
         self.prefix = f"project-{project.pk}-qtt-" + (f"{self.instance.pk}" if self.instance.pk else "new")
 
 
@@ -274,9 +271,9 @@ class QuantityInCategoryForm(QuantityBaseForm):
     def get_categories(self):
         return self.category.get_descendants(include_self=True)
 
-    def __init__(self, category, min_date, max_date, *args, **kwargs):
+    def __init__(self, category, *args, **kwargs):
         self.category = category
-        super().__init__(category.project, min_date, max_date, *args, **kwargs)
+        super().__init__(category.project, *args, **kwargs)
         self.prefix = f"category-{category.pk}-qtt-" + (f"{self.instance.pk}" if self.instance.pk else "new")
         self.instance.category = category
 
@@ -286,7 +283,7 @@ class QuantityEditForm(QuantityInCategoryForm):
         return self.project.visible_categories
 
     def __init__(self, *args, **kwargs):
-        super().__init__(category=kwargs["instance"].category, min_date=None, max_date=None, *args, **kwargs)
+        super().__init__(category=kwargs["instance"].category, *args, **kwargs)
 
 
 class QuantityDeleteForm(ModelForm):

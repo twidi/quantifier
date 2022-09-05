@@ -132,8 +132,8 @@ def category_delete_form(context, category, next_category=None):
 
 @register.inclusion_tag("quantity_form_include.html", takes_context=True)
 def quantity_in_category_form(context, category, next_category=None, initial_value=None):
-    min_date, max_date, initial_date = QuantityInCategoryForm.get_date_args(
-        category.project, context.get("date"), context.get("interval") or category.project.interval
+    initial_date = QuantityInCategoryForm.get_initial_date(
+        context.get("date"), context.get("interval") or category.project.interval
     )
     return {
         "date": context.get("date"),
@@ -144,8 +144,6 @@ def quantity_in_category_form(context, category, next_category=None, initial_val
         "next": f"category:{next_category.id}" if next_category else None,
         "form": QuantityInCategoryForm(
             category=category,
-            min_date=min_date,
-            max_date=max_date,
             initial={
                 "value": initial_value if initial_value and initial_value > 0 else None,
                 "date": initial_date,
@@ -156,8 +154,8 @@ def quantity_in_category_form(context, category, next_category=None, initial_val
 
 @register.inclusion_tag("quantity_form_include.html", takes_context=True)
 def quantity_in_project_form(context, project, initial_value=None):
-    min_date, max_date, initial_date = QuantityInProjectForm.get_date_args(
-        project, context.get("date"), context.get("interval") or project.interval
+    initial_date = QuantityInProjectForm.get_initial_date(
+        context.get("date"), context.get("interval") or project.interval
     )
     return {
         "date": context.get("date"),
@@ -167,8 +165,6 @@ def quantity_in_project_form(context, project, initial_value=None):
         "next": "projects",
         "form": QuantityInProjectForm(
             project=project,
-            min_date=min_date,
-            max_date=max_date,
             initial={
                 "value": initial_value if initial_value and initial_value > 0 else None,
                 "date": initial_date,

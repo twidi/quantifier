@@ -661,16 +661,15 @@ class Quantity(models.Model):
         on_delete=models.CASCADE,
         related_name="quantities",
         verbose_name="In which category to save this quantity?",
-        help_text="If you want to save a quantity in a sub-category, you need to create it first.",
     )
     notes = models.TextField(
         blank=True,
         verbose_name="Optional notes",
-        help_text="You can add some notes about this quantity. They will be displayed in the list of quantities.",
+        help_text="You can add some notes that will be displayed in the list of quantities.",
     )
     value = models.PositiveIntegerField(
-        verbose_name="What is the amount to save?",
-        help_text="In %(quantity_name)s",
+        verbose_name="How much?",
+        help_text="A whole number. Round it up if there is a decimal part.",
     )
     date = models.DateField(
         null=False,
@@ -679,7 +678,7 @@ class Quantity(models.Model):
         verbose_name="For which date do you want to save this quantity?",
         help_text="You can save a quantity for a past, present, or future date.",
     )
-    time = models.DateField(
+    time = models.TimeField(
         null=True,
         blank=True,
         verbose_name="Do you need to set a specific time?",

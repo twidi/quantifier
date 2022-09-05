@@ -44,7 +44,6 @@ class Migration(migrations.Migration):
             model_name="quantity",
             name="category",
             field=core.fields.TreeForeignKeyNoRoot(
-                help_text="If you want to save a quantity in a sub-category, you need to create it first.",
                 on_delete=django.db.models.deletion.CASCADE,
                 related_name="quantities",
                 to="core.category",
@@ -65,16 +64,15 @@ class Migration(migrations.Migration):
             name="notes",
             field=models.TextField(
                 blank=True,
-                help_text="You can add some notes about this quantity. They will be displayed in the list of quantities.",
+                help_text="You can add some notes that will be displayed in the list of quantities.",
                 verbose_name="Optional notes",
             ),
         ),
         migrations.AlterField(
             model_name="quantity",
             name="time",
-            field=models.DateField(
+            field=models.TimeField(
                 blank=True,
-                default=django.utils.timezone.now,
                 help_text="This is totally optional.",
                 null=True,
                 verbose_name="Do you need to set a specific time?",
@@ -84,7 +82,7 @@ class Migration(migrations.Migration):
             model_name="quantity",
             name="value",
             field=models.PositiveIntegerField(
-                help_text="In %(quantity_name)s", verbose_name="What is the amount to save?"
+                help_text="A whole number. Round it up if there is a decimal part.", verbose_name="How much?"
             ),
         ),
     ]

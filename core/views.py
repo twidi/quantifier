@@ -359,9 +359,8 @@ class QuantityCreateBaseView(CreateView):
     model = Quantity
 
     def get_form_kwargs(self):
-        min_date, max_date, initial_date = QuantityInProjectForm.get_date_args(self.project, self.date, self.interval)
-        result = super().get_form_kwargs() | {"min_date": min_date, "max_date": max_date}
-        result["initial"]["date"] = initial_date
+        result = super().get_form_kwargs()
+        result["initial"]["date"] = QuantityInProjectForm.get_initial_date(self.date, self.interval)
         return result
 
     def get_context_data(self, **kwargs):

@@ -25,22 +25,6 @@ class Migration(migrations.Migration):
             model_name="quantity",
             name="datetime",
         ),
-        migrations.AddField(
-            model_name="quantity",
-            name="date",
-            field=models.DateField(
-                default=django.utils.timezone.now,
-            ),
-        ),
-        migrations.AddField(
-            model_name="quantity",
-            name="time",
-            field=models.DateField(
-                blank=True,
-                default=django.utils.timezone.now,
-                null=True,
-            ),
-        ),
         migrations.AddIndex(
             model_name="quantity",
             index=models.Index(fields=["category", "date", "time"], name="core_quanti_categor_52f76d_idx"),

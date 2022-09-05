@@ -52,10 +52,12 @@
 
     </div>
 
+    {% block project_content_container %}
     <div class="d-flex flex-column gap-7">
         {% block project_content %}
         {% endblock project_content %}
     </div>
+    {% endblock project_content_container %}
 
     {% if project.quick_add_quantities %}
         <datalist id="project-{{ project.pk }}-quick_add_quantities">

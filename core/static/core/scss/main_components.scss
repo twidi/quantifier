@@ -28,6 +28,25 @@
     a { color: inherit; }
 }
 
+.card-plus {
+    --bs-card-spacer: var(--bs-spacer-4);
+    background: var(--bs-body-bg);
+    filter: var(--drowpdown-shadow);
+    > .card-header, > .card-footer {
+        padding: var(--bs-spacer-3);
+        background: none;
+        .card-title {
+            font-size: var(--fs-2);
+        }
+    }
+    > .card-body {
+        filter: var(--drowpdown-shadow);
+        margin-inline: var(--bs-spacer-2);
+        background: var(--bs-card-bg);
+        border-radius: calc(var(--bs-card-inner-border-radius) - 1px);
+    }
+}
+
 details {
     --animation-duration: .2s;
     --animation-timing-function: ease-in-out;
@@ -59,15 +78,15 @@ details {
                 left: auto !important;
                 transform: translate(0, 0);
             }
+
             &.large-details {
-                --bs-card-spacer: var(--bs-spacer-4);
+                @extend .card-plus;
                 width: calc(100% - var(--bs-card-spacer-x));
                 min-width: var(--card-item-size);
                 max-width: 50rem;
                 z-index: 15;
                 position: fixed;
                 max-height: calc(100vh);
-                background: var(--bs-body-bg);
                 border-top-left-radius: 0;
                 border-top-right-radius: 0;
                 top: 0;
@@ -83,25 +102,15 @@ details {
                 }
                 transition: transform var(--animation-duration) var(--animation-timing-function);
                 @media (prefers-reduced-motion: reduce) { transition: none; }
-                > .card-header, > .card-footer {
-                    padding: var(--bs-spacer-3);
-                    padding-bottom: var(--bs-spacer-2);
-                    background: none;
-                    .card-title {
-                        font-size: var(--fs-2);
-                    }
-                }
                 .hide-if-from-top { display: none; }
                 @media (pointer: coarse) {
                     .hide-if-from-top { display: block; }
                     > .card-footer { display: none; }
                 }
-
+                > .card-header, > .card-footer {
+                    padding-bottom: var(--bs-spacer-2);
+                }
                 > .card-body {
-                    filter: var(--drowpdown-shadow);
-                    margin-inline: var(--bs-spacer-2);
-                    background: var(--bs-card-bg);
-                    border-radius: calc(var(--bs-card-inner-border-radius) - 1px);
                     overflow-y: auto;
                     overscroll-behavior: contain;
                     @media (pointer: coarse) {

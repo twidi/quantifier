@@ -692,6 +692,10 @@ class Quantity(models.Model):
             models.Index(fields=["category", "date", "time"]),
         ]
 
+    @property
+    def date_or_datetime(self):
+        return datetime.combine(self.date, self.time) if self.time else self.date
+
     def get_edit_url(self):
         return reverse(
             "quantity_edit",

@@ -5,16 +5,13 @@
     <link rel="stylesheet" href="{% sass_src "core/scss/pages/quantities.scss" %}" />
 {% endblock %}
 
-{% block project_content %}
-    {{ block.super }}
+{% block project_content_container %}
+    <div class="card card-plus d-flex flex-column limited-full-width quantities-list-container">
 
-
-    <div class="d-flex flex-column container-sm quantities-list-container">
-
-        <div class="d-flex justify-content-between align-items-center m-2">
+        <div class="card-header d-flex justify-content-between align-items-center">
             {% if current_category and current_category.has_children %}
                 <a class="d-flex align-items-center" href="{{ request.path }}?date={{ date_str }}&interval={{ interval }}{% if with_children %}&with-children=0{% endif %}">
-                    <span class="form-check form-switch position-relative mb-0"">
+                    <span class="form-check form-switch position-relative mb-0">
                         <input class="form-check-input" type="checkbox" role="switch" id="include-sub-categories"{% if with_children %} checked{% endif %}>
                     </span>
                     Include sub-categories
@@ -29,35 +26,47 @@
         </div>
 
         {% if not page_obj %}
-            <div class="callout callout-info mt-0">
-                Nothing entered for this period.
+            <div class="card-body">
+                <div class="callout callout-info mt-0">
+                    Nothing entered for this period.
+                </div>
             </div>
         {% else %}
 
-            <table class="table table-hover position-relative">
+            <div class="card-body vstack gap-4">
                 {% for quantity in page_obj %}
-                    <tr>
-                        <td>
-                            <span class="badge bg-secondary h-100 fs-3 qtt-value d-flex justify-content-center align-items-center fw-normal">{{ quantity.value }}</span>
-                        </td>
-                        <td>
-                            <div class="d-flex w-100 justify-content-between gap-2{% if not quantity.notes %} h-100 align-items-center{% endif %}">
-                                <div class="h5 mb-0">
-                                    <a href="{{ quantity.category.get_quantities_url }}?date={{ date_str }}&interval={{ interval }}">{{ quantity.category.name }}</a>
-                                    {% if quantity.category.in_between_ancestors %}
-                                        <span class="fs-6 fw-normal">( in
-                                        {% for ancestor in quantity.category.in_between_ancestors %}
-                                            <a href="{{ ancestor.get_quantities_url }}?date={{ date_str }}&interval={{ interval }}">{{ ancestor.name }}</a>
-                                            {% if not forloop.last %}
-                                                <span class="small text-muted">{% icon_xs "chevron-right" "solid" %}</span>
-                                            {% endif %}
-                                        {% endfor %}
-                                        )</span>
-                                    {% endif %}
+                    <div class="hstack-full gap-3">
+                        <div class="vstack gap-1">
+                            <div>
+                                {% if quantity.category.in_between_ancestors %}
+                                    {% for ancestor in quantity.category.in_between_ancestors %}
+                                        <a href="{{ ancestor.get_quantities_url }}?date={{ date_str }}&interval={{ interval }}">{{ ancestor.name }}</a>
+                                        <span class="small text-muted">{% icon_xs "chevron-right" "solid" %}</span>
+                                    {% endfor %}
+                                {% endif %}
+                                <a href="{{ quantity.category.get_quantities_url }}?date={{ date_str }}&interval={{ interval }}">{{ quantity.category.name }}</a>
+                            </div>
+                            <span class="text-muted">{{ quantity.date_or_datetime }}</span>
+                            {% if quantity.notes %}
+                                <div class="text-muted">
+                                    {% with notes_part=quantity.notes|text_as_title_and_rest %}
+                                        {% if not notes_part.1 %}
+                                            {{ notes_part.0 }}
+                                        {% else %}
+                                            <details>
+                                                <summary>{{ notes_part.0 }}</summary>
+                                                <div class="ms-3">{{ notes_part.1|linebreaks }}</div>
+                                            </details>
+                                        {% endif %}
+                                    {% endwith %}
                                 </div>
-                                <div class="d-flex gap-2" >
-                                    <small>{{ quantity.date }}</small>
-                                    <details class="no-marker as-dropdown focus-first-input with-backdrop" data-group="quantity-edit">
+                            {% endif %}
+
+                        </div>
+                        <span class="text-center px-4 py-2 rounded-3 bg-white-5">
+                            {{ quantity.value }}
+                        </span>
+                        <details class="no-marker as-dropdown focus-first-input with-backdrop" data-group="quantity-edit">
                                         <summary class="text-muted" title="Edit this quantity">
                                             <span class="details-toggle">
                                                 {% icon "pencil" classes="details-toggle-open" %}
@@ -87,34 +96,32 @@
                                             </div>
                                         </div>
                                     </details>
-                                </div>
-                            </div>
-                            <div class="mt-1">
-                                {% if quantity.notes %}<p class="text-muted">{{ quantity.notes|linebreaks }}</p>{% endif %}
-                            </div>
-                        </td>
-                    </tr>
+
+                    </div>
                 {% endfor %}
-            </table>
+            </div>
 
-            {% if page_obj.paginator.num_pages > 1 %}
-                <div class="pagination justify-content-center mt-3">
-                    {% for page_number in elided_pages %}
-                        <li class="page-item {% if page_number == page_obj.number %}active{% elif page_number == page_obj.paginator.ELLIPSIS %}disabled{% endif %}">
-                        {% if page_number == page_obj.paginator.ELLIPSIS %}
-                            <span class="page-link">{{page_number}}</span>
-                        {% else %}
-                            <a href="?{% set_query_parameters page=page_number %}" class="page-link">
-                                {{page_number}}
-                            </a>
-                        {% endif %}
-                        </li>
-                    {% endfor %}
-                </div>
-            {% endif %}
-
+                {% if page_obj.paginator.num_pages > 1 %}
+                    <div class="card-footer">
+                        <div class="hstack justify-content-center gap">
+                            {% for page_number in elided_pages %}
+                                <span class="text-center py-2{% if page_number == page_obj.number %} px-4 rounded-3 bg-white-5{% elif page_number == page_obj.paginator.ELLIPSIS %}disabled{% else %} px-2{% endif %}">
+                                {% if page_number == page_obj.paginator.ELLIPSIS %}
+                                    <span class="">{{page_number}}</span>
+                                {% else %}
+                                    <a href="?{% set_query_parameters page=page_number %}" class="">
+                                        {{page_number}}
+                                    </a>
+                                {% endif %}
+                                </span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="card-footer py-1"></div>
+                {% endif %}
         {% endif %}
 
     </div>
 
-{% endblock project_content %}
+{% endblock project_content_container %}

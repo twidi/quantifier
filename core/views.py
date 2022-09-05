@@ -462,7 +462,7 @@ class QuantitiesBaseView(ProjectOrCategoryDetailsMixin, ListView):
         if paginator := context.get("paginator"):
             context["elided_pages"] = paginator.get_elided_page_range(
                 number=context["page_obj"].number,
-                on_each_side=2,
+                on_each_side=1,
                 on_ends=1,
             )
         for quantity in context["quantities"]:

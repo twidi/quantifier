@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional, NamedTuple, Literal, Union
+from typing import Optional, NamedTuple, Literal, Union, Tuple
 
 from django.template.defaulttags import register
 from django.utils.safestring import mark_safe
@@ -553,3 +553,19 @@ def gauge(context, obj, summed_quantities):
             "bars_sides": bars_sides,
         }
     }
+
+
+@register.filter
+def text_as_title_and_rest(text: str) -> Tuple[str, str]:
+    """
+    Returns a tuple of the first word and the rest of the text.
+    """
+    text = (text.strip() if text or "" else "").splitlines()
+
+    if not text:
+        return "", ""
+
+    if len(text) == 1:
+        return text[0], ""
+
+    return text[0], "\n".join(text[1:])

@@ -8,8 +8,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
     <script src="https://kit.fontawesome.com/0b23f4de3d.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script>
@@ -163,10 +161,6 @@
                 setTimeout(() => tab_content.scrollIntoViewIfNeeded(), 50)
             }
         }, true);
-        // activate datepickers when details element is opened or tab is shown
-        const activate_datepicker = elt => elt.querySelectorAll('.datepicker-container').forEach(elt => {if (!elt._flatpickr) { flatpickr(elt) }})
-        document.addEventListener('toggle', ev => { if (ev.target.nodeName === 'DETAILS') { activate_datepicker(ev.target); } }, true);
-        document.addEventListener('shown.bs.tab', ev => { activate_datepicker(document.querySelector(ev.target.getAttribute('data-bs-target'))) });
         // create select2 elements when selects with "autocomplete" class are focused
         document.addEventListener("focusin", ev => {
             if (ev.target.nodeName !== 'SELECT' || !ev.target.classList.contains('autocomplete')) { return; }

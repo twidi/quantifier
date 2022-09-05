@@ -151,10 +151,3 @@ details {
 textarea.auto-reduce:not(:focus){
     height: calc(1.5em + .5rem + 2px);
 }
-
-.flatpickr-calendar {
-    filter: var(--drowpdown-shadow);
-}
-.form-control.flatpickr-input + .form-control[readonly] {
-    background: var(--bs-form-control-bg);
-}

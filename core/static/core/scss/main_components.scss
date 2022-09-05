@@ -67,9 +67,9 @@ details {
             right: auto;
             transform: translate(-50%, 0);
             z-index: var(--zindex, 5);
-            min-width: calc(var(--card-item-size) - var(--bs-card-spacer-x));
+            min-width: var(--dropdown-default-size);
             .card & {
-                width: calc(var(--card-item-size) - var(--bs-card-spacer-x));
+                width: var(--dropdown-default-size);
             }
         }
         > .card {
@@ -82,7 +82,7 @@ details {
             &.large-details {
                 @extend .card-plus;
                 width: calc(100% - var(--bs-card-spacer-x));
-                min-width: var(--card-item-size);
+                min-width: var(--dropdown-default-size);
                 max-width: 50rem;
                 z-index: 15;
                 position: fixed;

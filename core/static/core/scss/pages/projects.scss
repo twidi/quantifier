@@ -1,9 +1,0 @@
-#projects {
-    > .card {
-        width: 100%;
-        @media (min-width: 43rem) { /* cannot use css custom property here: SHAME ON YOU CSS */
-            width: var(--card-item-size);
-        }
-        min-height: 8rem;
-    }
-}

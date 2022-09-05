@@ -1,5 +1,5 @@
 :root {
-    --card-item-size: 20rem;
+    --dropdown-default-size: 20rem;
 }
 
 body > nav:first-of-type {
@@ -28,5 +28,27 @@ body > nav:first-of-type {
 #date-interval-selector {
     + .dropdown-menu {
         width: max-content;
+    }
+}
+
+#projects {
+    --card-item-size: 20rem;
+    > .card {
+        width: 100%;
+        @media (min-width: 43rem) { /* cannot use css custom property here: SHAME ON YOU CSS */
+            width: var(--card-item-size);
+        }
+        min-height: 8rem;
+    }
+}
+
+#main-categories {
+    --card-item-size: 10rem;
+    > .card {
+        width: 100%;
+        @media (min-width: 23rem) { /* cannot use css custom property here: SHAME ON YOU CSS */
+            width: var(--card-item-size);
+        }
+        min-height: 8rem;
     }
 }

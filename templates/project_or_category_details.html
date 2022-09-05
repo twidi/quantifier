@@ -15,7 +15,7 @@
 
         {% for category in categories %}
             {% with summed_quantities=project.summed_quantities|dict_value:category %}
-                <div class="card vstack gap-5 p-5 w-max-r20 flex-grow-0">
+                <div class="card vstack gap-5 p-5">
                     <div class="hstack gap-2 align-items-baseline">
                         <a class="fs-1 text-decoration-none" href="{{ category.get_absolute_url }}?date={{ date_str }}{% if interval %}&interval={{ interval }}{% endif %}">
                             {{ category.name }}
@@ -69,7 +69,7 @@
                 {% if current_category.has_children %}
                     {% if summed_quantities.self_used or summed_quantities.self_exptected %}
                         {% if summed_quantities.self_used != summed_quantities.used or summed_quantities.self_expected != summed_quantities.expected %}
-                            <div class="card vstack gap-5 p-5 w-max-r20 flex-grow-0">
+                            <div class="card vstack gap-5 p-5">
                                 <div class="hstack gap-2 align-items-baseline">
                                     <span class="fs-1 text-decoration-none text-muted">
                                         Unclassified
@@ -87,7 +87,7 @@
             {% endwith %}
         {% endif %}
 
-        <div class="card hstack p-5 justify-content-center align-items-center w-max-r20">
+        <div class="card hstack p-5 justify-content-center align-items-center">
         <details class="no-marker as-dropdown focus-first-input with-backdrop" data-focus-first-input-in=".large-details > .card-body">
             <summary class="hstack gap-3">
                 <span class="fs-1 text-decoration-none text-muted">Add a category</span>

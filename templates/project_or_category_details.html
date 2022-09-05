@@ -123,8 +123,8 @@
         </div>
     {% endwith %}
 
-    <a class="text-muted fs-2 bottom-0 end-0 position-fixed rounded-circle m-3 d-flex justify-content-center align-items-center" title="List/edit/delete entered quantities" id="manage-quantities-button" href="{{ main_object.get_quantities_url }}?date={{ date_str }}&interval={{ interval }}">
-        {% icon "square-list" classes="fa-fw" %}
+    <a class="btn btn-floating btn-round btn-primary fs-1" title="List/edit/delete entered quantities" href="{{ main_object.get_quantities_url }}?date={{ date_str }}&interval={{ interval }}">
+        {% icon "square-list" "solid" classes="fa-fw" %}
     </a>
 
 {% endblock project_content %}

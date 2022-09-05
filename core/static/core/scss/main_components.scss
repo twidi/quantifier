@@ -160,3 +160,18 @@ details {
 textarea.auto-reduce:not(:focus){
     height: calc(1.5em + .5rem + 2px);
 }
+
+
+.btn-floating {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: var(--bs-spacer-3);
+    font-size: var(--fs-2);
+    width: 3.4rem;
+    height: 3.4rem;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+}

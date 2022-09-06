@@ -31,24 +31,16 @@ body > nav:first-of-type {
     }
 }
 
-#projects {
-    --card-item-size: 20rem;
+#projects, #main-categories {
+    gap: var(--bs-spacer-5);
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--card-item-size, 20rem), 1fr));
+    grid-auto-flow: dense;
     > .card {
-        width: 100%;
-        @media (min-width: 43rem) { /* cannot use css custom property here: SHAME ON YOU CSS */
-            width: var(--card-item-size);
-        }
         min-height: 8rem;
     }
 }
 
 #main-categories {
-    --card-item-size: 10rem;
-    > .card {
-        width: 100%;
-        @media (min-width: 23rem) { /* cannot use css custom property here: SHAME ON YOU CSS */
-            width: var(--card-item-size);
-        }
-        min-height: 8rem;
-    }
+    --card-item-size: 15rem;
 }

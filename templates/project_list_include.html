@@ -1,9 +1,9 @@
 {% load core_utils crispy_forms_tags %}
 
-<div id="projects" class="hstack flex-wrap gap-5 justify-content-center align-items-stretch">
+<div id="projects">
 
     {% for project in projects %}
-            <div class="card project vstack gap-5 p-5 justify-content-between">
+            <div class="card vstack gap-5 p-5 justify-content-between">
                 <div>
                     {% if project.nb_categories > 1 %}
                         {% with summed_quantities=project.summed_quantities|dict_value:project.root_category %}
@@ -61,10 +61,10 @@
             </div>
     {% endfor %}
 
-    <div class="card project vstack gap-5 p-5 justify-content-center align-items-center">
+    <div class="card vstack gap-5 p-5 justify-content-center align-items-center">
         <details class="no-marker as-dropdown focus-first-input with-backdrop" data-focus-first-input-in=".large-details > .card-body">
             <summary class="hstack gap-3">
-                <span class="fs-1 text-decoration-none text-muted">Add a project</span>
+                <span class="fs-1 text-decoration-none text-muted text-center">Add a project</span>
                 <span class="details-toggle">
                     <span class="btn btn-round btn-secondary details-toggle-open">
                         {% icon "plus" "solid" size="xl" %}

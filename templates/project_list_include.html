@@ -20,8 +20,8 @@
                         {% endif %}
                     </div>
                 </div>
-                {% if project.nb_categories > 1 %}
-                    <div class="hstack-full gap-5">
+                <div class="hstack-full gap-5" style="height: 3.5rem;">
+                    {% if project.nb_categories > 1 %}
                         <details class="no-marker as-dropdown focus-first-input with-backdrop" data-group="category_forms">
                             <summary class="hstack gap-3">
                                 <span class="details-toggle">
@@ -54,10 +54,10 @@
                             </div>
                         </details>
                         {% gauge project summed_quantities=project.summed_quantities|dict_value:project.root_category %}
-                    </div>
-                {% else %}
-                    <span class="text-warning">Categories not configured yet</span>
-                {% endif %}
+                    {% else %}
+                        <span class="text-warning">Categories not configured yet</span>
+                    {% endif %}
+                </div>
             </div>
     {% endfor %}
 

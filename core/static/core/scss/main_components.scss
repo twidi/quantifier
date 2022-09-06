@@ -1,5 +1,6 @@
 :root {
-    --drowpdown-shadow: drop-shadow(0px 0px 9px rgba(0, 0, 0, 0.7));
+    --dropdown-shadow-filter: drop-shadow(0px 0px 9px rgba(0, 0, 0, 0.7)); /* to use with filter */
+    --dropdown-shadow: 0px 0px 9px 6px rgba(0, 0, 0, 0.33);  /* to use with box-shadow, almost same rendering as for filter */
 }
 
 .callout {
@@ -31,7 +32,7 @@
 .card-plus {
     --bs-card-spacer: var(--bs-spacer-4);
     background: var(--bs-body-bg);
-    filter: var(--drowpdown-shadow);
+    box-shadow: var(--dropdown-shadow);
     > .card-header, > .card-footer {
         padding: var(--bs-spacer-3);
         background: none;
@@ -40,7 +41,7 @@
         }
     }
     > .card-body {
-        filter: var(--drowpdown-shadow);
+        box-shadow: var(--dropdown-shadow);
         margin-inline: var(--bs-spacer-2);
         background: var(--bs-card-bg);
         border-radius: calc(var(--bs-card-inner-border-radius) - 1px);
@@ -61,7 +62,7 @@ details {
     &.as-dropdown {
         > .details-dropdown {
             position: absolute;
-            filter: var(--drowpdown-shadow);
+            filter: var(--drowpdown-shadow-filter);
             height: auto;
             left: 50% !important;
             right: auto;
@@ -86,7 +87,7 @@ details {
                 max-width: 50rem;
                 z-index: 15;
                 position: fixed;
-                max-height: calc(100vh);
+                max-height: calc(90vh);
                 border-top-left-radius: 0;
                 border-top-right-radius: 0;
                 top: 0;

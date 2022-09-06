@@ -66,37 +66,36 @@
                         <span class="text-center px-4 py-2 rounded-3 bg-white-5">
                             {{ quantity.value }}
                         </span>
-                        <details class="no-marker as-dropdown focus-first-input with-backdrop" data-group="quantity-edit">
-                                        <summary class="text-muted" title="Edit this quantity">
-                                            <span class="details-toggle">
-                                                {% icon "pencil" classes="details-toggle-open" %}
-                                                {% icon "circle-xmark" classes="details-toggle-close" %}
-                                            </span>
-                                        </summary>
-                                        <div class="card details-dropdown large-details">
-                                            <div class="card-header hstack-full gap-3">
-                                                <span class="card-title">Edit quantity</span>
-                                                <div class="d-flex gap-4 align-items-baseline">
-                                                    <details class="no-marker as-dropdown with-backdrop">
-                                                        <summary class="text-warning text-decoration-underline">Delete…</summary>
-                                                        <div class="card details-dropdown details-on-right">
-                                                            <div class="card-body">
-                                                                {% quantity_delete_form quantity=quantity next_category=current_category next_with_children=with_children %}
-                                                            </div>
-                                                        </div>
-                                                    </details>
-                                                    <button type="submit" form="edit-quantity-form-{{ quantity.id }}" class="btn btn-primary hide-if-from-top">Save</button>
+                        <details class="no-marker as-dropdown focus-first-input with-backdrop" data-group="quantity-edit" data-focus-first-input-in=".large-details > .card-body">
+                            <summary class="text-muted" title="Edit this quantity">
+                                <span class="details-toggle">
+                                    {% icon "pencil" "solid" classes="fa-fw details-toggle-open" %}
+                                    {% icon "xmark" "solid" classes="fa-fw details-toggle-close" %}
+                                </span>
+                            </summary>
+                            <div class="card details-dropdown large-details">
+                                <div class="card-header hstack-full gap-3">
+                                    <span class="card-title">Edit quantity</span>
+                                    <div class="d-flex gap-4 align-items-baseline">
+                                        <details class="no-marker as-dropdown with-backdrop">
+                                            <summary class="text-warning text-decoration-underline">Delete…</summary>
+                                            <div class="card details-dropdown details-on-right">
+                                                <div class="card-body">
+                                                    {% quantity_delete_form quantity=quantity next_category=current_category next_with_children=with_children %}
                                                 </div>
                                             </div>
-                                            <div class="card-body">
-                                                {% quantity_edit_form quantity=quantity next_category=current_category next_with_children=with_children %}
-                                            </div>
-                                            <div class="card-footer hstack justify-content-end">
-                                                <button type="submit" form="edit-quantity-form-{{ quantity.id }}" class="btn btn-primary">Save</button>
-                                            </div>
-                                        </div>
-                                    </details>
-
+                                        </details>
+                                        <button type="submit" form="edit-quantity-form-{{ quantity.id }}" class="btn btn-primary hide-if-from-top">Save</button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    {% quantity_edit_form quantity=quantity next_category=current_category next_with_children=with_children %}
+                                </div>
+                                <div class="card-footer hstack justify-content-end">
+                                    <button type="submit" form="edit-quantity-form-{{ quantity.id }}" class="btn btn-primary">Save</button>
+                                </div>
+                            </div>
+                        </details>
                     </div>
                 {% endfor %}
             </div>

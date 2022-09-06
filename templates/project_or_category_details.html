@@ -16,7 +16,7 @@
 
         {% for category in categories %}
             {% with summed_quantities=project.summed_quantities|dict_value:category %}
-                <div class="card vstack gap-5 p-5">
+                <div class="card vstack gap-5 p-5 justify-content-between">
                     <div class="hstack gap-2 align-items-baseline">
                         <a class="fs-1 text-decoration-none" href="{{ category.get_absolute_url }}?date={{ date_str }}{% if interval %}&interval={{ interval }}{% endif %}">
                             {{ category.name }}
@@ -28,14 +28,12 @@
                         {% endwith %}
                     </div>
                     <div class="hstack gap-3 justify-content-start align-items-start">
-                        <div class="vstack align-items-end flex-grow-0">
-                            <div class="w-min-3 text-center fs-2 px-3 py-2 rounded-3 bg-white-5 {% if summed_quantities.goal_reached %}text-success{% elif summed_quantities.limit_exceeded %}text-danger{% endif %}">
-                                {{ summed_quantities.used }}
-                            </div>
-                            {% if summed_quantities.expected %}
-                                <div class="text-muted">/ {{ summed_quantities.expected }}</div>
-                            {% endif %}
+                        <div class="w-min-3 text-center fs-2 px-3 py-2 rounded-3 bg-white-5 {% if summed_quantities.goal_reached %}text-success{% elif summed_quantities.limit_exceeded %}text-danger{% endif %}">
+                            {{ summed_quantities.used }}
                         </div>
+                        {% if summed_quantities.expected %}
+                            <div class="text-muted align-self-end">/ {{ summed_quantities.expected }}</div>
+                        {% endif %}
                         <details class="mt-2 no-marker as-dropdown focus-first-input with-backdrop" data-group="category_forms">
                             <summary class="d-flex gap-3 align-items-center" title="Add a quantity">
                                 <span class="details-toggle">

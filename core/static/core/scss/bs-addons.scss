@@ -28,7 +28,7 @@
 
 .w-05 { width: 0.5rem !important; }
 .h-05 { height: 0.5rem !important; }
-@for $i from 1 through 10 {
+@for $i from 1 through 15 {
     .w-#{$i} { width: #{$i}rem !important; }
     .h-#{$i} { height: #{$i}rem !important; }
     .w-min-#{$i} { min-width: #{$i}em !important; }
@@ -38,6 +38,10 @@
 }
 .w-min-r20 { min-width: 20rem !important; }
 .w-max-r20 { max-width: 20rem !important; }
+.w-min-r25 { min-width: 25rem !important; }
+.w-max-r25 { max-width: 25rem !important; }
+.w-min-r30 { min-width: 30rem !important; }
+.w-max-r30 { max-width: 30rem !important; }
 .w-min-r50 { min-width: 50rem !important; }
 .w-max-r50 { max-width: 50rem !important; }
 

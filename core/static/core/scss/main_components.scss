@@ -92,31 +92,35 @@ details {
                 border-top-right-radius: 0;
                 top: 0;
                 transform: translate(-50%, -100%);
-                @media (pointer: coarse) {
-                    border-bottom-left-radius: 0;
-                    border-bottom-right-radius: 0;
-                    border-top-left-radius: var(--bs-card-border-radius);
-                    border-top-right-radius: var(--bs-card-border-radius);
-                    bottom: 0;
-                    top: unset;
-                    transform: translate(-50%, 100%);
-                }
                 transition: transform var(--animation-duration) var(--animation-timing-function);
                 @media (prefers-reduced-motion: reduce) { transition: none; }
                 .hide-if-from-top { display: none; }
-                @media (pointer: coarse) {
-                    .hide-if-from-top { display: block; }
-                    > .card-footer { display: none; }
-                }
                 > .card-header, > .card-footer {
                     padding-bottom: var(--bs-spacer-2);
                 }
                 > .card-body {
                     overflow-y: auto;
                     overscroll-behavior: contain;
-                    @media (pointer: coarse) {
+                }
+                @media (pointer: coarse) {
+                    &:not(.always-from-top) {
                         border-bottom-left-radius: 0;
                         border-bottom-right-radius: 0;
+                        border-top-left-radius: var(--bs-card-border-radius);
+                        border-top-right-radius: var(--bs-card-border-radius);
+                        bottom: 0;
+                        top: unset;
+                        transform: translate(-50%, 100%);
+                        .hide-if-from-top {
+                            display: block;
+                        }
+                        > .card-footer {
+                            display: none;
+                        }
+                        > .card-body {
+                            border-bottom-left-radius: 0;
+                            border-bottom-right-radius: 0;
+                        }
                     }
                 }
             }

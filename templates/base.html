@@ -41,36 +41,40 @@
                         <a class="text-decoration-none nav-link d-inline" title="Previous {{ interval_name }}" href="{{ request.path }}?date={{ prev_date|date:"Y-m-d" }}&interval={{ interval }}">{% icon "chevron-left" "solid" %}</a>
                     </div>
                 {% endif %}
-                <div class="nav-item dropdown flex-shrink-1">
-                    <a class="nav-link dropdown-toggle text-wrap text-center" href="#" id="date-interval-selector" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-                        {% interval_str date interval %}
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-center position-absolute" aria-labelledby="date-interval-selector">
-                        <form class="px-2" action="{{ request.path }}" method="get">
-                            <div class="input-group">
-                                <input name="date" type="date" value="{{ current_date|date:'Y-m-d' }}" required pattern="\d{4}-\d{2}-\d{2}" class="form-control form-control-sm" aria-label="Select date">
-                                <button class="btn btn-sm btn-outline-primary" type="submit">Go</button>
+                <details class="nav-item flex-shrink-1 no-marker no-marker as-dropdown with-backdrop">
+                    <summary class="dropdown-toggle">{% interval_str date interval %}</summary>
+                    <div class="card details-dropdown large-details always-from-top w-max-r25">
+                        <div class="card-header hstack-full gap-3">
+                            <span class="card-title">Date & interval picker</span>
+                            <a href="{{ request.path }}?date={{ today|date:'Y-m-d' }}{% if project.interval %}&interval={{ project.interval }}{% endif %}">Set to {% if not project or not project.interval or project.interval == "none" %}current day{% else %}current {% with interval=project.interval|interval %}{{ interval.unit_name }}{% endwith %}{% endif %}</a>
+                        </div>
+                        <form class="card-body vstack gap-4" action="{{ request.path }}" method="get" id="date-interval-picker">
+                            <div class="hstack">
+                                <label for="date-interval-picker_date" class="form-label w-13 m-0">Pick a date</label>
+                                <input id="date-interval-picker_date" name="date" type="date" value="{{ current_date|date:'Y-m-d' }}" required pattern="\d{4}-\d{2}-\d{2}" class="form-control">
                             </div>
-                            <a class="mb mb-3 d-inline-block" href="{{ request.path }}?date={{ today|date:'Y-m-d' }}{% if interval %}&interval={{ interval }}{% endif %}">Set to today</a>
-                            <p class="mb-1">View for:</p>
-                            {% for interval_choice in intervals %}
-                                <div class="form-check ms-2">
-                                    <input class="form-check-input" name="interval"{% if not project and interval == interval_choice %} checked{% elif project and interval|default:project.interval == interval_choice %} checked{% endif %} type="radio" value="{{ interval_choice.value }}" id="interval-{{ interval_choice }}">
-                                    <label class="form-check-label pe-1" for="interval-{{ interval_choice }}">
-                                        {{ interval_choice.unit_name|capfirst }}
-                                        {% if project.interval == interval_choice %}<span class="text-muted"> (project default)</span>{% endif %}
-                                    </label>
-                                </div>
-                            {% endfor %}
-                            {% if not project %}
-                                <div class="form-check ms-2">
-                                    <input class="form-check-input" name="interval"{% if not interval %} checked{% endif %} type="radio" value="" id="interval-default">
-                                    <label class="form-check-label pe-1" for="interval-default">Default by project</label>
-                                </div>
-                            {% endif %}
+                            <div class="hstack">
+                                <label for="date-interval-picker_interval" class="form-label w-13 m-0">And an interval</label>
+                                <select id="date-interval-picker_interval" name="interval"  class="form-select" >
+                                    {% for interval_choice in intervals %}
+                                        <option value="{{ interval_choice.value }}" {% if not project and interval == interval_choice %} selected{% elif project and interval|default:project.interval == interval_choice %} selected{% endif %}>
+                                            {{ interval_choice.unit_name|capfirst }}
+                                            {% if project.interval == interval_choice %}<span class="text-muted"> (project default)</span>{% endif %}
+                                        </option>
+                                    {% endfor %}
+                                    {% if not project %}
+                                        <option value=""{% if not interval %} selected{% endif %}>
+                                            Default by project
+                                        </option>
+                                    {% endif %}
+                                </select>
+                            </div>
                         </form>
+                        <div class="card-footer hstack justify-content-end">
+                            <button type="submit" form="date-interval-picker" class="btn btn-primary ">Apply</button>
+                        </div>
                     </div>
-                </div>
+                </details>
                 {% if interval != "none" %}
                     <div class="nav-item flex-grow-0">
                         <a class="text-decoration-none nav-link d-inline" title="Next {{ interval_name }}" href="{{ request.path }}?date={{ next_date|date:"Y-m-d" }}&interval={{ interval }}">{% icon "chevron-right" "solid" %}</a>

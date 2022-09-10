@@ -40,6 +40,12 @@ body > nav:first-of-type {
         flex: 0 0 var(--card-item-size, 20rem);
         min-height: 8rem;
     }
+    @media (max-width: 44rem) {
+        justify-content: stretch;
+        > .card {
+            flex-grow: 1;
+        }
+    }
 }
 
 #main-categories {

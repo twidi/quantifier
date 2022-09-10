@@ -165,7 +165,7 @@ details {
     }
     @media (pointer: coarse) {
         &.position-static-if-from-top {
-            &:not(.force-from-top), &:not(.from-top) {
+            &:not(.force-from-top):not(.from-top) {
                 --translate-x: -50%;
                 position: fixed;
             }

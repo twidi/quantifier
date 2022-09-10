@@ -4,7 +4,6 @@
 
     --bs-color-rgb: 217, 217, 217;
     --bs-color: rgb(var(--bs-body-color-rgb));
-    --bs-link-hover-color: inherit;
 
     --bs-body-color-rgb: var(--bs-color-rgb);
     --bs-body-color: rgb(var(--bs-body-color-rgb));
@@ -26,6 +25,7 @@
     --bs-danger: rgb(var(--bs-danger-rgb));
 
     --bs-link-color: var(--bs-body-color);
+    --bs-link-hover-color: var(--bs-secondary);
 
     --bs-muted-color-rgb: 127, 126, 140;
     --bs-muted-color: rgb(var(--bs-muted-color-rgb));

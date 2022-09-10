@@ -1,9 +1,5 @@
 {% extends "project_or_category_base.html" %}
 {% load i18n mptt_tags sass_tags core_utils query_parameters %}
-{% block head_end %}
-    {{ block.super }}
-    <link rel="stylesheet" href="{% sass_src "core/scss/pages/quantities.scss" %}" />
-{% endblock %}
 
 {% block project_content_container %}
     <div class="card card-plus d-flex flex-column limited-full-width quantities-list-container">

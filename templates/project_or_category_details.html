@@ -1,11 +1,6 @@
 {% extends "project_or_category_base.html" %}
 {% load i18n sass_tags mptt_tags core_utils %}
 
-{% block head_end %}
-    {{ block.super }}
-    <link rel="stylesheet" href="{% sass_src "core/scss/pages/project_or_category.scss" %}" />
-{% endblock %}
-
 {% block project_content %}
 
     {{ block.super }}

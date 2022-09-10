@@ -1,11 +1,6 @@
 {% extends "base_project.html" %}
 {% load i18n sass_tags mptt_tags core_utils %}
 
-{% block head_end %}
-    {{ block.super }}
-    <link rel="stylesheet" href="{% sass_src "core/scss/pages/project_base.scss" %}" />
-{% endblock %}
-
 {% block project_header %}
 
     {{ block.super }}

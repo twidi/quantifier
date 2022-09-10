@@ -46,7 +46,7 @@
                                     <button type="submit" form="create-quantity-form-in-category-{{ category.id }}" class="btn btn-primary hide-if-from-top">Add</button>
                                 </div>
                                 <div class="card-body">
-                                    {% quantity_in_category_form category=category next_category=category initial_value=summed_quantities.self_expected_not_used %}
+                                    {% quantity_in_category_form category=category next_category=current_category initial_value=summed_quantities.self_expected_not_used %}
                                 </div>
                                 <div class="card-footer hstack justify-content-end">
                                     <button type="submit" form="create-quantity-form-in-category-{{ category.id }}" class="btn btn-primary">Add</button>

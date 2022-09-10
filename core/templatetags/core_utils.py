@@ -153,7 +153,7 @@ def quantity_in_category_form(context, category, next_category=None, initial_val
 
 
 @register.inclusion_tag("quantity_form_include.html", takes_context=True)
-def quantity_in_project_form(context, project, initial_value=None):
+def quantity_in_project_form(context, project, back_to_project=False, initial_value=None):
     initial_date = QuantityInProjectForm.get_initial_date(
         context.get("date"), context.get("interval") or project.interval
     )
@@ -162,7 +162,7 @@ def quantity_in_project_form(context, project, initial_value=None):
         "date_str": context.get("date_str"),
         "interval": context.get("interval"),
         "project": project,
-        "next": "projects",
+        "next": f"project:{project.id}" if back_to_project else "projects",
         "form": QuantityInProjectForm(
             project=project,
             initial={

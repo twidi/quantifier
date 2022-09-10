@@ -28,7 +28,7 @@
                             {% icon "xmark" "solid" classes="fa-fw details-toggle-close" %}
                         </span>
                     </summary>
-                    <div class="card details-dropdown large-details">
+                    <div class="card details-dropdown fs-4 large-details">
                         <div class="card-header hstack-full gap-3">
                             <span class="card-title">Edit category</span>
                             <div class="d-flex gap-4 align-items-baseline">
@@ -36,7 +36,7 @@
                                     <summary class="text-warning text-decoration-underline">Delete…</summary>
                                     <div class="card details-dropdown details-on-right">
                                         <div class="card-body">
-                                            {% category_delete_form category=category next_category=next_category %}
+                                            {% category_delete_form category=category next_category=current_category.parent %}
                                         </div>
                                     </div>
                                 </details>
@@ -44,7 +44,7 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            {% category_form project=project category=category next_category=next_category %}
+                            {% category_form project=project category=category next_category=current_category %}
                         </div>
                         <div class="card-footer hstack justify-content-end">
                             <button type="submit" form="edit-category-form" class="btn btn-primary">Save</button>
@@ -83,7 +83,7 @@
                     {% if current_category %}
                         {% quantity_in_category_form category=current_category next_category=current_category initial_value=summed_quantities.self_expected_not_used %}
                     {% else %}
-                        {% quantity_in_project_form project=project %}
+                        {% quantity_in_project_form project=project back_to_project=True %}
                     {% endif %}
                 </div>
                 <div class="card-footer hstack justify-content-end">

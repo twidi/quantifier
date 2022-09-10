@@ -216,7 +216,7 @@ class ProjectFormViewMixin:
             and (category_id := next.split(":")[1])
             and category_id.isdigit()
         ):
-            return Category.objects.filter(project__owner=self.request.user, pk=category_id).first()
+            return Category.objects.filter(project__owner=self.request.user, pk=category_id, parent__isnull=False).first()
         return None
 
     def get_success_url(self):
@@ -295,7 +295,7 @@ class CategoryFormViewMixin:
             and (category_id := next.split(":")[1])
             and category_id.isdigit()
         ):
-            return Category.objects.filter(project__owner=self.request.user, pk=category_id).first()
+            return Category.objects.filter(project__owner=self.request.user, pk=category_id, parent__isnull=False).first()
         return None
 
     def get_success_url(self):
@@ -389,7 +389,7 @@ class QuantityCreateBaseView(CreateView):
             and (category_id := next.split(":")[1])
             and category_id.isdigit()
         ):
-            return Category.objects.filter(project__owner=self.request.user, pk=category_id).first()
+            return Category.objects.filter(project__owner=self.request.user, pk=category_id, parent__isnull=False).first()
         return None
 
     def get_success_url(self):
@@ -498,7 +498,7 @@ class QuantityFormViewMixin(OwnedCategoryMixin):
             and (category_id := next.split(":")[1])
             and category_id.isdigit()
         ):
-            return Category.objects.filter(project__owner=self.request.user, pk=category_id).first()
+            return Category.objects.filter(project__owner=self.request.user, pk=category_id, parent__isnull=False).first()
         return None
 
     def get_success_url(self):

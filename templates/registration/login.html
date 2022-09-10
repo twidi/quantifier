@@ -4,16 +4,22 @@
 {% block title %}{% trans "Login" %}{% endblock %}
 
 {% block form %}
-    {% url 'login' as url %}{% trans 'Log in' as submit_text %}
-    {% include "./login_form_include.html" with action=url submit_text=submit_text %}
+    {% url 'login' as url %}
+    {% include "./login_form_include.html" with action=url no_button=True form_id="login-form" %}
 {% endblock %}
 
-{% block after_form %}
+{% block card_header_inner %}
+    <button type="submit" form="login-form" class="btn btn-primary hide-if-from-top">{% trans "Log in" %}</button>
+{% endblock %}
 
-    <hr />
-
-    <p>
-        {% trans "Forgot password" %}? <a href="{% url 'password_reset' %}">{% trans "Reset it" %}</a>!
-        {% trans "Not member" %}? <a href="{% url 'django_registration_register' %}">{% trans "Register" %}</a>!
-    </p>
+{% block card_footer %}
+    <div class="card-footer hstack justify-content-between align-items-end gap-3 show-if-from-bottom ">
+        <div class="vstack gap-2 justify-content-end">
+            <span>{% trans "Forgot your password?" %} <a href="{% url 'password_reset' %}">{% trans "Reset it" %}</a>!</span>
+            <span>{% trans "Not a member?" %} <a href="{% url 'django_registration_register' %}">{% trans "Register" %}</a>!</span>
+        </div>
+        <div class="flex-shrink-0 hide-if-from-bottom">
+            <button type="submit" form="login-form" class="btn btn-primary">{% trans "Log in" %}</button>
+        </div>
+    </div>
 {% endblock %}

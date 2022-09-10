@@ -1,8 +1,9 @@
-{% extends "base.html" %}
+{% extends "./base.html" %}
 {% load i18n %}
 
-{% block content %}
+{% block title %}{% trans "Account activation" %}{% endblock %}
 
-<p>{% trans "Account activation failed" %}</p>
-
+{% block card_content %}
+    <p>{% trans "Your account is now activated." %}</p>
+    <p><a href="/">{% trans "Go back to home page" %}</a></p>
 {% endblock %}

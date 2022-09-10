@@ -1,18 +1,24 @@
 {% extends "./base.html" %}
 {% load i18n %}
 
-{% block title %}{% trans "Register" %}{% endblock %}
+{% block title %}{% trans "Registration" %}{% endblock %}
 
 {% block form %}
     {% url 'django_registration_register' as url %}
-    {% include "form_include.html" with action=url %}
+    {% include "form_include.html" with action=url no_button=True form_id="registration-form" %}
 {% endblock %}
 
-{% block after_form %}
+{% block card_header_inner %}
+    <button type="submit" form="registration-form" class="btn btn-primary hide-if-from-top">{% trans "Submit" %}</button>
+{% endblock %}
 
-    <hr />
-
-    <p>
-        {% trans "Already an account" %}? <a href="{% url 'login' %}">{% trans "Login" %}</a>!
-    </p>
+{% block card_footer %}
+    <div class="card-footer hstack justify-content-between align-items-end gap-3 show-if-from-bottom ">
+        <div class="vstack gap-2 justify-content-end">
+            <span>{% trans "Already an account" %}? <a href="{% url 'login' %}">{% trans "Log in" %}</a>!</span>
+        </div>
+        <div class="flex-shrink-0 hide-if-from-bottom">
+            <button type="submit" form="registration-form" class="btn btn-primary">{% trans "Submit" %}</button>
+        </div>
+    </div>
 {% endblock %}

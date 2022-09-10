@@ -1,5 +1,5 @@
 {% load crispy_forms_tags %}
-<form action="{{ action }}" method="post" class="{{ form_default_classes|default:"d-flex flex-column gap-2" }} {{ form_classes }}">
+<form{% if form_id %} id="{{ form_id }}"{% endif %} action="{{ action }}" method="post" class="{{ form_default_classes|default:"d-flex flex-column" }} {{ form_classes }}">
     {% csrf_token %}
     {% if form.with_helper %}
         {% crispy form form.helper %}
@@ -7,5 +7,7 @@
         {{ form|crispy }}
     {% endif %}
     {% block additional_fields %}{% endblock %}
-    <button type="submit" class="btn btn-primary {{ submit_classes }}">{{ submit_text|default:"Submit" }}</button>
+    {% if not no_button %}
+        <button type="submit" class="btn btn-primary {{ submit_classes }}">{{ submit_text|default:"Submit" }}</button>
+    {% endif %}
 </form>

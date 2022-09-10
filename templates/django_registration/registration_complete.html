@@ -1,7 +1,9 @@
 {% extends "./base.html" %}
 {% load i18n %}
 
-{% block content %}
+{% block title %}{% trans "Registration" %}{% endblock %}
 
-<p>{% trans "You are now registered." %}</p>
+{% block card_content %}
+    <p>{% trans "You are now registered." %}</p>
+    <p><a href="{% url "login" %}">{% trans "Log in" %}</a></p>
 {% endblock %}

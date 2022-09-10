@@ -29,24 +29,6 @@
     a { color: inherit; }
 }
 
-.card-plus {
-    --bs-card-spacer: var(--bs-spacer-4);
-    background: var(--bs-body-bg);
-    box-shadow: var(--dropdown-shadow);
-    > .card-header, > .card-footer {
-        padding: var(--bs-spacer-3);
-        background: none;
-        .card-title {
-            font-size: var(--fs-2);
-        }
-    }
-    > .card-body {
-        box-shadow: var(--dropdown-shadow);
-        margin-inline: var(--bs-spacer-2);
-        background: var(--bs-card-bg);
-        border-radius: calc(var(--bs-card-inner-border-radius) - 1px);
-    }
-}
 
 details {
     --animation-duration: .2s;
@@ -82,45 +64,13 @@ details {
 
             &.large-details {
                 @extend .card-plus;
-                width: calc(100% - var(--bs-card-spacer-x));
-                min-width: var(--dropdown-default-size);
-                max-width: 50rem;
-                z-index: 15;
-                position: fixed;
-                max-height: calc(90vh);
-                border-top-left-radius: 0;
-                border-top-right-radius: 0;
-                top: 0;
-                transform: translate(-50%, -100%);
+                @extend .from-top-or-bottom;
+                --transform-y: -100%;
                 transition: transform var(--animation-duration) var(--animation-timing-function);
                 @media (prefers-reduced-motion: reduce) { transition: none; }
-                .hide-if-from-top { display: none; }
-                > .card-header, > .card-footer {
-                    padding-bottom: var(--bs-spacer-2);
-                }
-                > .card-body {
-                    overflow-y: auto;
-                    overscroll-behavior: contain;
-                }
-                @media (pointer: coarse) {
-                    &:not(.always-from-top) {
-                        border-bottom-left-radius: 0;
-                        border-bottom-right-radius: 0;
-                        border-top-left-radius: var(--bs-card-border-radius);
-                        border-top-right-radius: var(--bs-card-border-radius);
-                        bottom: 0;
-                        top: unset;
-                        transform: translate(-50%, 100%);
-                        .hide-if-from-top {
-                            display: block;
-                        }
-                        > .card-footer {
-                            display: none;
-                        }
-                        > .card-body {
-                            border-bottom-left-radius: 0;
-                            border-bottom-right-radius: 0;
-                        }
+                &:not(.force-from-top) {
+                    @media (pointer: coarse) {
+                        --transform-y: 100%;
                     }
                 }
             }
@@ -160,6 +110,104 @@ details {
         display: none;
     }
 
+}
+
+@mixin card-plus-from-bottom {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    bottom: 0;
+    top: unset;
+    --translate-x: -50% !important;
+    border-top-left-radius: var(--bs-card-border-radius);
+    border-top-right-radius: var(--bs-card-border-radius);
+    > .card-footer:not(.show-if-from-bottom) {
+        display: none;
+    }
+    > .card-footer .hide-if-from-bottom {
+        display: none;
+    }
+    > .card-body {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+    .hide-if-from-top { display: unset; }
+}
+
+
+/* This is for .card-plus only, but cannot be nested because we extend it in .large-details */
+.from-top-or-bottom {
+    --translate-x: -50%;
+    --translate-y: 0;
+    z-index: 15;
+    position: fixed;
+    max-height: 90vh;
+    width: calc(100% - var(--bs-card-spacer-x)) !important;
+    min-width: var(--dropdown-default-size) !important;
+    max-width: 50rem;
+    transform: translate(var(--translate-x), var(--translate-y)) !important;
+    left: 50% !important;
+    > .card-header, > .card-footer {
+        padding-bottom: var(--bs-spacer-2);
+    }
+    > .card-body {
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+
+    &:not(.position-static-if-from-top) {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+    }
+    top: 0;
+    &.position-static-if-from-top {
+        --translate-x: 0%;
+        position: static;
+    }
+    @media (pointer: coarse) {
+        &.position-static-if-from-top {
+            &:not(.force-from-top), &:not(.from-top) {
+                --translate-x: -50%;
+                position: fixed;
+            }
+        }
+    }
+    .hide-if-from-top { display: none; }
+    &:not(.force-from-top) {
+        @media (pointer: coarse) {
+            @include card-plus-from-bottom;
+        }
+    }
+}
+
+.card-plus {
+    --bs-card-spacer: var(--bs-spacer-4);
+    background: var(--bs-body-bg);
+    box-shadow: var(--dropdown-shadow);
+    > .card-header, > .card-footer {
+        padding: var(--bs-spacer-3);
+        background: none;
+        .card-title {
+            font-size: var(--fs-2);
+        }
+        &:empty {
+            display: none;
+        }
+    }
+    > .card-header > *:last-child {
+        text-align: left;
+    }
+    > .card-body {
+        box-shadow: var(--dropdown-shadow);
+        margin-inline: var(--bs-spacer-2);
+        background: var(--bs-card-bg);
+        border-radius: calc(var(--bs-card-inner-border-radius) - 1px);
+    }
+    &.from-top, &.from-bottom {
+        @extend .from-top-or-bottom;
+    }
+    &.from-bottom {
+        @include card-plus-from-bottom;
+    }
 }
 
 textarea.auto-reduce:not(:focus){

@@ -7,38 +7,51 @@
         {% block project_title %}
             <div>
                 <div class="hstack gap-3 justify-content-center">
-                    <span class="btn btn-round invisible"></span>
-                    <span class="fs-1">{{ project.name }}</span>
-                    <details class="no-marker as-dropdown focus-first-input with-backdrop" data-focus-first-input-in=".large-details > .card-body">
-                        <summary class="text-muted p-2" title="Edit this project">
-                            <span class="details-toggle fs-3">
-                                {% icon "pencil" "solid" classes="fa-fw details-toggle-open" %}
-                                {% icon "xmark" "solid" classes="fa-fw details-toggle-close" %}
-                            </span>
-                        </summary>
-                        <div class="card details-dropdown large-details">
-                            <div class="card-header hstack-full gap-3">
-                                <span class="card-title">Edit project</span>
-                                <div class="d-flex gap-4 align-items-baseline">
-                                    <details class="no-marker as-dropdown with-backdrop">
-                                        <summary class="text-warning text-decoration-underline">Delete…</summary>
-                                        <div class="card details-dropdown details-on-right">
-                                            <div class="card-body">
-                                                {% project_delete_form project next_category=category %}
+                    <div class="fs-3" style="--nb-icons: {% if project.nb_categories > 1 %}2{% else %}1{% endif %}; width: calc(var(--nb-icons) * 1.25em + (var(--nb-icons) - 1) * var(--bs-spacer-3))"></div>
+                    <span class="fs-1 text-center">{{ project.name }}</span>
+                    <div class="hstack gap-3">
+                        <details class="no-marker as-dropdown focus-first-input with-backdrop" data-focus-first-input-in=".large-details > .card-body">
+                            <summary class="text-muted" title="Edit this project">
+                                <span class="details-toggle fs-3">
+                                    {% icon "pencil" "solid" classes="fa-fw details-toggle-open" %}
+                                    {% icon "xmark" "solid" classes="fa-fw details-toggle-close" %}
+                                </span>
+                            </summary>
+                            <div class="card details-dropdown large-details">
+                                <div class="card-header hstack-full gap-3">
+                                    <span class="card-title">Edit project</span>
+                                    <div class="d-flex gap-4 align-items-baseline">
+                                        <details class="no-marker as-dropdown with-backdrop">
+                                            <summary class="text-warning text-decoration-underline">Delete…</summary>
+                                            <div class="card details-dropdown details-on-right">
+                                                <div class="card-body">
+                                                    {% project_delete_form project next_category=category %}
+                                                </div>
                                             </div>
-                                        </div>
-                                    </details>
-                                    <button type="submit" form="edit-project-form" class="btn btn-primary hide-if-from-top">Save</button>
+                                        </details>
+                                        <button type="submit" form="edit-project-form" class="btn btn-primary hide-if-from-top">Save</button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    {% project_form project next_category=category %}
+                                </div>
+                                <div class="card-footer hstack justify-content-end">
+                                    <button type="submit" form="edit-project-form" class="btn btn-primary">Save</button>
                                 </div>
                             </div>
-                            <div class="card-body">
-                                {% project_form project next_category=category %}
-                            </div>
-                            <div class="card-footer hstack justify-content-end">
-                                <button type="submit" form="edit-project-form" class="btn btn-primary">Save</button>
-                            </div>
-                        </div>
-                    </details>
+                        </details>
+                        {% if project.nb_categories > 1 %}
+                            <details class="no-marker as-dropdown with-backdrop"{% if request.GET|dict_value:"open-quick-access" == project.root_category.id|to_string %} open{% endif %}>
+                                <summary class="text-muted" title="{{ project.nb_categories }} direct categories">
+                                    <span class="details-toggle fs-3">
+                                        {% icon "list-tree" "solid" classes="fa-fw details-toggle-open" %}
+                                        {% icon "xmark" "solid" classes="fa-fw details-toggle-close" %}
+                                    </span>
+                                </summary>
+                                {% include "categories-tree-card.html" with project=project category=project.root_category %}
+                            </details>
+                        {% endif %}
+                    </div>
                 </div>
                 <div class="text-muted text-center">
                     {{ project.short_description }}

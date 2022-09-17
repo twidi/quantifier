@@ -197,10 +197,13 @@ details {
         text-align: left;
     }
     > .card-body {
-        box-shadow: var(--dropdown-shadow);
+        //box-shadow: var(--dropdown-shadow);
         margin-inline: var(--bs-spacer-2);
         background: var(--bs-card-bg);
-        border-radius: calc(var(--bs-card-inner-border-radius) - 1px);
+        border-radius: calc(var(--bs-card-border-radius) - var(--bs-spacer-2) / 4 * 3);
+    }
+    &.no-footer > .card-body {
+        margin-bottom: var(--bs-spacer-2);
     }
     &.from-top, &.from-bottom {
         @extend .from-top-or-bottom;

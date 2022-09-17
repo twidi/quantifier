@@ -112,3 +112,22 @@
     }
 
 }
+
+
+.quick-access-container {
+    ul {
+        list-style: none;
+        padding-left: 0;
+        margin-bottom: 0;
+        ul {
+            padding-left: 1.25rem;
+        }
+
+        li {
+            line-height: 2;
+            a {
+                display: block;
+            }
+        }
+    }
+}

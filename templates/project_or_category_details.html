@@ -5,20 +5,27 @@
 
     {{ block.super }}
 
-    {% with all_summed_quantities=project.summed_quantities %}
-{#        <div id="main-categories" class="hstack flex-wrap gap-5 justify-content-center align-items-stretch">#}
+    {% with all_summed_quantities=project.summed_quantities open_quick_access=request.GET|dict_value:"open-quick-access" %}
         <div id="main-categories">
 
         {% for category in categories %}
             {% with summed_quantities=project.summed_quantities|dict_value:category %}
                 <div class="card vstack gap-5 p-5 justify-content-between">
-                    <div class="hstack gap-2 align-items-baseline">
+                    <div class="hstack gap-2 align-items-baseline justify-content-between">
                         <a class="fs-1 text-decoration-none" href="{{ category.get_absolute_url }}?date={{ date_str }}{% if interval %}&interval={{ interval }}{% endif %}">
                             {{ category.name }}
                         </a>
                         {% with nb_children=category.get_children|length %}
                             {% if nb_children %}
-                                <span class="text-muted">+{{ nb_children }}</span>
+                                <details class="no-marker as-dropdown with-backdrop"{% if open_quick_access == category.id|to_string %} open{% endif %}>
+                                    <summary>
+                                        <span class="details-toggle fs-3 text-muted" title="{{ nb_children }} direct sub-categories">
+                                            {% icon "list-tree" "solid" classes="fa-fw details-toggle-open" %}
+                                            {% icon "xmark" "solid" classes="fa-fw details-toggle-close" %}
+                                        </span>
+                                    </summary>
+                                    {% include "categories-tree-card.html" with project=project category=category %}
+                                </details>
                             {% endif %}
                         {% endwith %}
                     </div>

@@ -1,0 +1,36 @@
+{% load i18n sass_tags mptt_tags core_utils %}
+<div class="card details-dropdown large-details no-footer">
+    <div class="card-header">
+        <a class="text-decoration-none" href="{{ project.get_absolute_url }}?date={{ date_str }}&interval={{ interval }}&open-quick-access={{ project.root_category.id }}" title="Back to project home">{{ project.name }}</a>
+        {% for parent_category in category.get_ancestors %}
+            {% if parent_category.parent_id %}
+                <span class="small text-muted">{% icon_xs "chevron-right" "solid" %}</span>
+                {% if parent_category.level > 1 %}
+                    <a class="text-decoration-none" href="{{ parent_category.parent.get_absolute_url }}?date={{ date_str }}&interval={{ interval }}&open-quick-access={{ parent_category.id }}">{{ parent_category.name }}</a>
+                {% else %}
+                    <a class="text-decoration-none" href="{{ project.get_absolute_url }}?date={{ date_str }}&interval={{ interval }}&open-quick-access={{ parent_category.id }}">{{ parent_category.name }}</a>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+        {% if category.level %}
+            <span class="small text-muted">{% icon_xs "chevron-right" "solid" %}</span>
+            {% if category.level > 1 %}
+                <a class="text-decoration-none" href="{{ category.parent.get_absolute_url }}?date={{ date_str }}&interval={{ interval }}&open-quick-access={{ category.id }}">{{ category.name }}</a>
+            {% else %}
+                <a class="text-decoration-none" href="{{ project.get_absolute_url }}?date={{ date_str }}&interval={{ interval }}&open-quick-access={{ category.id }}">{{ category.name }}</a>
+            {% endif %}
+        {% endif %}
+    </div>
+    <div class="card-body quick-access-container fs-2">
+        {% drilldown_tree_for_node category as category_tree all_descendants %}
+        {% for child, structure in category_tree|tree_info %}
+            {% if child.level > category.level %}
+                {% if structure.new_level %}<ul><li>{% else %}</li><li>{% endif %}
+                <a class="text-decoration-none text-truncate" href="{{ child.get_absolute_url }}?date={{ date_str }}{% if interval %}&interval={{ interval }}{% endif %}">
+                    {{ child.name }}
+                </a>
+                {% for level in structure.closed_levels %}</li></ul>{% endfor %}
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>

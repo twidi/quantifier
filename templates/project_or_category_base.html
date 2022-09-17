@@ -10,17 +10,19 @@
     {% endif %}
 
     {% if current_category %}
-        <span class="text-center fs-2 ms-7">
-            <a href="{% if view.context_object_name == 'quantities' %}{{ project.get_quantities_url }}{% else %}{{ project.get_absolute_url }}{% endif %}?date={{ date_str }}&interval={{ interval }}" class="text-muted" title="Back to project home">Project</a>
-            {% for parent_category in category.get_ancestors %}
-                {% if parent_category.parent_id %}
-                    <span class="small text-muted">{% icon_xs "chevron-right" "solid" %}</span>
-                    <a href="{% if view.context_object_name == 'quantities' %}{{ parent_category.get_quantities_url }}{% else %}{{ parent_category.get_absolute_url }}{% endif %}?date={{ date_str }}&interval={{ interval }}">{{ parent_category.name }}</a>
-                {% endif %}
-            {% endfor %}
-            <span class="small text-muted">{% icon_xs "chevron-right" "solid" %}</span>
+        <span class="text-center ms-7">
+            <span class="fs-2">
+                <a href="{% if view.context_object_name == 'quantities' %}{{ project.get_quantities_url }}{% else %}{{ project.get_absolute_url }}{% endif %}?date={{ date_str }}&interval={{ interval }}" class="text-muted" title="Back to project home">Project</a>
+                {% for parent_category in category.get_ancestors %}
+                    {% if parent_category.parent_id %}
+                        <span class="small text-muted">{% icon_xs "chevron-right" "solid" %}</span>
+                        <a href="{% if view.context_object_name == 'quantities' %}{{ parent_category.get_quantities_url }}{% else %}{{ parent_category.get_absolute_url }}{% endif %}?date={{ date_str }}&interval={{ interval }}">{{ parent_category.name }}</a>
+                    {% endif %}
+                {% endfor %}
+                <span class="small text-muted">{% icon_xs "chevron-right" "solid" %}</span>
+            </span>
             <div class="d-inline-flex gap-3 text-start">
-                <a href="{% if view.context_object_name == 'quantities' %}{{ category.get_quantities_url }}{% else %}{{ category.get_absolute_url }}{% endif %}?date={{ date_str }}&interval={{ interval }}">{{ category.name }}</a>
+                <a class="fs-2" href="{% if view.context_object_name == 'quantities' %}{{ category.get_quantities_url }}{% else %}{{ category.get_absolute_url }}{% endif %}?date={{ date_str }}&interval={{ interval }}">{{ category.name }}</a>
                 <details class="no-marker as-dropdown focus-first-input with-backdrop" data-focus-first-input-in=".large-details > .card-body">
                     <summary class="text-muted" title="Edit this category">
                         <span class="details-toggle fs-3">
@@ -51,6 +53,19 @@
                         </div>
                     </div>
                 </details>
+                {% with nb_children=category.get_children|length %}
+                {% if nb_children %}
+                    <details class="no-marker as-dropdown with-backdrop"{% if request.GET|dict_value:"open-quick-access" == category.id|to_string %} open{% endif %}>
+                        <summary class="text-muted" title="{{ nb_children }} direct sub-categories">
+                            <span class="details-toggle fs-3">
+                                {% icon "list-tree" "solid" classes="fa-fw details-toggle-open" %}
+                                {% icon "xmark" "solid" classes="fa-fw details-toggle-close" %}
+                            </span>
+                        </summary>
+                        {% include "categories-tree-card.html" with project=project category=category %}
+                    </details>
+                {% endif %}
+                {% endwith %}
             </div>
         </span>
     {% endif %}

@@ -130,6 +130,9 @@ details {
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 0;
     }
+    &.no-footer > .card-body {
+        margin-bottom: 0;
+    }
     .hide-if-from-top { display: unset; }
 }
 

@@ -14,11 +14,7 @@
         {% endfor %}
         {% if category.level %}
             <span class="small text-muted">{% icon_xs "chevron-right" "solid" %}</span>
-            {% if category.level > 1 %}
-                <a class="text-decoration-none" href="{{ category.parent.get_absolute_url }}?date={{ date_str }}&interval={{ interval }}&open-quick-access={{ category.id }}">{{ category.name }}</a>
-            {% else %}
-                <a class="text-decoration-none" href="{{ project.get_absolute_url }}?date={{ date_str }}&interval={{ interval }}&open-quick-access={{ category.id }}">{{ category.name }}</a>
-            {% endif %}
+            <a class="text-decoration-none" href="{{ category.get_absolute_url }}?date={{ date_str }}&interval={{ interval }}">{{ category.name }}</a>
         {% endif %}
     </div>
     <div class="card-body quick-access-container fs-2">
@@ -26,8 +22,18 @@
         {% for child, structure in category_tree|tree_info %}
             {% if child.level > category.level %}
                 {% if structure.new_level %}<ul><li>{% else %}</li><li>{% endif %}
-                <a class="text-decoration-none text-truncate" href="{{ child.get_absolute_url }}?date={{ date_str }}{% if interval %}&interval={{ interval }}{% endif %}">
-                    {{ child.name }}
+                <a class="text-decoration-none hstack-full gap-2" style="--level: {{ child.level|sub:category.level|sub:1 }};" href="{{ child.get_absolute_url }}?date={{ date_str }}{% if interval %}&interval={{ interval }}{% endif %}">
+                    <span class="text-truncate">{{ child.name }}</span>
+                    <span class="fs-4 d-inline-flex">
+                        {% with summed_quantities=project.summed_quantities|dict_value:child %}
+                            <span class="{% if summed_quantities.goal_reached %}text-success{% elif summed_quantities.limit_exceeded %}text-danger{% endif %}">
+                                {{ summed_quantities.used }}
+                            </span>
+                            {% if summed_quantities.expected %}
+                                <span class="text-muted">/{{ summed_quantities.expected }}</span>
+                            {% endif %}
+                        {% endwith %}
+                    </span>
                 </a>
                 {% for level in structure.closed_levels %}</li></ul>{% endfor %}
             {% endif %}

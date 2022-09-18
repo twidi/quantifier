@@ -118,7 +118,7 @@
     --bs-form-control-border-width: 0px;
     padding-inline: 0;
     .quick-access-search {
-        margin-inline: calc(var(--bs-card-spacer-x) + .25rem);
+        margin-inline: calc(var(--bs-card-spacer-x) + var(--bs-form-control-outline-width));
         input:not(:focus) {
             box-shadow: 0 0 0 var(--bs-form-control-outline-width) var(--bs-form-control-focus-bg);
         }
@@ -128,18 +128,48 @@
         padding-left: 0;
         margin-bottom: 0;
 
+        --indent: 1.25rem;
+        --name-height: var(--fs-2);
+        --ancestors-height: var(--fs-4);
+        --line-height-selected: 1.5;
+
         li {
-            line-height: 2;
             a {
+                font-size: var(--name-height);
+                min-height: calc(2 * var(--name-height));
                 padding-right: var(--bs-card-spacer-x);
-                padding-left: calc(var(--bs-card-spacer-x) + var(--level) * 1.25rem);
+                padding-left: calc(var(--bs-card-spacer-x) + var(--level) * var(--indent));
                 &:hover {
                     background: rgba(0, 0, 0, 0.1);
                 }
-                > span:not(:first-child) {
-                    color: var(--bs-color);
-                }
+            }
+            .category-ancestors {
+                color: var(--bs-muted-color);
+                font-size: var(--ancestors-height);
+                line-height: var(--line-height-selected);
+                display: none;
+            }
+            .category-counts {
+                color: var(--bs-color);
             }
         }
-}
+    }
+    &.type-ahead-has-hidden li {
+        &.type-ahead-hidden {
+            display: none;
+        }
+        &.has_ancestors {
+            .category-name {
+                line-height: var(--line-height-selected);
+            }
+            .category-ancestors {
+                display: unset;
+            }
+        }
+        &:not(.has_ancestors) {
+            a {
+                min-height: calc(var(--line-height-selected) * (var(--name-height) + var(--ancestors-height)));
+            }
+        }
+    }
 }

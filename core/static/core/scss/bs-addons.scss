@@ -22,6 +22,14 @@
     align-self: stretch;
 }
 
+.vstack-full {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    align-self: stretch;
+}
+
 .opacity-10 { opacity: 0.1; }
 .opacity-5 { opacity: 0.05; }
 

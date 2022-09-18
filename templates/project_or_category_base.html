@@ -55,7 +55,7 @@
                 </details>
                 {% with nb_children=category.get_children|length %}
                 {% if nb_children %}
-                    <details class="no-marker as-dropdown with-backdrop"{% if request.GET|dict_value:"open-quick-access" == category.id|to_string %} open{% endif %}>
+                    <details class="no-marker focus-first-input as-dropdown with-backdrop"{% if request.GET|dict_value:"open-quick-access" == category.id|to_string %} open{% endif %}>
                         <summary class="text-muted" title="{{ nb_children }} direct sub-categories">
                             <span class="details-toggle fs-3">
                                 {% icon "list-tree" "solid" classes="fa-fw details-toggle-open" %}

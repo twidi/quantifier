@@ -5,7 +5,7 @@
 
     {{ block.super }}
 
-    {% with all_summed_quantities=project.summed_quantities open_quick_access=request.GET|dict_value:"open-quick-access" %}
+    {% with all_summed_quantities=project.summed_quantities %}
         <div id="main-categories">
 
         {% for category in categories %}
@@ -17,7 +17,7 @@
                         </a>
                         {% with nb_children=category.get_children|length %}
                             {% if nb_children %}
-                                <details class="no-marker as-dropdown with-backdrop"{% if open_quick_access == category.id|to_string %} open{% endif %}>
+                                <details class="no-marker focus-first-input as-dropdown with-backdrop"{% if request.GET|dict_value:"open-quick-access" == category.id|to_string %} open{% endif %}>
                                     <summary>
                                         <span class="details-toggle fs-3 text-muted" title="{{ nb_children }} direct sub-categories">
                                             {% icon "list-tree" "solid" classes="fa-fw details-toggle-open" %}

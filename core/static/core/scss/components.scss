@@ -115,7 +115,14 @@
 
 
 .quick-access-container {
+    --bs-form-control-border-width: 0px;
     padding-inline: 0;
+    .quick-access-search {
+        margin-inline: calc(var(--bs-card-spacer-x) + .25rem);
+        input:not(:focus) {
+            box-shadow: 0 0 0 var(--bs-form-control-outline-width) var(--bs-form-control-focus-bg);
+        }
+    }
     & > ul, & > ul ul {
         list-style: none;
         padding-left: 0;

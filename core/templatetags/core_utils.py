@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import Optional, NamedTuple, Literal, Union, Tuple
+from uuid import uuid4
 
 from django.template.defaulttags import register
 from django.utils.safestring import mark_safe
@@ -569,3 +570,13 @@ def text_as_title_and_rest(text: str) -> Tuple[str, str]:
         return text[0], ""
 
     return text[0], "\n".join(text[1:])
+
+
+@register.filter
+def to_list(value):
+    return value if isinstance(value, list) else list(value)
+
+
+@register.simple_tag
+def new_uuid():
+    return str(uuid4())

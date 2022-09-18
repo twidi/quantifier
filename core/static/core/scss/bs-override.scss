@@ -51,7 +51,10 @@
     --bs-form-control-line-height: 1.5;
 
     --bs-form-control-spacer-x: .75rem;
-    --bs-form-control-spacer-y: .375rem
+    --bs-form-control-spacer-y: .375rem;
+
+    --bs-form-control-outline-color: rgba(13,110,253,.25);
+    --bs-form-control-outline-width: .25rem;
 }
 
 .form-control, .form-select {
@@ -78,6 +81,7 @@
         background-color: var(--bs-form-control-focus-bg);
         color: var(--bs-form-control-focus-color);
         border-color: var(--bs-form-control-border-focus-color);
+        box-shadow: 0 0 0 var(--bs-form-control-outline-width) var(--bs-form-control-outline-color);
     }
 }
 .form-control-sm, .form-select-sm {

@@ -149,32 +149,31 @@
                 (container_selector ? ev.target.querySelector(container_selector) : ev.target)?.querySelectorAll(input_selector)[0]?.focus();
             }
         }, true);
-        // focus on the first input field when a tab with the "focus-first-input" class is shown, and make the tab visible
-        document.addEventListener('shown.bs.tab', ev => {
-            if (ev.target.classList.contains('focus-first-input')) {
-                const tab_content = document.querySelector(ev.target.getAttribute('data-bs-target'));
-                const container_selector = ev.target.getAttribute('data-focus-first-input-in');
-                const input_selector = ev.target.getAttribute('data-focus-first-input') || 'input:not([type="hidden"]),select,textarea';
-                (container_selector ? tab_content.querySelector(container_selector) : tab_content)?.querySelectorAll(input_selector)[0]?.focus();
-            }
-            if (ev.target.classList.contains('scroll-into-view')) {
-                const tab_content = document.querySelector(ev.target.getAttribute('data-bs-target'));
-                setTimeout(() => tab_content.scrollIntoViewIfNeeded(), 50)
-            }
-        }, true);
-        // create select2 elements when details element is opened or tab is shown
+        // create select2 elements when details element is opened
         const create_select2 = select => {
             setTimeout(() => $(select).select2({theme: 'bootstrap-5', dropdownAutoWidth: true}), 500);
         };
         const create_all_select2 = elt => elt.querySelectorAll('select.autocomplete').forEach(elt => { create_select2(elt); })
         document.addEventListener('toggle', ev => { if (ev.target.nodeName === 'DETAILS') { create_all_select2(ev.target); } }, true);
-        document.addEventListener('shown.bs.tab', ev => { create_all_select2(document.querySelector(ev.target.getAttribute('data-bs-target'))) });
         // create select2 elements on focus
         document.addEventListener("focusin", ev => {
             if (ev.target.nodeName !== 'SELECT' || !ev.target.classList.contains('autocomplete')) { return; }
             ev.preventDefault();
             ev.stopImmediatePropagation();
             create_select2(ev.target);
+        });
+        // typeahead
+        const filter_quick_categories = (text, list, list_item_selector, text_selector) => {
+            const filter = text.toLowerCase();
+            list.querySelectorAll(list_item_selector).forEach(item => {
+                item.style.display = (text_selector ? item.querySelector(text_selector) : item).textContent.toLowerCase().includes(filter) ? '' : 'none';
+            });
+        };
+        document.addEventListener('focusin', ev => {
+            if (ev.target.nodeName !== 'INPUT' || !ev.target.classList.contains('type-ahead')) { return; }
+            let callback = ev => filter_quick_categories(ev.target.value, document.querySelector(ev.target.getAttribute('data-type-ahead-list')), ev.target.getAttribute('data-type-ahead-list-item-selector'), ev.target.getAttribute('data-type-ahead-text-selector'));
+            ev.target.addEventListener('keyup', callback);
+            ev.target.addEventListener('focusout', ev => ev.target.removeEventListener('keyup', callback), {once: true});
         });
 
     </script>

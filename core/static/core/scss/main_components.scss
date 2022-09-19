@@ -48,9 +48,6 @@
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 0;
     }
-    &.no-footer > .card-body {
-        margin-bottom: 0;
-    }
     .hide-if-from-top { display: unset; }
 }
 
@@ -123,9 +120,6 @@
         background: var(--bs-card-bg);
         border-radius: calc(var(--bs-card-border-radius) - var(--bs-spacer-2) / 4 * 3);
     }
-    &.no-footer > .card-body {
-        margin-bottom: var(--bs-spacer-2);
-    }
     &.from-top, &.from-bottom {
         @extend .from-top-or-bottom;
     }
@@ -137,6 +131,7 @@
 
 @mixin details-dropdown-large-details-from-bottom-handle {
     border-radius: 0 !important;
+    --handle-position: top;
     &::before {
         border-radius: var(--bs-card-border-radius) var(--bs-card-border-radius) 0 0;
         bottom: unset;
@@ -190,6 +185,12 @@ details {
 
                 border-radius: 0;
                 --handle-area-height: 2rem;
+                --handle-position: bottom;
+                &.closing-by-dragging {
+                    >.card-body {
+                        overflow-y: hidden;
+                    }
+                }
                 &::before {
                     content: "";
                     position: absolute;

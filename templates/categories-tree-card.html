@@ -1,5 +1,5 @@
 {% load i18n sass_tags mptt_tags core_utils %}
-<div class="card details-dropdown large-details force-from-top no-footer">
+<div class="card details-dropdown large-details force-from-top">
     <div class="card-header">
         <a class="text-decoration-none" href="{{ project.get_absolute_url }}?date={{ date_str }}&interval={{ interval }}&open-quick-access={{ project.root_category.id }}" title="Back to project home">{{ project.name }}</a>
         {% for parent_category in category.get_ancestors %}

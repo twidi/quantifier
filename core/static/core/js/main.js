@@ -76,24 +76,73 @@ document.addEventListener('toggle', ev => {
     details.addEventListener('toggle', close_listener);
 }, true);
 
-// animate the closing of the details element (for this we need to intercept the click on the summary element,
-// set a temporary class on the details to trigger the animation, and really close the details at the end of the animation)
+// animate the closing of the details element, and allow closing it by dragging the handle
 document.addEventListener('toggle', ev => {
     if (ev.target.nodeName !== 'DETAILS' || !ev.target.open || !ev.target.classList.contains('as-dropdown') || !ev.target.querySelector(':scope > .card.details-dropdown.large-details')) { return; }
     const details = ev.target, summary = details.querySelector('summary'), card = details.querySelector(':scope > .card');
-    const summary_click_listener = ev => {
-        ev.preventDefault();
-        ev.stopImmediatePropagation();
+
+    // animate the closing of the details element (for this we need to intercept the click on the summary element,
+    // set a temporary class on the details to trigger the animation, and really close the details at the end of the animation)
+    const animate_and_close = () =>{
         details.classList.add('closing');
         const transition_listener = ev => {
             if (ev.target !== card || ev.propertyName !== 'transform') { return; }
             details.open = false;
             details.classList.remove('closing');
+            card.style.removeProperty('height');
             details.removeEventListener('transitionend', transition_listener);
         }
         details.addEventListener('transitionend', transition_listener);
     }
+    const summary_click_listener = ev => {
+        ev.preventDefault();
+        ev.stopImmediatePropagation();
+        if (!card.classList.contains('closing-by-dragging')) {
+            animate_and_close();
+        }
+    }
     summary.addEventListener('click', summary_click_listener);
+
+    // allow closing it by dragging the handle
+    if (Hammer) {
+        const handle_position = getComputedStyle(card).getPropertyValue('--handle-position');
+        const drag_from_top = handle_position === 'top';
+        if (!summary.classList.contains('close-by-dragging-ready')) {
+            summary.classList.add('close-by-dragging-ready');
+            const hammer = new Hammer(summary);
+            hammer.get('pan').set({direction: Hammer.DIRECTION_VERTICAL});
+            hammer.get('swipe').set({direction: drag_from_top ? Hammer.DIRECTION_DOWN : Hammer.DIRECTION_UP});
+            let height = null, drag_done = false;
+            function start_drag(){
+                drag_done = false;
+                height = card.offsetHeight;
+                card.classList.add('closing-by-dragging');
+            }
+            function end_drag(close) {
+                drag_done = true;
+                if (close) {
+                    animate_and_close();
+                } else {
+                    card.style.removeProperty('height');
+                }
+                setTimeout(() => card.classList.remove('closing-by-dragging'), 500);
+            }
+            hammer.on('swipe', ev => end_drag(true));
+            hammer.on('pan', ev => {
+                const delta = drag_from_top ? Math.max(0, ev.deltaY) : Math.min(0, ev.deltaY);
+                if (height === null) { start_drag(); }
+                card.style.setProperty('height', `${height - (drag_from_top ? delta : -delta)}px`);
+                if (ev.isFinal) {
+                    if (!drag_done) {
+                        end_drag(Math.abs(delta) > height / 2);
+                    }
+                    drag_done = false; // allow to drag again
+                    height = null;
+                }
+            });
+        }
+    }
+
     const close_listener = ev => {
         if (details.open) { return; }
         summary.removeEventListener('click', summary_click_listener);

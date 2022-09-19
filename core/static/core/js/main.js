@@ -188,4 +188,27 @@ document.addEventListener('DOMContentLoaded', () => {
         details.addEventListener('toggle', close_listener);
     }, true);
 
+
+    // swipe left or right to go to the previous or next page
+    (function() {
+        if (!Hammer) {
+            return;
+        }
+        const left_url = document.body.getAttribute('data-swipe-left-url');
+        const right_url = document.body.getAttribute('data-swipe-right-url');
+        if (!left_url && !right_url) {
+            return;
+        }
+        const hammer = new Hammer(document);
+        hammer.get('swipe').set({direction: 0 + (left_url ? Hammer.DIRECTION_LEFT : 0) + (right_url ? Hammer.DIRECTION_RIGHT : 0)});
+        hammer.on('swipe', ev => {
+            if (ev.target.closest('details')) { return; }
+            if (left_url && ev.direction === Hammer.DIRECTION_LEFT) {
+                window.location = left_url;
+            } else if (right_url && ev.direction === Hammer.DIRECTION_RIGHT) {
+                window.location = right_url;
+            }
+        })
+    })();
+
 });

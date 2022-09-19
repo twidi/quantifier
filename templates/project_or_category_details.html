@@ -1,6 +1,17 @@
 {% extends "project_or_category_base.html" %}
 {% load i18n sass_tags mptt_tags core_utils %}
 
+{% block body_attributes %}{% spaceless %}
+    {% if current_category %}
+        {% if current_category.previous_sibling %} data-swipe-right-url="{{ current_category.previous_sibling.get_absolute_url }}?date={{ date_str }}{% if interval %}&interval={{ interval }}{% endif %}"{% endif %}
+        {% if current_category.next_sibling %} data-swipe-left-url="{{ current_category.next_sibling.get_absolute_url }}?date={{ date_str }}{% if interval %}&interval={{ interval }}{% endif %}"{% endif %}
+    {% else %}
+        {% if project.previous_sibling %} data-swipe-right-url="{{ project.previous_sibling.get_absolute_url }}?date={{ date_str }}"{% endif %}
+        {% if project.next_sibling %} data-swipe-left-url="{{ project.next_sibling.get_absolute_url }}?date={{ date_str }}"{% endif %}
+    {% endif  %}
+{% endspaceless %}{% endblock %}
+
+
 {% block project_content %}
 
     {{ block.super }}

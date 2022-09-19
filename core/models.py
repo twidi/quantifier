@@ -345,8 +345,8 @@ class Project(Orderable, models.Model):
     def get_siblings_categories(self, category, include_it=False):
         result = category.parent.get_children()
         if not include_it:
-            result = [cat for cat in result if cat.pk != category.pk]
-        return result
+            return [cat for cat in result if cat.pk != category.pk]
+        return list(result)
 
     def get_summed_quantities(
         self, date: Optional[datetime.date] = None, interval: Optional[Intervals] = None
@@ -456,6 +456,30 @@ class Project(Orderable, models.Model):
         update_count(self.root_category, is_root=True)
 
         return result
+
+    def get_previous_sibling(self):
+        siblings = self.owner.cached_projects._result_cache
+        try:
+            if not (self_index := siblings.index(self)):
+                raise IndexError
+            return siblings[self_index - 1]
+        except IndexError:
+            return None
+
+    @cached_property
+    def previous_sibling(self):
+        return self.get_previous_sibling()
+
+    def get_next_sibling(self):
+        siblings = self.owner.cached_projects._result_cache
+        try:
+            return siblings[siblings.index(self) + 1]
+        except IndexError:
+            return None
+
+    @cached_property
+    def next_sibling(self):
+        return self.get_next_sibling()
 
 
 class CategoryQuerySet(OrderableQueryset, TreeQuerySet):
@@ -605,6 +629,34 @@ class Category(Orderable, MPTTModel):
         queryset = super().get_siblings(include_self)
         queryset._result_cache = self.project.get_siblings_categories(self, include_it=include_self)
         return queryset
+
+    def get_previous_sibling(self, *filter_args, **filter_kwargs):
+        if filter_args or filter_kwargs:
+            return super().get_previous_sibling(*filter_args, **filter_kwargs)
+        siblings = self.get_siblings(include_self=True)._result_cache
+        try:
+            if not (self_index := siblings.index(self)):
+                raise IndexError
+            return siblings[self_index - 1]
+        except IndexError:
+            return None
+
+    @cached_property
+    def previous_sibling(self):
+        return self.get_previous_sibling()
+
+    def get_next_sibling(self, *filter_args, **filter_kwargs):
+        if filter_args or filter_kwargs:
+            return super().get_next_sibling(*filter_args, **filter_kwargs)
+        siblings = self.get_siblings(include_self=True)._result_cache
+        try:
+            return siblings[siblings.index(self) + 1]
+        except IndexError:
+            return None
+
+    @cached_property
+    def next_sibling(self):
+        return self.get_next_sibling()
 
     @cached_property
     def has_children(self):

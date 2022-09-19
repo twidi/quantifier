@@ -25,7 +25,7 @@
     {% block head_end %}{% endblock %}
 </head>
 
-<body>
+<body {% block body_attributes %}{% endblock %} class="{% block body_classes %}{% endblock %}">
 
     <nav class="container-fluid hstack-full gap-5 px-6 pt-1 mb-3">
         {% if main_object or request.path == home_url and user.is_authenticated %}

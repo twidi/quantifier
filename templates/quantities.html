@@ -1,6 +1,16 @@
 {% extends "project_or_category_base.html" %}
 {% load i18n mptt_tags sass_tags core_utils query_parameters %}
 
+{% block body_attributes %}{% spaceless %}
+    {% if current_category %}
+        {% if current_category.previous_sibling %} data-swipe-right-url="{{ current_category.previous_sibling.get_quantities_url }}?date={{ date_str }}{% if interval %}&interval={{ interval }}{% endif %}{% if not with_children %}&with-children=0{% endif %}"{% endif %}
+        {% if current_category.next_sibling %} data-swipe-left-url="{{ current_category.next_sibling.get_quantities_url }}?date={{ date_str }}{% if interval %}&interval={{ interval }}{% endif %}{% if not with_children %}&with-children=0{% endif %}"{% endif %}
+    {% else %}
+        {% if project.previous_sibling %} data-swipe-right-url="{{ project.previous_sibling.get_quantities_url }}?date={{ date_str }}{% if not with_children %}&with-children=0{% endif %}"{% endif %}
+        {% if project.next_sibling %} data-swipe-left-url="{{ project.next_sibling.get_quantities_url }}?date={{ date_str }}{% if not with_children %}&with-children=0{% endif %}"{% endif %}
+    {% endif  %}
+{% endspaceless %}{% endblock %}
+
 {% block project_content_container %}
     <div class="card card-plus d-flex flex-column limited-full-width quantities-list-container">
 

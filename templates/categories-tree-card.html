@@ -1,16 +1,16 @@
 {% load i18n sass_tags mptt_tags core_utils %}
 <div class="card details-dropdown large-details force-from-top">
     <div class="card-header">
-        <a class="text-decoration-none" href="{{ project.get_absolute_url }}?date={{ date_str }}&interval={{ interval }}&open-quick-access={{ project.root_category.id }}" title="Back to project home">{{ project.name }}</a>
+        <a class="text-decoration-none" href="{{ project|get_absolute_or_quantities_url:request }}?date={{ date_str }}&interval={{ interval }}{% if "quantities" in request.path and not with_children %}&with-children=0{% endif %}&open-quick-access={{ project.root_category.id }}" title="Back to project home">{{ project.name }}</a>
         {% for parent_category in category.get_ancestors %}
             {% if parent_category.parent_id %}
                 <span class="small text-muted">{% icon_xs "chevron-right" "solid" %}</span>
-                    <a class="text-decoration-none" href="{{ parent_category.get_absolute_url }}?date={{ date_str }}&interval={{ interval }}&open-quick-access={{ parent_category.id }}">{{ parent_category.name }}</a>
+                    <a class="text-decoration-none" href="{{ parent_category|get_absolute_or_quantities_url:request }}?date={{ date_str }}&interval={{ interval }}{% if "quantities" in request.path and not with_children %}&with-children=0{% endif %}&open-quick-access={{ parent_category.id }}">{{ parent_category.name }}</a>
             {% endif %}
         {% endfor %}
         {% if category.level %}
             <span class="small text-muted">{% icon_xs "chevron-right" "solid" %}</span>
-            <a class="text-decoration-none" href="{{ category.get_absolute_url }}?date={{ date_str }}&interval={{ interval }}">{{ category.name }}</a>
+            <a class="text-decoration-none" href="{{ category|get_absolute_or_quantities_url:request }}?date={{ date_str }}&interval={{ interval }}{% if "quantities" in request.path and not with_children %}&with-children=0{% endif %}">{{ category.name }}</a>
         {% endif %}
     </div>
     {% drilldown_tree_for_node category as category_tree all_descendants %}
@@ -26,7 +26,7 @@
             {% for subcategory in category_tree %}
                 {% if subcategory.level > category.level %}
                     <li class="{% if subcategory.level > 1 %} has_ancestors{% endif %}">
-                        <a class="text-decoration-none hstack-full gap-2" style="--level: {{ subcategory.level|sub:category.level|sub:1 }};" href="{{ subcategory.get_absolute_url }}?date={{ date_str }}{% if interval %}&interval={{ interval }}{% endif %}">
+                        <a class="text-decoration-none hstack-full gap-2" style="--level: {{ subcategory.level|sub:category.level|sub:1 }};" href="{{ subcategory|get_absolute_or_quantities_url:request }}?date={{ date_str }}&interval={{ interval }}{% if "quantities" in request.path and not with_children %}&with-children=0{% endif %}">
                             <span class="vstack-full align-items-start justify-content-center">
                                 <span class="category-name text-truncate">{{ subcategory.name }}</span>
                                 {% if subcategory.level > 1 %}

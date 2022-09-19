@@ -1,6 +1,17 @@
 {% extends "base_project.html" %}
 {% load i18n sass_tags mptt_tags core_utils %}
 
+{% block body_attributes %}{% spaceless %}
+    {% if current_category %}
+        {% if current_category.previous_sibling %} data-swipe-right-url="{{ current_category.previous_sibling|get_absolute_or_quantities_url:request }}?date={{ date_str }}{% if interval %}&interval={{ interval }}{% endif %}{% if "quantities" in request.path and not with_children %}&with-children=0{% endif %}"{% endif %}
+        {% if current_category.next_sibling %} data-swipe-left-url="{{ current_category.next_sibling|get_absolute_or_quantities_url:request }}?date={{ date_str }}{% if interval %}&interval={{ interval }}{% endif %}{% if "quantities" in request.path and not with_children %}&with-children=0{% endif %}"{% endif %}
+    {% else %}
+        {% if project.previous_sibling %} data-swipe-right-url="{{ project.previous_sibling|get_absolute_or_quantities_url:request }}?date={{ date_str }}{% if "quantities" in request.path and not with_children %}&with-children=0{% endif %}"{% endif %}
+        {% if project.next_sibling %} data-swipe-left-url="{{ project.next_sibling|get_absolute_or_quantities_url:request }}?date={{ date_str }}{% if "quantities" in request.path and not with_children %}&with-children=0{% endif %}"{% endif %}
+    {% endif  %}
+{% endspaceless %}{% endblock %}
+
+
 {% block project_header %}
 
     {{ block.super }}
@@ -12,17 +23,17 @@
     {% if current_category %}
         <span class="text-center ms-7">
             <span class="fs-2">
-                <a href="{% if view.context_object_name == 'quantities' %}{{ project.get_quantities_url }}{% else %}{{ project.get_absolute_url }}{% endif %}?date={{ date_str }}&interval={{ interval }}" class="text-muted" title="Back to project home">Project</a>
+                <a href="{{ project|get_absolute_or_quantities_url:request }}?date={{ date_str }}&interval={{ interval }}{% if "quantities" in request.path and not with_children %}&with-children=0{% endif %}" class="text-muted" title="Back to project home">Project</a>
                 {% for parent_category in category.get_ancestors %}
                     {% if parent_category.parent_id %}
                         <span class="small text-muted">{% icon_xs "chevron-right" "solid" %}</span>
-                        <a href="{% if view.context_object_name == 'quantities' %}{{ parent_category.get_quantities_url }}{% else %}{{ parent_category.get_absolute_url }}{% endif %}?date={{ date_str }}&interval={{ interval }}">{{ parent_category.name }}</a>
+                        <a href="{{ parent_category|get_absolute_or_quantities_url:request }}?date={{ date_str }}&interval={{ interval }}{% if "quantities" in request.path and not with_children %}&with-children=0{% endif %}">{{ parent_category.name }}</a>
                     {% endif %}
                 {% endfor %}
                 <span class="small text-muted">{% icon_xs "chevron-right" "solid" %}</span>
             </span>
             <div class="d-inline-flex gap-3 text-start align-items-center">
-                <a class="fs-2" href="{% if view.context_object_name == 'quantities' %}{{ category.get_quantities_url }}{% else %}{{ category.get_absolute_url }}{% endif %}?date={{ date_str }}&interval={{ interval }}">{{ category.name }}</a>
+                <a class="fs-2" href="{{ category|get_absolute_or_quantities_url:request }}?date={{ date_str }}&interval={{ interval }}{% if "quantities" in request.path and not with_children %}&with-children=0{% endif %}">{{ category.name }}</a>
                 <details class="no-marker as-dropdown focus-first-input with-backdrop" data-focus-first-input-in=".large-details > .card-body">
                     <summary class="text-muted" title="Edit this category">
                         <span class="details-toggle fs-3">

@@ -580,3 +580,8 @@ def to_list(value):
 @register.simple_tag
 def new_uuid():
     return str(uuid4())
+
+
+@register.filter
+def get_absolute_or_quantities_url(project_or_category, request):
+    return project_or_category.get_quantities_url() if 'quantities' in request.path else project_or_category.get_absolute_url()

@@ -239,7 +239,7 @@ details {
                 }
             }
         }
-        &[open] {
+        &[open]:not(.closing) {
             > .card {
                 &.large-details {
                     --translate-y: 0 !important;
@@ -259,7 +259,7 @@ details {
                 transition: opacity var(--animation-duration) var(--animation-timing-function);
                 @media (prefers-reduced-motion: reduce) { transition: none; }
             }
-            &[open] > summary:before {
+            &[open]:not(.closing) > summary:before {
                 pointer-events: auto;
                 opacity: 0.75;
             }

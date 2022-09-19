@@ -75,3 +75,29 @@ document.addEventListener('toggle', ev => {
     }
     details.addEventListener('toggle', close_listener);
 }, true);
+
+// animate the closing of the details element (for this we need to intercept the click on the summary element,
+// set a temporary class on the details to trigger the animation, and really close the details at the end of the animation)
+document.addEventListener('toggle', ev => {
+    if (ev.target.nodeName !== 'DETAILS' || !ev.target.open || !ev.target.classList.contains('as-dropdown') || !ev.target.querySelector(':scope > .card.details-dropdown.large-details')) { return; }
+    const details = ev.target, summary = details.querySelector('summary'), card = details.querySelector(':scope > .card');
+    const summary_click_listener = ev => {
+        ev.preventDefault();
+        ev.stopImmediatePropagation();
+        details.classList.add('closing');
+        const transition_listener = ev => {
+            if (ev.target !== card || ev.propertyName !== 'transform') { return; }
+            details.open = false;
+            details.classList.remove('closing');
+            details.removeEventListener('transitionend', transition_listener);
+        }
+        details.addEventListener('transitionend', transition_listener);
+    }
+    summary.addEventListener('click', summary_click_listener);
+    const close_listener = ev => {
+        if (details.open) { return; }
+        summary.removeEventListener('click', summary_click_listener);
+        details.removeEventListener('toggle', close_listener);
+    }
+    details.addEventListener('toggle', close_listener);
+}, true);

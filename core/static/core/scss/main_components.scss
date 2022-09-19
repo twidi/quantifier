@@ -215,7 +215,7 @@ details {
                     pointer-events: none;
                     cursor: pointer;
                     /* this is when opening from top, should be override when opening from bottom */
-                    bottom: calc(-.5 * var(--handle-area-height));
+                    top: calc(100% + .5 * var(--handle-area-height))
                 }
                 > .card-footer {
                     padding-bottom: 0;

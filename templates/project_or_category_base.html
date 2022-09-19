@@ -21,7 +21,7 @@
                 {% endfor %}
                 <span class="small text-muted">{% icon_xs "chevron-right" "solid" %}</span>
             </span>
-            <div class="d-inline-flex gap-3 text-start">
+            <div class="d-inline-flex gap-3 text-start align-items-center">
                 <a class="fs-2" href="{% if view.context_object_name == 'quantities' %}{{ category.get_quantities_url }}{% else %}{{ category.get_absolute_url }}{% endif %}?date={{ date_str }}&interval={{ interval }}">{{ category.name }}</a>
                 <details class="no-marker as-dropdown focus-first-input with-backdrop" data-focus-first-input-in=".large-details > .card-body">
                     <summary class="text-muted" title="Edit this category">

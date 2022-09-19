@@ -30,88 +30,6 @@
 }
 
 
-details {
-    --animation-duration: .2s;
-    --animation-timing-function: ease-in-out;
-
-    &.no-marker > summary {
-        list-style: none;
-        &::-webkit-details-marker {
-            display: none;
-        }
-    }
-
-    &.as-dropdown {
-        > .details-dropdown {
-            position: absolute;
-            filter: var(--drowpdown-shadow-filter);
-            height: auto;
-            left: 50% !important;
-            right: auto;
-            transform: translate(-50%, 0);
-            z-index: var(--zindex, 5);
-            min-width: var(--dropdown-default-size);
-            .card & {
-                width: var(--dropdown-default-size);
-            }
-        }
-        > .card {
-            &.details-on-right {
-                right: 0;
-                left: auto !important;
-                transform: translate(0, 0);
-            }
-
-            &.large-details {
-                @extend .card-plus;
-                @extend .from-top-or-bottom;
-                --transform-y: -100%;
-                transition: transform var(--animation-duration) var(--animation-timing-function);
-                @media (prefers-reduced-motion: reduce) { transition: none; }
-                &:not(.force-from-top) {
-                    @media (pointer: coarse) {
-                        --transform-y: 100%;
-                    }
-                }
-            }
-        }
-        &[open] {
-            > .card {
-                &.large-details {
-                    transform: translate(-50%, 0);
-                }
-            }
-        }
-
-        &.with-backdrop {
-            > summary:before {
-                content: "";
-                position: fixed;
-                inset: -100vh -100vw -100vh -100vw;
-                background-color: #000;
-                pointer-events: none;
-                opacity: 0;
-                z-index: calc(var(--zindex, 5) - 1);
-                transition: opacity var(--animation-duration) var(--animation-timing-function);
-                @media (prefers-reduced-motion: reduce) { transition: none; }
-            }
-            &[open] > summary:before {
-                pointer-events: auto;
-                opacity: 0.75;
-            }
-        }
-
-    }
-
-    &[open] > summary > .details-toggle > .details-toggle-open,
-    &[open] > summary > * > .details-toggle > .details-toggle-open,
-    &:not([open]) > summary > .details-toggle > .details-toggle-close,
-    &:not([open]) > summary > * > .details-toggle > .details-toggle-close {
-        display: none;
-    }
-
-}
-
 @mixin card-plus-from-bottom {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
@@ -143,7 +61,7 @@ details {
     --translate-y: 0;
     z-index: 15;
     position: fixed;
-    max-height: 90vh;
+    max-height: 80vh;
     width: calc(100% - var(--bs-card-spacer-x)) !important;
     min-width: var(--dropdown-default-size) !important;
     max-width: 50rem;
@@ -214,6 +132,148 @@ details {
     &.from-bottom {
         @include card-plus-from-bottom;
     }
+}
+
+
+@mixin details-dropdown-large-details-from-bottom-handle {
+    border-radius: 0 !important;
+    &::before {
+        border-radius: var(--bs-card-border-radius) var(--bs-card-border-radius) 0 0;
+        bottom: unset;
+        top: calc(-1 * var(--handle-area-height));
+    }
+    &::after {
+        bottom: unset;
+        top: calc(-.5 * var(--handle-area-height));
+    }
+    > .card-header {
+        padding-top: 0;
+    }
+}
+
+
+details {
+    --animation-duration: .2s;
+    --animation-timing-function: ease-in-out;
+
+    &.no-marker > summary {
+        list-style: none;
+        &::-webkit-details-marker {
+            display: none;
+        }
+    }
+
+    &.as-dropdown {
+        > .details-dropdown {
+            position: absolute;
+            filter: var(--drowpdown-shadow-filter);
+            height: auto;
+            left: 50% !important;
+            right: auto;
+            transform: translate(-50%, 0);
+            z-index: var(--zindex, 5);
+            min-width: var(--dropdown-default-size);
+            .card & {
+                width: var(--dropdown-default-size);
+            }
+        }
+        > .card {
+            &.details-on-right {
+                right: 0;
+                left: auto !important;
+                transform: translate(0, 0);
+            }
+
+            &.large-details {
+                @extend .card-plus;
+                @extend .from-top-or-bottom;
+
+                border-radius: 0;
+                --handle-area-height: 2rem;
+                &::before {
+                    content: "";
+                    position: absolute;
+                    left: 0;
+                    right: 0;
+                    height: var(--handle-area-height);
+                    background-color: var(--bs-body-bg);
+                    pointer-events: none;
+                    cursor: pointer;
+                    /* this is when opening from top, should be override when opening from bottom */
+                    border-radius: 0 0 var(--bs-card-border-radius) var(--bs-card-border-radius);
+                    bottom: calc(-1 * var(--handle-area-height));
+                }
+                &::after {
+                    content: "";
+                    position: absolute;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    width: 5rem;
+                    height: 0.25rem;
+                    border-radius: 0.5rem;
+                    background-color: var(--bs-muted-color);
+                    pointer-events: none;
+                    cursor: pointer;
+                    /* this is when opening from top, should be override when opening from bottom */
+                    bottom: calc(-.5 * var(--handle-area-height));
+                }
+                > .card-footer {
+                    padding-bottom: 0;
+                }
+                &:not(.force-from-top) {
+                    @media (pointer: coarse) {
+                        @include details-dropdown-large-details-from-bottom-handle;
+                    }
+                }
+                &.from-bottom {
+                    @include details-dropdown-large-details-from-bottom-handle;
+                }
+
+                --transform-y: -100%;
+                transition: transform var(--animation-duration) var(--animation-timing-function);
+                @media (prefers-reduced-motion: reduce) { transition: none; }
+                &:not(.force-from-top) {
+                    @media (pointer: coarse) {
+                        --transform-y: 100%;
+                    }
+                }
+            }
+        }
+        &[open] {
+            > .card {
+                &.large-details {
+                    transform: translate(-50%, 0);
+                }
+            }
+        }
+
+        &.with-backdrop {
+            > summary:before {
+                content: "";
+                position: fixed;
+                inset: -100vh -100vw -100vh -100vw;
+                background-color: #000;
+                pointer-events: none;
+                opacity: 0;
+                z-index: calc(var(--zindex, 5) - 1);
+                transition: opacity var(--animation-duration) var(--animation-timing-function);
+                @media (prefers-reduced-motion: reduce) { transition: none; }
+            }
+            &[open] > summary:before {
+                pointer-events: auto;
+                opacity: 0.75;
+            }
+        }
+
+    }
+
+    &[open] > summary > .details-toggle > .details-toggle-open,
+    &[open] > summary > * > .details-toggle > .details-toggle-open,
+    &:not([open]) > summary > .details-toggle > .details-toggle-close,
+    &:not([open]) > summary > * > .details-toggle > .details-toggle-close {
+        display: none;
+    }
+
 }
 
 textarea.auto-reduce:not(:focus){

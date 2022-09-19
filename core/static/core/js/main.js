@@ -51,11 +51,27 @@ const filter_quick_categories = (text, list, list_item_selector, text_selector) 
 };
 const on_focusin = el => {
     if (el.nodeName !== 'INPUT' || !el.classList.contains('type-ahead')) { return; }
-    let callback = ev => filter_quick_categories(el.value, document.querySelector(el.getAttribute('data-type-ahead-list')), el.getAttribute('data-type-ahead-list-item-selector'), el.getAttribute('data-type-ahead-text-selector'));
-    el.addEventListener('keyup', callback);
-    el.addEventListener('focusout', ev => ev.target.removeEventListener('keyup', callback), {once: true});
+    const listener = ev => filter_quick_categories(el.value, document.querySelector(el.getAttribute('data-type-ahead-list')), el.getAttribute('data-type-ahead-list-item-selector'), el.getAttribute('data-type-ahead-text-selector'));
+    el.addEventListener('keyup', listener);
+    el.addEventListener('focusout', ev => ev.target.removeEventListener('keyup', listener), {once: true});
 };
 document.addEventListener('focusin', ev => on_focusin(ev.target));
 let typeahead_with_focus = document.querySelector('input.type-ahead:focus');
 if (typeahead_with_focus) { on_focusin(typeahead_with_focus); }
 document.body.classList.add('typehead-active');
+
+// when a details element is opened, allow to hit the escape key to close it
+document.addEventListener('toggle', ev => {
+    if (ev.target.nodeName !== 'DETAILS' || !ev.target.open || !ev.target.classList.contains('as-dropdown')) { return; }
+    const details = ev.target;
+    const escape_listener = ev => {
+        if (ev.key === 'Escape') { details.querySelector('summary').click(); ev.preventDefault(); }
+    }
+    window.addEventListener('keyup', escape_listener);
+    const close_listener = ev => {
+        if (details.open) { return; }
+        window.removeEventListener('keyup', escape_listener);
+        details.removeEventListener('toggle', close_listener);
+    }
+    details.addEventListener('toggle', close_listener);
+}, true);

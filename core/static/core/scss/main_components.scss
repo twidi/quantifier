@@ -229,12 +229,12 @@ details {
                     @include details-dropdown-large-details-from-bottom-handle;
                 }
 
-                --transform-y: -100%;
+                --translate-y: -100%;
                 transition: transform var(--animation-duration) var(--animation-timing-function);
                 @media (prefers-reduced-motion: reduce) { transition: none; }
                 &:not(.force-from-top) {
                     @media (pointer: coarse) {
-                        --transform-y: 100%;
+                        --translate-y: 100%;
                     }
                 }
             }
@@ -242,7 +242,7 @@ details {
         &[open] {
             > .card {
                 &.large-details {
-                    transform: translate(-50%, 0);
+                    --translate-y: 0 !important;
                 }
             }
         }

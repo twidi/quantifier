@@ -118,6 +118,9 @@
     --bs-form-control-border-width: 0px;
     padding-inline: 0;
     .quick-access-search {
+        body:not(.typehead-active) & {
+            display: none;
+        }
         margin-inline: calc(var(--bs-card-spacer-x) + var(--bs-form-control-outline-width));
         input:not(:focus) {
             box-shadow: 0 0 0 var(--bs-form-control-outline-width) var(--bs-form-control-focus-bg);

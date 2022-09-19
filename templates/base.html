@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
+
     <script src="{% static "core/js/element.scrollintoviewifneeded-polyfill.js" %}"></script>
     <link rel="stylesheet" href="{% sass_src "core/scss/bs-addons.scss" %}" />
     <link rel="stylesheet" href="{% sass_src "core/scss/bs-override.scss" %}" />
@@ -183,6 +185,7 @@
         document.addEventListener('focusin', ev => on_focusin(ev.target));
         let typeahead_with_focus = document.querySelector('input.type-ahead:focus');
         if (typeahead_with_focus) { on_focusin(typeahead_with_focus); }
+        document.body.classList.add('typehead-active');
 
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>

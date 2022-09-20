@@ -16,7 +16,7 @@
     {% drilldown_tree_for_node category as category_tree all_descendants %}
     {% new_uuid as quick_access_uuid %}
     {% with category_tree|to_list as category_tree %}
-        <div class="card-body quick-access-container" id="quick-access-{{ quick_access_uuid }}">
+        <div class="card-body quick-access-container vstack" id="quick-access-{{ quick_access_uuid }}">
             {% if category_tree|length > 10 %}
                 <div class="mb-3 quick-access-search">
                     <input class="form-control type-ahead" data-type-ahead-list="#quick-access-{{ quick_access_uuid }}" data-type-ahead-list-item-selector="li" data-type-ahead-text-selector=".category-name" placeholder="Type to filter"{% if request.GET|dict_value:"open-quick-access" == category.id|to_string %} autofocus{% endif %}>

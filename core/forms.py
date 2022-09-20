@@ -251,7 +251,7 @@ class QuantityBaseForm(ModelForm):
         self.fields["value"].widget.attrs.update(value_widget_attrs)
         self.fields["value"].help_text %= {"quantity_name": self.project.quantity_name}
 
-        self.fields["notes"].widget.attrs.update({"class": "auto-reduce", "rows": 5})
+        self.fields["notes"].widget.attrs.update({"rows": 3})
 
         self.fields["date"].widget.input_type = "date"
         self.fields["time"].widget.input_type = "time"
